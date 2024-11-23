@@ -8,7 +8,6 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./cachix.nix
-      <home-manager/nixos>
     ];
 
   # Bootloader.
@@ -71,12 +70,7 @@
 
   networking.firewall.enable = false;
 
-
-  home-manager.users.chelsea = {
-    /* The home.stateVersion option does not have a default and must be set */
-    home.stateVersion = "24.05";
-    /* Here goes the rest of your home-manager config, e.g. home.packages = [ pkgs.foo ]; */
-  };
+  services.openssh.enable = true;
 
   system.stateVersion = "24.05";
 
