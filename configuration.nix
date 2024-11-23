@@ -4,11 +4,7 @@
 
 { config, pkgs, ... }:
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./cachix.nix
-    ];
+  imports = [ ./hardware-configuration.nix <home-manager/nixos> ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -55,23 +51,29 @@
     packages = with pkgs; [
       qutebrowser
       alacritty
-      neovim
-      git      
+      git
     ];
   };
 
   services.getty.autologinUser = "chelsea";
 
-  environment.systemPackages = with pkgs; [
-
-  ];
-
-  services.spice-vdagentd.enable = true;
+  environment.systemPackages = with pkgs; [ gcc ];
 
   networking.firewall.enable = false;
 
   services.openssh.enable = true;
 
   system.stateVersion = "24.05";
+	services.greetd = {
+		enable = true;
+			settings = rec {
+			initial_session = { command = "${pkgs.sway}/bin/sway"; user = "chelsea"; };
+			default_session = initial_session;
+		};
+	};
 
+	home-manager.users.chelsea = { pkgs, ...}: {
+		home.packages = [ ];
+		home.stateVersion = "24.05";
+	};
 }
