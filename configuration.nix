@@ -10,12 +10,16 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+	# TODO: bluetooth, wifi, dwl, st
+	# TODO: homemanager for sway, nvim, dwl, st
+
   networking.hostName = "nixos"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+	#networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
+	# sway 
   programs.sway.enable = true;
   services.displayManager.defaultSession = "sway";
 
@@ -35,12 +39,6 @@
     LC_PAPER = "en_AU.UTF-8";
     LC_TELEPHONE = "en_AU.UTF-8";
     LC_TIME = "en_AU.UTF-8";
-  };
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "au";
-    variant = "";
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -76,4 +74,14 @@
 		home.packages = [ ];
 		home.stateVersion = "24.05";
 	};
+
+	# sound
+  security.rtkit.enable = true;
+  services.pipewire = {
+		enable = true;
+		alsa.enable = true;
+		alsa.support32Bit = true;
+		pulse.enable = true;
+	};
+
 }
