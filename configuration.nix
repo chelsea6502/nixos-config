@@ -10,17 +10,15 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-	# TODO: bluetooth, wifi, dwl, st
-	# TODO: homemanager for sway, nvim, dwl, st
-
+	# TODO: nvim config, dwl, st, dmenu
   networking.hostName = "nixos"; # Define your hostname.
-	#networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
 	# sway 
   programs.sway.enable = true;
+	programs.sway.xwayland.enable = false;
   services.displayManager.defaultSession = "sway";
 
   # Set your time zone.
@@ -49,13 +47,15 @@
     packages = with pkgs; [
       qutebrowser
       alacritty
-      git
+			dmenu-wayland
     ];
   };
 
   services.getty.autologinUser = "chelsea";
 
-  environment.systemPackages = with pkgs; [ gcc ];
+  environment.systemPackages = with pkgs; [ 
+      git
+	];
 
   networking.firewall.enable = false;
 
