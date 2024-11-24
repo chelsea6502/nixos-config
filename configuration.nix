@@ -10,15 +10,15 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-	# TODO: nvim config, dwl, st, dmenu
+  # TODO: nvim config, dwl, st, dmenu
   networking.hostName = "nixos"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
-	# sway 
+  # sway 
   programs.sway.enable = true;
-	programs.sway.xwayland.enable = false;
+  programs.sway.xwayland.enable = false;
   services.displayManager.defaultSession = "sway";
 
   # Set your time zone.
@@ -47,41 +47,42 @@
     packages = with pkgs; [
       qutebrowser
       alacritty
-			dmenu-wayland
+      dmenu-wayland
     ];
   };
 
   services.getty.autologinUser = "chelsea";
 
-  environment.systemPackages = with pkgs; [ 
-      git
-	];
+  environment.systemPackages = with pkgs; [
+    git
+  ];
 
   networking.firewall.enable = false;
 
   services.openssh.enable = true;
 
   system.stateVersion = "24.05";
-	services.greetd = {
-		enable = true;
-			settings = rec {
-			initial_session = { command = "${pkgs.sway}/bin/sway"; user = "chelsea"; };
-			default_session = initial_session;
-		};
-	};
+  services.greetd = {
+    enable = true;
+    settings = rec {
+      initial_session = { command = "${pkgs.sway}/bin/sway"; user = "chelsea"; };
+      default_session = initial_session;
+    };
+  };
 
-	home-manager.users.chelsea = { pkgs, ...}: {
-		home.packages = [ ];
-		home.stateVersion = "24.05";
-	};
+  home-manager.users.chelsea = { pkgs, ... }:
+    {
+      home.packages = [ ];
+      home.stateVersion = "24.05";
+    };
 
-	# sound
+  # sound
   security.rtkit.enable = true;
   services.pipewire = {
-		enable = true;
-		alsa.enable = true;
-		alsa.support32Bit = true;
-		pulse.enable = true;
-	};
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
 
 }
