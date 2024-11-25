@@ -9,12 +9,14 @@
 
   outputs = { self, nixpkgs, home-manager, ... }:
     let
-      system = "x86_64-linux";
+      system = "aarch64-linux";
+			pkgs = import nixpkgs { inherit system; };
+			lib = nixpkgs.lib;
+			modulesPath = pkgs.path + "/nixos/modules";
     in {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
         system = system;
         modules = [
-          # Hardware configuration
           {
             imports = [ (modulesPath + "/installer/scan/not-detected.nix") ];
 
@@ -23,7 +25,7 @@
             boot.kernelModules = [ ];
             boot.kernelPackages = (import (builtins.fetchTarball {
               url = "https://gitlab.com/vriska/nix-rpi5/-/archive/main.tar.gz";
-              sha256 = "sha256-hash-goes-here"; # Replace with actual hash
+              sha256 = "12110c0sbycpr5sm0sqyb76aq214s2lyc0a5yiyjkjhrabghgdcb"; # Replace with actual hash
             })).legacyPackages.aarch64-linux.linuxPackages_rpi5;
             boot.extraModulePackages = [ ];
 
