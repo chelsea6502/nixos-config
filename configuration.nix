@@ -4,7 +4,9 @@
 
 { config, pkgs, ... }:
 {
-  imports = [ ./hardware-configuration.nix <home-manager/nixos> ];
+  imports = [ ./hardware-configuration.nix ];
+
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -69,12 +71,6 @@
       default_session = initial_session;
     };
   };
-
-  home-manager.users.chelsea = { pkgs, ... }:
-    {
-      home.packages = [ ];
-      home.stateVersion = "24.05";
-    };
 
   # sound
   security.rtkit.enable = true;
