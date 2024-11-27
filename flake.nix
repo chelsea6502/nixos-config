@@ -15,19 +15,19 @@
         modules = [
           ./configuration.nix
           home-manager.nixosModules.home-manager
-	stylix.nixosModules.stylix
+          stylix.nixosModules.stylix
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
-	    home-manager.backupFileExtension = "backup";
+            home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
-	    	home.username = "chelsea";
-		home.homeDirectory = "/home/chelsea";
-		home.stateVersion = "24.05";
-		programs.home-manager.enable = true;
-		programs.qutebrowser.enable = true;
-		programs.foot.enable = true;
-		programs.alacritty.enable = true;
+              home.username = "chelsea";
+              home.homeDirectory = "/home/chelsea";
+              home.stateVersion = "24.05";
+              programs.home-manager.enable = true;
+              programs.qutebrowser.enable = true;
+              programs.foot.enable = true;
+              programs.alacritty.enable = true;
 
 		wayland.windowManager.sway.config = {
 			bars = [{
@@ -42,14 +42,14 @@
 		};	
 
 
-		wayland.windowManager.sway.enable = true;
+              wayland.windowManager.sway.enable = true;
 
-				stylix.autoEnable = true;
-	    };
-	   
-		security.polkit.enable = true;
-						stylix.enable = true;
-						stylix.image = ./wallpaper.png;
+              stylix.autoEnable = true;
+            };
+
+            security.polkit.enable = true;
+            stylix.enable = true;
+            stylix.image = ./wallpaper.png;
             # Optionally, use home-manager.extraSpecialArgs to pass
             # arguments to home.nix
           }
