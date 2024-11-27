@@ -13,12 +13,35 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # TODO: nvim config, dwl, st, dmenu
-  networking.hostName = "nixos"; # Defie your hostname.
+  networking.hostName = "nixos"; # Define your hostname.
 
   # Enable networking
   networking.networkmanager.enable = true;
 
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+	stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+
+  stylix.fonts = {
+    serif = {
+      package = pkgs.open-sans;
+      name = "Open Sans";
+    };
+
+    sansSerif = {
+      package = pkgs.open-sans;
+      name = "Open Sans";
+    };
+
+    monospace = {
+      package = pkgs.fira-code-nerdfont;
+      name = "Fira Code Nerdfont";
+    };
+
+    emoji = {
+      package = pkgs.noto-fonts-emoji;
+      name = "Noto Color Emoji";
+    };
+  };
+
   # sway 
   programs.sway.enable = true;
   programs.sway.xwayland.enable = false;

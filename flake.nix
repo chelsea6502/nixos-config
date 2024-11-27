@@ -28,6 +28,21 @@
               programs.qutebrowser.enable = true;
               programs.foot.enable = true;
               programs.alacritty.enable = true;
+							services.mako.enable = true;
+
+							services.mako.defaultTimeout = 10000;
+							services.mako.anchor = "top-center";
+
+							programs.qutebrowser.settings = {
+								tabs.show = "multiple";
+								statusbar.show = "in-mode";
+								scrolling.smooth = true;
+								content.javascript.clipboard = "access";
+							};
+
+							programs.foot.settings = {
+                main.pad = "24x24 center";
+							};
 
               wayland.windowManager.sway.config = {
                 bars = [{
@@ -39,6 +54,12 @@
                     resolution = "1920x1080";
                   };
                 };
+								gaps = {
+									inner = 10;
+									smartBorders = "on";
+									smartGaps = true;
+								};
+								window.titlebar = false;
               };
 
               wayland.windowManager.sway.enable = true;
