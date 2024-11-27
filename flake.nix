@@ -30,13 +30,16 @@
 		programs.alacritty.enable = true;
 
 		wayland.windowManager.sway.config = {
+			bars = [{
+					position = "top";
+				}];
 			modifier = "Mod4";
 			output = {
 		  	HDMI-A-1 = {
 		  		resolution = "1920x1080";
 		  	};
 		};
-		};
+		};	
 
 
 		wayland.windowManager.sway.enable = true;
