@@ -19,6 +19,7 @@
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+	    home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
 	    	home.username = "chelsea";
 		home.homeDirectory = "/home/chelsea";
@@ -27,7 +28,23 @@
 		programs.qutebrowser.enable = true;
 		programs.foot.enable = true;
 		programs.alacritty.enable = true;
+
+		wayland.windowManager.sway.config = {
+			modifier = "Mod4";
+			output = {
+		  	HDMI-A-1 = {
+		  		resolution = "1920x1080";
+		  	};
+		};
+		};
+
+
+		wayland.windowManager.sway.enable = true;
+
+				stylix.autoEnable = true;
 	    };
+	   
+		security.polkit.enable = true;
 						stylix.enable = true;
 						stylix.image = ./wallpaper.png;
             # Optionally, use home-manager.extraSpecialArgs to pass
