@@ -23,56 +23,46 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-{
-  programs.neovim = {
-    enable = true;
+            programs.nixvim = {
+              enable = true;
+              colorschemes.gruvbox.enable = true;
 
-    # Declare global options (vim.opt.*)
-    opts = {
-      background = "dark";
-      tabstop = 2;
-      shiftwidth = 2;
-      softtabstop = 2;
-      number = true;
-      colorcolumn = "80";
-      cursorline = true;
-      termguicolors = true;
-      virtualedit = "onemore";
-      textwidth = 80;
-      relativenumber = true;
-      clipboard = "unnamedplus";
-      fillchars = { vert = "\\"; };
-      updatetime = 50;
-      ruler = false;
-      showcmd = false;
-      laststatus = 0;
-      cmdheight = 0;
-      incsearch = true;
-      ignorecase = true;
-      smartcase = true;
-      scrolloff = 10;
-      autoread = true;
-      undofile = true;
-      undodir = "/tmp/.vim-undo-dir";
-      backupdir = "~/.cache/vim";
-    };
+              # Declare global options (vim.opt.*)
+              opts = {
+                background = "dark";
+                tabstop = 2;
+                shiftwidth = 2;
+                softtabstop = 2;
+                number = true;
+                colorcolumn = "80";
+                cursorline = true;
+                termguicolors = true;
+                virtualedit = "onemore";
+                textwidth = 80;
+                relativenumber = true;
+                clipboard = "unnamedplus";
+                fillchars = { vert = "\\"; };
+                updatetime = 50;
+                ruler = false;
+                showcmd = false;
+                laststatus = 0;
+                cmdheight = 0;
+                incsearch = true;
+                ignorecase = true;
+                smartcase = true;
+                scrolloff = 10;
+                autoread = true;
+                undofile = true;
+                undodir = "/tmp/.vim-undo-dir";
+                backupdir = "~/.cache/vim";
+              };
 
-    # Declare global variables (vim.g.*)
-    globals = {
-      mapleader = " "; # Set leader key
-    };
+              # Declare global variables (vim.g.*)
+              globals = {
+                mapleader = " "; # Set leader key
+              };
 
-    # Optional plugin management
-    plugins = with pkgs.vimPlugins; [
-
-    ];
-
-    # Ensure necessary directories exist
-    postInstall = ''
-      mkdir -p /tmp/.vim-undo-dir
-      chmod 700 /tmp/.vim-undo-dir
-    '';
-  };
+            };
             home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
               home.username = "chelsea";
@@ -82,44 +72,36 @@
               programs.qutebrowser.enable = true;
               programs.foot.enable = true;
               programs.alacritty.enable = true;
-							services.mako.enable = true;
+              services.mako.enable = true;
 
-							programs.git = {
+              programs.git = {
                 enable = true;
                 userName = "Chelsea Wilkinson";
                 userEmail = "mail@chelseawilkinson.me";
               };
 
-							services.mako.defaultTimeout = 10000;
-							services.mako.anchor = "top-center";
+              services.mako.defaultTimeout = 10000;
+              services.mako.anchor = "top-center";
 
-							programs.qutebrowser.settings = {
-								tabs.show = "multiple";
-								statusbar.show = "in-mode";
-								scrolling.smooth = true;
-								content.javascript.clipboard = "access";
-							};
+              programs.qutebrowser.settings = {
+                tabs.show = "multiple";
+                statusbar.show = "in-mode";
+                scrolling.smooth = true;
+                content.javascript.clipboard = "access";
+              };
 
-							programs.foot.settings = {
-                main.pad = "24x24 center";
-							};
+              programs.foot.settings = { main.pad = "24x24 center"; };
 
               wayland.windowManager.sway.config = {
-                bars = [{
-                  position = "top";
-                }];
+                bars = [{ position = "top"; }];
                 modifier = "Mod4";
-                output = {
-                  HDMI-A-1 = {
-                    resolution = "1920x1080";
-                  };
+                output = { HDMI-A-1 = { resolution = "1920x1080"; }; };
+                gaps = {
+                  inner = 10;
+                  smartBorders = "on";
+                  smartGaps = true;
                 };
-								gaps = {
-									inner = 10;
-									smartBorders = "on";
-									smartGaps = true;
-								};
-								window.titlebar = false;
+                window.titlebar = false;
               };
 
               wayland.windowManager.sway.enable = true;
