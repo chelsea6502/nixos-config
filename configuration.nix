@@ -7,6 +7,9 @@
   imports = [ ./hardware-configuration.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.optimise.automatic = true;
+  nix.gc.automatic = true;
+  nix.gc.options = "--delete-older-than 7d";
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -74,6 +77,7 @@
       qutebrowser
       alacritty
       dmenu-wayland
+      neovim
     ];
   };
 
