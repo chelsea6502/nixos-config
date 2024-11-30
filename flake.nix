@@ -23,9 +23,56 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-	    programs.nixvim = {
-              enable = true;
-	    };
+{
+  programs.neovim = {
+    enable = true;
+
+    # Declare global options (vim.opt.*)
+    opts = {
+      background = "dark";
+      tabstop = 2;
+      shiftwidth = 2;
+      softtabstop = 2;
+      number = true;
+      colorcolumn = "80";
+      cursorline = true;
+      termguicolors = true;
+      virtualedit = "onemore";
+      textwidth = 80;
+      relativenumber = true;
+      clipboard = "unnamedplus";
+      fillchars = { vert = "\\"; };
+      updatetime = 50;
+      ruler = false;
+      showcmd = false;
+      laststatus = 0;
+      cmdheight = 0;
+      incsearch = true;
+      ignorecase = true;
+      smartcase = true;
+      scrolloff = 10;
+      autoread = true;
+      undofile = true;
+      undodir = "/tmp/.vim-undo-dir";
+      backupdir = "~/.cache/vim";
+    };
+
+    # Declare global variables (vim.g.*)
+    globals = {
+      mapleader = " "; # Set leader key
+    };
+
+    # Optional plugin management
+    plugins = with pkgs.vimPlugins; [
+
+    ];
+
+    # Ensure necessary directories exist
+    postInstall = ''
+      mkdir -p /tmp/.vim-undo-dir
+      chmod 700 /tmp/.vim-undo-dir
+    '';
+  };
             home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
               home.username = "chelsea";
