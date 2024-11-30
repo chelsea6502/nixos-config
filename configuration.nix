@@ -2,8 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
-{
+{ config, pkgs, ... }: {
   imports = [ ./hardware-configuration.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -21,7 +20,8 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
-	stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+  stylix.base16Scheme =
+    "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
   stylix.fonts = {
     serif = {
@@ -43,6 +43,7 @@
       package = pkgs.noto-fonts-emoji;
       name = "Noto Color Emoji";
     };
+
   };
 
   # sway 
@@ -73,18 +74,31 @@
     isNormalUser = true;
     description = "chelsea";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      qutebrowser
-      alacritty
-      dmenu-wayland
-    ];
+    packages = with pkgs; [ qutebrowser alacritty dmenu-wayland ];
+  };
+
+  programs.nixvim = {
+    plugins = {
+      treesitter.enable = true;
+      indent-blankline.enable = true;
+      lsp.enable = true;
+      lsp.servers = { nil-ls.enable = true; };
+      conform-nvim = { enable = true; };
+      none-ls.enable = true;
+      none-ls.sources.formatting.nixfmt.enable = true;
+      cmp = {
+        enable = true;
+        autoEnableSources = true;
+      };
+      cmp-nvim-lsp.enable = true;
+      cmp_luasnip.enable = true;
+      lsp-format.enable = true;
+    };
   };
 
   services.getty.autologinUser = "chelsea";
 
-  environment.systemPackages = with pkgs; [
-    git
-  ];
+  environment.systemPackages = with pkgs; [ git ];
 
   networking.firewall.enable = false;
 
@@ -94,7 +108,10 @@
   services.greetd = {
     enable = true;
     settings = rec {
-      initial_session = { command = "${pkgs.sway}/bin/sway"; user = "chelsea"; };
+      initial_session = {
+        command = "${pkgs.sway}/bin/sway";
+        user = "chelsea";
+      };
       default_session = initial_session;
     };
   };
