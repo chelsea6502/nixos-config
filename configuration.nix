@@ -3,7 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }: {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ ./hardware-configuration.nix ./cachix.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.optimise.automatic = true;
@@ -77,24 +77,7 @@
     packages = with pkgs; [ qutebrowser alacritty dmenu-wayland ];
   };
 
-  programs.nixvim = {
-    plugins = {
-      treesitter.enable = true;
-      indent-blankline.enable = true;
-      lsp.enable = true;
-      lsp.servers = { nil-ls.enable = true; };
-      conform-nvim = { enable = true; };
-      none-ls.enable = true;
-      none-ls.sources.formatting.nixfmt.enable = true;
-      cmp = {
-        enable = true;
-        autoEnableSources = true;
-      };
-      cmp-nvim-lsp.enable = true;
-      cmp_luasnip.enable = true;
-      lsp-format.enable = true;
-    };
-  };
+  programs.nixvim.extraPlugins = with pkgs; [ vimPlugins.no-neck-pain-nvim ];
 
   services.getty.autologinUser = "chelsea";
 
