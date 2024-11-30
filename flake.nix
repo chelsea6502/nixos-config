@@ -27,6 +27,8 @@
               enable = true;
               colorschemes.gruvbox.enable = true;
 
+              clipboard.providers.wl-copy.enable = true;
+
               # Declare global options (vim.opt.*)
               opts = {
                 background = "dark";
@@ -58,10 +60,7 @@
               };
 
               # Declare global variables (vim.g.*)
-              globals = {
-                mapleader = " "; # Set leader key
-              };
-
+              globals = { mapleader = " "; };
             };
             home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
