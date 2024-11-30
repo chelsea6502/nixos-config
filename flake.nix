@@ -6,9 +6,11 @@
     home-manager.url = "github:nix-community/home-manager/release-24.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix/release-24.05";
+    nixvim.url = "github:nix-community/nixvim/nixos-24.05";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = inputs@{ nixpkgs, home-manager, stylix, ... }: {
+  outputs = inputs@{ nixpkgs, home-manager, stylix, nixvim, ... }: {
     nixosConfigurations = {
       nixos = nixpkgs.lib.nixosSystem {
         system = "aarch64-linux";
@@ -16,9 +18,14 @@
           ./configuration.nix
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
+          nixvim.nixosModules.nixvim
           {
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
+
+	    programs.nixvim = {
+              enable = true;
+	    };
             home-manager.backupFileExtension = "backup";
             home-manager.users.chelsea = {
               home.username = "chelsea";
@@ -29,6 +36,12 @@
               programs.foot.enable = true;
               programs.alacritty.enable = true;
 							services.mako.enable = true;
+
+							programs.git = {
+                enable = true;
+                userName = "Chelsea Wilkinson";
+                userEmail = "mail@chelseawilkinson.me";
+              };
 
 							services.mako.defaultTimeout = 10000;
 							services.mako.anchor = "top-center";

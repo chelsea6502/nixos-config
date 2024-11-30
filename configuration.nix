@@ -77,7 +77,6 @@
       qutebrowser
       alacritty
       dmenu-wayland
-      neovim
     ];
   };
 
