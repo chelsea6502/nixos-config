@@ -5,7 +5,7 @@
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    stylix.url = "github:danth/stylix/release-24.05";
+    stylix.url = "github:danth/stylix/release-24.11";
     nixvim.url = "github:nix-community/nixvim/nixos-24.11";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nixos-hardware.url = "github:NixOS/nixos-hardware/master";
@@ -29,7 +29,7 @@
               programs.nixvim = {
                 enable = true;
 
-                colorscheme = "gruvbox-material";
+                #colorscheme = "gruvbox-material";
                 clipboard.providers.wl-copy.enable = true;
                 plugins = {
                   lsp-format.enable = true;
@@ -148,21 +148,10 @@
 
                 programs.foot.settings = { main.pad = "24x24 center"; };
 
-                wayland.windowManager.sway.config = {
-                  bars = [{ position = "top"; }];
-                  modifier = "Mod4";
-                  output = { HDMI-A-1 = { resolution = "1920x1080"; }; };
-                  gaps = {
-                    inner = 10;
-                    smartBorders = "on";
-                    smartGaps = true;
-                  };
-                  window.titlebar = false;
-                };
-
-                wayland.windowManager.sway.enable = true;
-
                 stylix.autoEnable = true;
+                stylix.targets.nixvim.enable = false;
+                stylix.targets.neovim.enable = false;
+                stylix.targets.vim.enable = false;
               };
 
               security.polkit.enable = true;
