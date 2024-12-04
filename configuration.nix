@@ -24,26 +24,10 @@
     "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
   stylix.fonts = {
-    serif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
-    };
-
-    sansSerif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
-    };
-
-    monospace = {
-      package = pkgs.fira-code-nerdfont;
-      name = "Fira Code Nerdfont";
-    };
-
-    emoji = {
-      package = pkgs.noto-fonts-emoji;
-      name = "Noto Color Emoji";
-    };
-
+    serif = { package = pkgs.open-sans; name = "Open Sans"; };
+    sansSerif = { package = pkgs.open-sans; name = "Open Sans"; };
+    monospace = { package = pkgs.fira-code-nerdfont; name = "Fira Code Nerdfont"; };
+    emoji = { package = pkgs.noto-fonts-emoji; name = "Noto Color Emoji"; };
   };
 
   # sway 
@@ -77,7 +61,65 @@
     packages = with pkgs; [ qutebrowser alacritty dmenu-wayland ];
   };
 
-  programs.nixvim.extraPlugins = with pkgs; [ vimPlugins.no-neck-pain-nvim ];
+  programs.nixvim.extraPlugins = with pkgs; [
+    vimPlugins.no-neck-pain-nvim
+    vimPlugins.gruvbox-material
+  ];
+
+  programs.nixvim.extraConfigLua = ''
+    		require('no-neck-pain').setup({
+    				autocmds = { enableOnVimEnter = true, skipEnteringNoNeckPainBuffer = true },
+    				options = { width = 100, minSideBufferWidth = 100 },
+    				buffers = { right = { enabled = false }, wo = { fillchars = 'vert: ,eob: ' }
+    			},
+    			})
+        		
+        local luasnip = require("luasnip")
+        local cmp = require("cmp")
+
+        cmp.setup({
+
+          -- ... Your other configuration ...
+
+          mapping = {
+
+            -- ... Your other mappings ...
+           ['<CR>'] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    if luasnip.expandable() then
+                        luasnip.expand()
+                    else
+                        cmp.confirm({
+                            select = true,
+                        })
+                    end
+                else
+                    fallback()
+                end
+            end),
+
+            ["<Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_next_item()
+              elseif luasnip.locally_jumpable(1) then
+                luasnip.jump(1)
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+              if cmp.visible() then
+                cmp.select_prev_item()
+              elseif luasnip.locally_jumpable(-1) then
+                luasnip.jump(-1)
+              else
+                fallback()
+              end
+            end, { "i", "s" }),
+          },
+        })
+        	'';
 
   services.getty.autologinUser = "chelsea";
 
@@ -91,16 +133,14 @@
   services.greetd = {
     enable = true;
     settings = rec {
-      initial_session = {
-        command = "${pkgs.sway}/bin/sway";
-        user = "chelsea";
-      };
+      initial_session = { command = "${pkgs.sway}/bin/sway"; user = "chelsea"; };
       default_session = initial_session;
     };
   };
 
   # sound
   security.rtkit.enable = true;
+	services.pipewire
   services.pipewire = {
     enable = true;
     alsa.enable = true;
