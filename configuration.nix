@@ -7,8 +7,16 @@ let
   patchedDwl = (pkgs.dwl.overrideAttrs (old: rec {
     buildInputs = old.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
     preConfigure = "cp ${./dwl/config.h} config.h";
-    patches = [ ./dwl-patches/bar.patch ];
+    patches = [
+      ./dwl-patches/bar.patch
+      ./dwl-patches/autostart.patch
+      ./dwl-patches/unclutter.patch
+      ./dwl-patches/smartborders.patch
+    ];
   }));
+  patchedSlstatus = (pkgs.slstatus.overrideAttrs
+    (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
+
 in {
   imports = [ ./hardware-configuration.nix ./cachix.nix ];
 
@@ -48,25 +56,9 @@ in {
     };
   };
 
-  # Set your time zone.
   time.timeZone = "Australia/Melbourne";
-
-  # Select internationalisation properties.
   i18n.defaultLocale = "en_AU.UTF-8";
 
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_AU.UTF-8";
-    LC_IDENTIFICATION = "en_AU.UTF-8";
-    LC_MEASUREMENT = "en_AU.UTF-8";
-    LC_MONETARY = "en_AU.UTF-8";
-    LC_NAME = "en_AU.UTF-8";
-    LC_NUMERIC = "en_AU.UTF-8";
-    LC_PAPER = "en_AU.UTF-8";
-    LC_TELEPHONE = "en_AU.UTF-8";
-    LC_TIME = "en_AU.UTF-8";
-  };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
@@ -79,6 +71,8 @@ in {
       somebar
       wlr-randr
       patchedDwl
+      swaybg
+      slstatus
     ];
   };
 
@@ -156,7 +150,7 @@ in {
     enable = true;
     settings = rec {
       initial_session = {
-        command = "${patchedDwl}/bin/dwl";
+        command = "${patchedSlstatus}/bin/slstatus -s | ${patchedDwl}/bin/dwl";
         user = "chelsea";
       };
       default_session = initial_session;
