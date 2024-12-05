@@ -8,17 +8,17 @@ let
     buildInputs = old.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
     preConfigure = "cp ${./dwl/config.h} config.h";
     patches = [
-      ./dwl-patches/bar.patch
-      ./dwl-patches/autostart.patch
-      ./dwl-patches/unclutter.patch
-      ./dwl-patches/smartborders.patch
+      ./dwl/patches/bar.patch
+      ./dwl/patches/autostart.patch
+      ./dwl/patches/unclutter.patch
+      ./dwl/patches/smartborders.patch
     ];
   }));
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
 
 in {
-  imports = [ ./hardware-configuration.nix ./cachix.nix ];
+  imports = [ ./hardware-configuration.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.optimise.automatic = true;
@@ -65,10 +65,7 @@ in {
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
       qutebrowser
-      alacritty
-      dmenu-wayland
       wmenu
-      somebar
       wlr-randr
       patchedDwl
       swaybg
@@ -141,7 +138,7 @@ in {
 
   environment.systemPackages = with pkgs; [ git ];
 
-  networking.firewall.enable = false;
+  networking.firewall.enable = true;
 
   services.openssh.enable = true;
 
