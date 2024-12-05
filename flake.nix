@@ -22,42 +22,6 @@
           stylix.nixosModules.stylix
           nixvim.nixosModules.nixvim
           nixos-hardware.nixosModules.raspberry-pi-5
-          {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-
-            programs.nixvim = ./nixvim.nix;
-            home-manager.backupFileExtension = "backup";
-            home-manager.users.chelsea = {
-              home.username = "chelsea";
-              home.homeDirectory = "/home/chelsea";
-              home.stateVersion = "24.05";
-              programs.home-manager.enable = true;
-              programs.qutebrowser.enable = true;
-              programs.foot.enable = true;
-
-              programs.git = {
-                enable = true;
-                userName = "Chelsea Wilkinson";
-                userEmail = "mail@chelseawilkinson.me";
-              };
-
-              programs.qutebrowser.settings = {
-                tabs.show = "multiple";
-                statusbar.show = "in-mode";
-                scrolling.smooth = true;
-                content.javascript.clipboard = "access";
-              };
-
-              programs.foot.settings = { main.pad = "24x24 center"; };
-
-              stylix.autoEnable = true;
-            };
-
-            security.polkit.enable = true;
-            stylix.enable = true;
-            stylix.image = ./dwl/wallpaper.jpg;
-          }
         ];
       };
     };
