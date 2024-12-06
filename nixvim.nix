@@ -1,5 +1,41 @@
 { pkgs, ... }: {
   enable = true;
+  keymaps = [
+    {
+      action = "1<C-u>";
+      key = "<ScrollWheelUp>";
+    }
+    {
+      action = "1<C-d>";
+      key = "<ScrollWheelDown>";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.hover()<CR>";
+      key = "<leader>a";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.type_definition()<CR>";
+      key = "<leader>s";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.diagnostic.open_float()<CR>";
+      key = "<leader>d";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
+      key = "<leader>f";
+    }
+    {
+      mode = "n";
+      action = "<cmd>Telescope current_buffer_fuzzy_find theme=dropdown<CR>";
+      key = "/";
+    }
+
+  ];
 
   #colorscheme = "gruvbox-material";
   clipboard.providers.wl-copy.enable = true;
