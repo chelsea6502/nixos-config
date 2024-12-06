@@ -24,6 +24,8 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  environment.sessionVariables = { WLR_NO_HARDWARE_CURSORS = 1; };
+
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = true;
   networking.firewall.enable = true;
@@ -55,6 +57,7 @@ in {
     programs.home-manager.enable = true;
     programs.qutebrowser.enable = true;
     programs.foot.enable = true;
+    programs.btop.enable = true;
 
     programs.git = {
       enable = true;
@@ -65,7 +68,6 @@ in {
     programs.qutebrowser.settings = {
       tabs.show = "multiple";
       statusbar.show = "in-mode";
-      scrolling.smooth = true;
       content.javascript.clipboard = "access";
     };
 
