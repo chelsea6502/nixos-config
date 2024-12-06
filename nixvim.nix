@@ -1,4 +1,4 @@
-{ config, pkgs, ... }: {
+{ pkgs, ... }: {
   enable = true;
 
   #colorscheme = "gruvbox-material";
@@ -28,6 +28,7 @@
         completion.luasnip.enable = true;
         formatting.nixfmt.enable = true;
         formatting.stylua.enable = true;
+        formatting.clang_format.enable = true;
       };
     };
     cmp = {
@@ -45,6 +46,7 @@
         enable = true;
 
         settings.nix.flake = {
+          autoArchive = true;
           #autoEvalInputs = true;
           nixpkgsInputName = "nixpkgs";
         };
