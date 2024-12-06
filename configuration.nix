@@ -21,6 +21,24 @@ in {
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
 
+  programs.bash.shellAliases = {
+    edit = "sudo -E -s nvim";
+    Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
+    EC = "sudo -E -s nvim /etc/nixos/configuration.nix && switch";
+    ECC = "sudo -E -s nvim /etc/nixos/configuration.nix && nix-full";
+    Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
+    En = "sudo -E -s nvim /etc/nixos/nixvim.nix";
+    Ew = "sudo -E -s nvim /etc/nixos/dwl/config.h";
+    EW = "sudo -E -s nvim /etc/nixos/dwl/config.h && switch";
+    saveconf = "sudo cp -R /etc/nixos/*.nix ~/nixos-config/";
+    loadconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
+    switch = "sudo nixos-rebuild switch";
+    nix-update = "cd /etc/nixos && sudo nix flake update";
+    nix-clean = "sudo nix-collect-garbage && sudo nix-store --optimise";
+    nix-verify = "sudo nix-store --verify --check-contents";
+    nix-full = "nix-update && switch && nix-clean && nix-verify";
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -113,7 +131,7 @@ in {
       wlr-randr
       patchedDwl
       swaybg
-      slstatus
+      patchedSlstatus
     ];
   };
 

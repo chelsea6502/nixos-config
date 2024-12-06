@@ -9,7 +9,6 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim/nixos-24.11";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
-    nixos-hardware.url = "github:NixOS/nixos-hardware/master";
   };
 
   outputs = { nixpkgs, home-manager, stylix, nixvim, nixos-hardware, ... }: {
@@ -21,7 +20,6 @@
           home-manager.nixosModules.home-manager
           stylix.nixosModules.stylix
           nixvim.nixosModules.nixvim
-          nixos-hardware.nixosModules.raspberry-pi-5
         ];
       };
     };
