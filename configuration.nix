@@ -21,6 +21,9 @@ in {
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
 
+  nix.settings.max-jobs = 8;
+  boot.kernelPackages = pkgs.linuxPackages-libre;
+
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
     Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
@@ -45,7 +48,7 @@ in {
   environment.sessionVariables = { WLR_NO_HARDWARE_CURSORS = 1; };
 
   networking.hostName = "nixos"; # Define your hostname.
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = false;
   networking.firewall.enable = true;
 
   time.timeZone = "Australia/Melbourne";
@@ -59,7 +62,6 @@ in {
   services.pipewire = {
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
   };
 
@@ -120,7 +122,7 @@ in {
     };
   };
 
-  environment.systemPackages = with pkgs; [ git ];
+  environment.systemPackages = with pkgs; [ git pulseaudio ];
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
@@ -146,5 +148,5 @@ in {
     };
   };
 
-  system.stateVersion = "24.05";
+  system.stateVersion = "24.11";
 }

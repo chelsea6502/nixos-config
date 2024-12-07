@@ -81,9 +81,10 @@
       nil_ls = {
         enable = true;
 
+        settings.nix.maxMemoryMB = 20000;
         settings.nix.flake = {
           autoArchive = true;
-          #autoEvalInputs = true;
+          autoEvalInputs = true;
           nixpkgsInputName = "nixpkgs";
         };
       };
