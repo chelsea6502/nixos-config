@@ -12,7 +12,7 @@ static const char unknown_str[] = "n/a";
 /*
  * function            description                     argument (example)
  *
-  * cat                 read arbitrary file             path
+ * cat                 read arbitrary file             path
  * cpu_freq            cpu frequency in MHz            NULL
  * cpu_perc            cpu usage in percent            NULL
  * datetime            date and time                   format string (%F %T)
@@ -46,12 +46,15 @@ static const char unknown_str[] = "n/a";
  * wifi_perc           WiFi signal in percent          interface name (wlan0)
  */
 static const struct arg args[] = {
-	/* function format          argument */
-	{ cpu_perc, " %s\%@",           NULL },
-	{ temp, "%sC | ",           "/sys/class/thermal/cooling_device0/subsystem/thermal_zone0/temp" },
-	{ ram_used, "%s ",           NULL },
-	{ ram_perc, "(%s\%) | ",           NULL },
-	{ disk_used, "%s ",           "/" },
-	{ disk_perc, "(%s\%) | ",           "/" },
-	{ datetime, "%s ",           "%a %b %d %I:%M:%S%p" },
+    /* function format          argument */
+    {run_command, " %s\% | ",
+     "pactl -- get-sink-volume 0 | grep -Po '\\d+(?=\%)' | head -n 1"},
+    {cpu_perc, " %s\%@", NULL},
+    {temp, "%sC | ",
+     "/sys/class/thermal/cooling_device0/subsystem/thermal_zone0/temp"},
+    {ram_used, "%s ", NULL},
+    {ram_perc, "(%s\%) | ", NULL},
+    {disk_used, "%s ", "/"},
+    {disk_perc, "(%s\%) | ", "/"},
+    {datetime, "%s ", "%a %b %d %I:%M:%S%p"},
 };
