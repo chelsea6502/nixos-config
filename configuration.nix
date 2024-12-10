@@ -7,7 +7,8 @@ let
       ./dwl/patches/bar.patch
       ./dwl/patches/autostart.patch
       ./dwl/patches/unclutter.patch
-      ./dwl/patches/smartborders.patch
+      #./dwl/patches/smartborders.patch
+      ./dwl/patches/gaps.patch
     ];
   }));
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
@@ -23,6 +24,8 @@ in {
 
   nix.settings.max-jobs = 8;
   boot.kernelPackages = pkgs.linuxPackages-libre;
+  boot.kernelParams = [ "video=3840x2160@60" ];
+  hardware.display.outputs.DP-2.mode = "3840x2160@60";
 
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
@@ -88,7 +91,7 @@ in {
     programs.qutebrowser.settings = {
       tabs.show = "multiple";
       statusbar.show = "in-mode";
-      content.javascript.clipboard = "access";
+      content.javascript.clipboard = "access-paste";
     };
 
     programs.foot.settings = { main.pad = "24x24 center"; };
