@@ -107,7 +107,7 @@ in {
 
   security.polkit.enable = true;
   stylix.enable = true;
-  stylix.image = ./dwl/wallpaper.jpg;
+  stylix.image = ./dwl/wallpaper.png;
 
   stylix.base16Scheme =
     "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
