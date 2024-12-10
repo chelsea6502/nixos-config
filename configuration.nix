@@ -29,6 +29,7 @@ in {
 
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
+    find = "sudo -E -s ranger";
     Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
     EC = "sudo -E -s nvim /etc/nixos/configuration.nix && switch";
     ECC = "sudo -E -s nvim /etc/nixos/configuration.nix && nix-full";
@@ -48,7 +49,10 @@ in {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  environment.sessionVariables = { WLR_NO_HARDWARE_CURSORS = 1; };
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = 1;
+    EDITOR = "nvim";
+  };
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = false;
@@ -81,6 +85,8 @@ in {
     programs.qutebrowser.enable = true;
     programs.foot.enable = true;
     programs.btop.enable = true;
+    programs.ranger.enable = true;
+    programs.feh.enable = true;
 
     programs.git = {
       enable = true;
