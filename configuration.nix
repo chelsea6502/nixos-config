@@ -125,19 +125,18 @@ in {
     };
   };
 
-  environment.systemPackages = with pkgs; [ git pulseaudio ];
+  environment.systemPackages = with pkgs; [
+    git
+    pulseaudio
+    swayidle
+    wlr-randr
+    swaybg
+  ];
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [
-      qutebrowser
-      wmenu
-      wlr-randr
-      patchedDwl
-      swaybg
-      patchedSlstatus
-    ];
+    packages = with pkgs; [ qutebrowser wmenu patchedDwl patchedSlstatus ];
   };
 
   services.greetd = {
