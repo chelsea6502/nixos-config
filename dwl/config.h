@@ -7,20 +7,26 @@ static const int sloppyfocus = 1; /* focus follows mouse */
 static const int bypass_surface_visibility =
     0; /* 1 means idle inhibitors will disable idle tracking even if it's
           surface isn't visible  */
+static const int smartgaps =
+    1;               /* 1 means no outer gap when there is only one window */
+static int gaps = 1; /* 1 means gaps between windows are added */
+static const unsigned int gappx = 10;   /* gap pixel between windows */
+static const unsigned int borderpx = 1; /* border pixel of windows */
+static const int showbar = 1;           /* 0 means no bar */
+static const int topbar = 1;            /* 0 means bottom bar */
 static const int smartborders = 1;
-static const unsigned int borderpx = 10; /* border pixel of windows */
-static const int showbar = 1;            /* 0 means no bar */
-static const int topbar = 1;             /* 0 means bottom bar */
+
 static const char *fonts[] = {"Fira Code Nerdfont:size=11"};
 static const float rootcolor[] = COLOR(0x000000ff);
 /* This conforms to the xdg-protocol. Set the alpha to zero to restore the old
  * behavior */
 static const float fullscreen_bg[] = {0.1f, 0.1f, 0.1f,
                                       1.0f}; /* You can also use glsl colors */
+
 static uint32_t colors[][3] = {
     /*               fg          bg          border    */
     [SchemeNorm] = {0xd4be98ff, 0x282828ff, 0},
-    [SchemeSel] = {0x3b3349ff, 0x7daea3ff, 0},
+    [SchemeSel] = {0x3b3349ff, 0x7daea3ff, 0xd4be98ff},
     [SchemeUrg] = {0xfb4934ff, 0x402120ff, 0},
 };
 
@@ -30,13 +36,34 @@ static char *tags[] = {"1", "2", "3", "4", "5"};
 /* logging */
 static int log_level = WLR_ERROR;
 
+#define MONITOR "DP-2"
+
 /* Autostart */
 static const char *const autostart[] = {
     //"wbg", "/path/to/your/image", NULL,
     // swaybg -o HDMI-A-1 -i /etc/nixos/wallpaper.png -m fill
-    "wlr-randr", "--output", "DP-2",        "--scale", "2",      NULL,
-    "swaybg",    "-o",       "DP-2",        "-c",      "7daea3", NULL,
-    "foot",      NULL,       "qutebrowser", NULL,      NULL /* terminate */
+    "wlr-randr",
+    "--output",
+    MONITOR,
+    "--scale",
+    "2",
+    NULL,
+    "swaybg",
+    "-o",
+    MONITOR,
+    "-i",
+    "/etc/nixos/dwl/wallpaper.png",
+    NULL,
+    "foot",
+    NULL,
+    "qutebrowser",
+    NULL,
+    "bash",
+    "-c",
+    "swayidle -w timeout 300 'wlr-randr --output DP-2 --off' resume 'wlr-randr "
+    "--output DP-2 --on' &",
+    NULL,
+    NULL /* terminate */
 };
 
 /* NOTE: ALWAYS keep a rule declared even if you don't use rules (e.g leave at
@@ -155,7 +182,10 @@ static const int cursor_timeout = 3;
 
 /* commands */
 static const char *termcmd[] = {"foot", NULL};
-static const char *menucmd[] = {"wmenu-run", NULL};
+static const char *browsercmd[] = {"qutebrowser", NULL};
+static const char *menucmd[] = {"wmenu-run", "-n", "#d4be98", "-N",
+                                "#282828",   "-s", "#3b3349", "-S",
+                                "#7daea3",   NULL};
 
 static const char *mutecmd[] = {"pactl", "set-sink-mute", "0", "toggle", NULL};
 static const char *volupcmd[] = {"pactl", "set-sink-volume", "0", "+5%", NULL};
@@ -166,6 +196,7 @@ static const Key keys[] = {
     /* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
     /* modifier                  key                 function        argument */
     {MODKEY, XKB_KEY_p, spawn, {.v = menucmd}},
+    {MODKEY, XKB_KEY_w, spawn, {.v = browsercmd}},
     {MODKEY | WLR_MODIFIER_SHIFT, XKB_KEY_Return, spawn, {.v = termcmd}},
     {MODKEY, XKB_KEY_b, togglebar, {0}},
     {MODKEY, XKB_KEY_j, focusstack, {.i = +1}},
