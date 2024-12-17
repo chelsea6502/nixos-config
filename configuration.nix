@@ -14,7 +14,8 @@ let
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
 
-in {
+in
+{
   imports = [ ./hardware-configuration.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -25,7 +26,7 @@ in {
   nix.settings.max-jobs = 8;
   boot.kernelPackages = pkgs.linuxPackages-libre;
   boot.kernelParams = [ "video=3840x2160@60" ];
-  hardware.display.outputs.DP-2.mode = "3840x2160@60";
+  hardware.display.outputs.HDMI-A-3.mode = "3840x2160@60";
 
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
@@ -46,8 +47,10 @@ in {
     nix-full = "nix-update && switch && nix-clean && nix-verify";
   };
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.systemd-boot.enable = true;
+  #boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub.enable = true;
+  boot.loader.grub.device = "/dev/nvme0n1";
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
