@@ -1,16 +1,19 @@
 { pkgs, ... }:
 let
-  patchedDwl = (pkgs.dwl.overrideAttrs (old: rec {
-    buildInputs = old.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
-    preConfigure = "cp ${./dwl/config.h} config.h";
-    patches = [
-      ./dwl/patches/bar.patch
-      ./dwl/patches/autostart.patch
-      ./dwl/patches/unclutter.patch
-      #./dwl/patches/smartborders.patch
-      ./dwl/patches/gaps.patch
-    ];
-  }));
+  # Fetch the source from a Codeberg repository
+  patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: rec {
+    buildInputs = oldAttrs.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
+    src = pkgs.fetchurl {
+      url =
+        "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz"; # Replace with the actual URL
+      sha256 =
+        "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; # Replace with the actual sha256
+    };
+    # Use your custom source code
+    preConfigure = ''
+      cp ${./dwl/config.h} config.h
+    '';
+  });
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
 
@@ -54,6 +57,7 @@ in {
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
+    OPENAI_API_KEY = "";
   };
 
   # bash prompt customisation
