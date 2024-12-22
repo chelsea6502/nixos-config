@@ -14,8 +14,7 @@ let
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
 
-in
-{
+in {
   imports = [ ./hardware-configuration.nix ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
@@ -24,7 +23,7 @@ in
   nix.gc.options = "--delete-older-than 7d";
 
   nix.settings.max-jobs = 8;
-  boot.kernelPackages = pkgs.linuxPackages-libre;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@60" ];
   hardware.display.outputs.HDMI-A-3.mode = "3840x2160@60";
 
@@ -42,20 +41,25 @@ in
     loadconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
     switch = "sudo nixos-rebuild switch";
     nix-update = "cd /etc/nixos && sudo nix flake update";
-    nix-clean = "sudo nix-collect-garbage && sudo nix-store --optimise";
+    nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
   };
 
-  #boot.loader.systemd-boot.enable = true;
-  #boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.enable = true;
-  boot.loader.grub.device = "/dev/nvme0n1";
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
+  #boot.loader.grub.enable = true;
+  #boot.loader.grub.device = "/dev/nvme0n1";
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
   };
+
+  # bash prompt customisation
+  programs.bash.promptInit = ''
+    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:
+    	\w\a\]\w]\$\[\033[0m\] "'';
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = false;
