@@ -5,14 +5,12 @@ let
     buildInputs = oldAttrs.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
     src = pkgs.fetchurl {
       url =
-        "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz"; # Replace with the actual URL
+        "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
       sha256 =
-        "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; # Replace with the actual sha256
+        "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; 
     };
     # Use your custom source code
-    preConfigure = ''
-      cp ${./dwl/config.h} config.h
-    '';
+    preConfigure = "cp ${./dwl/config.h} config.h";
   });
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
