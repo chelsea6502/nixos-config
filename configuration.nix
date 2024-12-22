@@ -6,8 +6,7 @@ let
     src = pkgs.fetchurl {
       url =
         "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
-      sha256 =
-        "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; 
+      sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; 
     };
     # Use your custom source code
     preConfigure = "cp ${./dwl/config.h} config.h";
