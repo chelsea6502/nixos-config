@@ -61,9 +61,9 @@ in {
   };
 
   # bash prompt customisation
-  programs.bash.promptInit = ''
-    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:
-    	\w\a\]\w]\$\[\033[0m\] "'';
+programs.bash.promptInit = ''
+    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w] \$\[\033[0m\] "
+'';
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = false;
