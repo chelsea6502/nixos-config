@@ -218,6 +218,8 @@ in {
     ];
     files = [
       "/etc/shadow"
+      "/etc/passwd"
+      "/etc/group"
     ];
     users.chelsea = {
       directories = [
