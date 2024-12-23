@@ -1,4 +1,4 @@
-{ pkgs, wld }:
+{ pkgs, wld, conf }:
 
 pkgs.stdenv.mkDerivation rec {
   pname = "st-wl";
@@ -16,9 +16,9 @@ pkgs.stdenv.mkDerivation rec {
   patches = [ ]; # Add any required patches or replace with actual patch list
 
   # Optional configuration file handling
-  # configFile =
-  #  if conf != null then pkgs.writeText "config.def.h" conf else null;
-  #preBuild = if conf != null then "cp ${configFile} config.def.h" else "";
+  configFile =
+    if conf != null then pkgs.writeText "config.def.h" conf else null;
+  preBuild = if conf != null then "cp ${configFile} config.def.h" else "";
 
   nativeBuildInputs = [ pkgs.pkg-config ];
   buildInputs = [
