@@ -1,7 +1,10 @@
 {
-  description = "NixOS configuration";
+  description = "Nixos config flake";
 
   inputs = {
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
+    impermanence.url = "github:nix-community/impermanence";
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     home-manager.url = "github:nix-community/home-manager/release-24.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
@@ -11,17 +14,21 @@
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nixpkgs, home-manager, stylix, nixvim, ... }: {
-    nixosConfigurations = {
-      nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./configuration.nix
-          home-manager.nixosModules.home-manager
-          stylix.nixosModules.stylix
-          nixvim.nixosModules.nixvim
-        ];
-      };
+  outputs = { nixpkgs, ... }@inputs: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      system = "aarch64-linux";
+
+      specialArgs = { inherit inputs; };
+      modules = [
+        inputs.disko.nixosModules.default
+        (import ./disko.nix { device = "/dev/vda"; })
+
+        ./configuration.nix
+        inputs.home-manager.nixosModules.home-manager
+        inputs.stylix.nixosModules.stylix
+        inputs.nixvim.nixosModules.nixvim
+        inputs.impermanence.nixosModules.impermanence
+      ];
     };
   };
 }
