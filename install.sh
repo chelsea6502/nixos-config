@@ -25,4 +25,4 @@ sudo nixos-generate-config --no-filesystems --root /mnt
 sudo cp -r ./nixos/* /mnt/etc/nixos/
 
 # Install NixOS using the flake configuration
-sudo nixos-install --root /mnt --flake /mnt/etc/nixos
+sudo nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
