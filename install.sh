@@ -26,3 +26,6 @@ sudo cp -r ./nixos/* /mnt/etc/nixos/
 
 # Install NixOS using the flake configuration
 sudo nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
+
+# Copy the NixOS configuration to a persistent directory
+sudo cp -r /mnt/etc/nixos/ /mnt/persist/
