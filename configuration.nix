@@ -6,16 +6,22 @@ let
     src = pkgs.fetchurl {
       url =
         "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
-      sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg="; 
+      sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg=";
     };
-    # Use your custom source code
-    preConfigure = "cp ${./dwl/config.h} config.h";
+    preConfigure = "cp ${./dwl/config.h} config.h ";
   });
   patchedSlstatus = (pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; }));
 
 in {
   imports = [ ./hardware-configuration.nix ];
+
+  nixpkgs.overlays = [
+    (final: prev: {
+      wld = final.callPackage ./st-wl/wld/default.nix { };
+      st-wl = final.callPackage ./st-wl/default.nix { wld = final.wld; };
+    })
+  ];
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.optimise.automatic = true;
@@ -58,9 +64,9 @@ in {
   };
 
   # bash prompt customisation
-programs.bash.promptInit = ''
-    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w] \$\[\033[0m\] "
-'';
+  programs.bash.promptInit = ''
+    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
+  '';
 
   networking.hostName = "nixos"; # Define your hostname.
   networking.networkmanager.enable = false;
@@ -150,7 +156,13 @@ programs.bash.promptInit = ''
     isNormalUser = true;
     description = "chelsea";
     extraGroups = [ "networkmanager" "wheel" ];
-    packages = with pkgs; [ qutebrowser wmenu patchedDwl patchedSlstatus ];
+    packages = with pkgs; [
+      qutebrowser
+      wmenu
+      patchedDwl
+      patchedSlstatus
+      st-wl
+    ];
   };
 
   services.greetd = {

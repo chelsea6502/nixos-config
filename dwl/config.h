@@ -36,7 +36,7 @@ static char *tags[] = {"1", "2", "3", "4", "5"};
 /* logging */
 static int log_level = WLR_ERROR;
 
-#define MONITOR "DP-2"
+#define MONITOR "Virtual-1"
 
 /* Autostart */
 static const char *const autostart[] = {
@@ -45,6 +45,8 @@ static const char *const autostart[] = {
     "wlr-randr",
     "--output",
     MONITOR,
+    "--custom-mode",
+    "2560x1600@60",
     "--scale",
     "2",
     NULL,
@@ -57,11 +59,6 @@ static const char *const autostart[] = {
     "foot",
     NULL,
     "qutebrowser",
-    NULL,
-    "bash",
-    "-c",
-    "swayidle -w timeout 300 'wlr-randr --output DP-2 --off' resume 'wlr-randr "
-    "--output DP-2 --on' &",
     NULL,
     NULL /* terminate */
 };
