@@ -1,4 +1,4 @@
 ## one line install
 ```bash
-curl https://raw.githubusercontent.com/chelsea6502/nixos-config/main/install.sh | sudo bash
+curl -L https://tinyurl.com/nixos6502 | sudo bash
 ```
