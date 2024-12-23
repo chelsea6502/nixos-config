@@ -220,6 +220,7 @@ in {
       "/etc/shadow"
       "/etc/passwd"
       "/etc/group"
+      "/etc/machine-id"
     ];
     users.chelsea = {
       directories = [
