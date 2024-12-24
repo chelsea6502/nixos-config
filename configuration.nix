@@ -79,7 +79,7 @@ in {
   i18n.defaultLocale = "en_AU.UTF-8";
 
   services.getty.autologinUser = "chelsea";
-  services.openssh.enable = true;
+  services.openssh.enable = false;
 
   # sound
   security.rtkit.enable = true;
@@ -155,6 +155,7 @@ in {
     wlr-randr
     swaybg
   ];
+  users.mutableUsers = false;
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
