@@ -12,6 +12,10 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim/nixos-24.11";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nix-mineral = {
+      url = "github:cynicsketch/nix-mineral";
+      flake = false;
+    };
   };
 
   outputs = { nixpkgs, ... }@inputs: {
@@ -24,6 +28,9 @@
         (import ./disko.nix { device = "/dev/vda"; })
 
         ./configuration.nix
+        ./security.nix
+        "${nixpkgs}/nixos/modules/profiles/hardened.nix"
+        "${inputs.nix-mineral}/nix-mineral.nix"
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
