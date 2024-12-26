@@ -32,9 +32,12 @@ in {
   nix.gc.options = "--delete-older-than 7d";
 
   nix.settings.max-jobs = 8;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  boot.kernelPackages = pkgs.linuxPackages_hardened;
   boot.kernelParams = [ "video=3840x2160@60" ];
   hardware.display.outputs.HDMI-A-3.mode = "3840x2160@60";
+
+  boot.initrd.systemd.network.wait-online.enable = false;
+  networking.dhcpcd.wait = "background";
 
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
@@ -167,6 +170,7 @@ in {
       patchedDwl
       patchedSlstatus
       st-wl
+      lynis
     ];
   };
 
@@ -217,12 +221,7 @@ in {
       "/var/lib/nixos"
       "/etc/NetworkManager/system-connections"
     ];
-    files = [
-      "/etc/shadow"
-      "/etc/passwd"
-      "/etc/group"
-      "/etc/machine-id"
-    ];
+    files = [ "/etc/machine-id" ];
     users.chelsea = {
       directories = [
         "nixos-config"
