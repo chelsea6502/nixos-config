@@ -16,6 +16,13 @@ let
 in {
   imports = [ ./hardware-configuration.nix ];
 
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+
   nixpkgs.overlays = [
     (final: prev: {
       wld = final.callPackage ./st-wl/wld/default.nix { };
@@ -26,13 +33,20 @@ in {
     })
   ];
 
+  security.pam.yubico = {
+    enable = true;
+    #debug = true;
+    mode = "challenge-response";
+    id = [ "31239269" ];
+  };
+
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
 
   nix.settings.max-jobs = 8;
-  boot.kernelPackages = pkgs.linuxPackages_hardened;
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@60" ];
   hardware.display.outputs.HDMI-A-3.mode = "3840x2160@60";
 
@@ -67,6 +81,7 @@ in {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
     OPENAI_API_KEY = "";
+    SSH_AUTH_SOCK = "$(gpgconf --list-dirs agent-ssh-socket)";
   };
 
   # bash prompt customisation
@@ -157,13 +172,18 @@ in {
     swayidle
     wlr-randr
     swaybg
+    yubikey-personalization
+    yubico-pam
+    yubikey-manager
+    gnupg
   ];
   users.mutableUsers = false;
+  users.allowNoPasswordLogin = true;
   users.users.chelsea = {
     isNormalUser = true;
     description = "chelsea";
     extraGroups = [ "networkmanager" "wheel" ];
-    initialPassword = "blah";
+    hashedPassword = "!";
     packages = with pkgs; [
       qutebrowser
       wmenu
@@ -226,6 +246,7 @@ in {
       directories = [
         "nixos-config"
         ".local/share/qutebrowser"
+        ".yubico/"
         {
           directory = ".gnupg";
           mode = "0700";

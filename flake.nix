@@ -28,9 +28,9 @@
         (import ./disko.nix { device = "/dev/vda"; })
 
         ./configuration.nix
-        ./security.nix
-        "${nixpkgs}/nixos/modules/profiles/hardened.nix"
-        "${inputs.nix-mineral}/nix-mineral.nix"
+        #./security.nix
+        #"${nixpkgs}/nixos/modules/profiles/hardened.nix"
+        #"${inputs.nix-mineral}/nix-mineral.nix"
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
