@@ -18,10 +18,10 @@ in {
 
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
- security.pam.services = {
-  login.u2fAuth = true;
-  sudo.u2fAuth = true;
-};
+  security.pam.services = {
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
+  };
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -63,6 +63,7 @@ in {
     nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
+    git-auth = "ssh-add -K";
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -184,6 +185,7 @@ in {
       patchedSlstatus
       st-wl
       lynis
+      chromium
     ];
   };
 
