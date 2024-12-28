@@ -22,6 +22,7 @@ in {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
   };
+  programs.ssh.startAgent = true;
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -241,7 +242,7 @@ in {
       directories = [
         "nixos-config"
         ".local/share/qutebrowser"
-        ".yubico/"
+        ".config/Yubico"
         {
           directory = ".gnupg";
           mode = "0700";
