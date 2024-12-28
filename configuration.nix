@@ -18,10 +18,10 @@ in {
 
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
+ security.pam.services = {
+  login.u2fAuth = true;
+  sudo.u2fAuth = true;
+};
 
   nixpkgs.overlays = [
     (final: prev: {
@@ -32,13 +32,6 @@ in {
       };
     })
   ];
-
-  security.pam.yubico = {
-    enable = true;
-    #debug = true;
-    mode = "challenge-response";
-    id = [ "31239269" ];
-  };
 
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.optimise.automatic = true;
