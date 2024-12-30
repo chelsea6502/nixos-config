@@ -26,7 +26,7 @@ sudo mkdir -p /mnt/persist/system/etc/nixos/
 sudo cp -r ./nixos/* /mnt/persist/system/etc/nixos/
 
 # Install NixOS using the flake configuration
-sudo nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
+sudo nixos-install --root /mnt --flake /mnt/persist/system/etc/nixos#nixos
 
 # Copy public keys
 sudo mkdir -p /mnt/persist/system/home/chelsea/.config/Yubico/
