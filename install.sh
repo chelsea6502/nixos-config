@@ -22,10 +22,11 @@ sudo git clone https://github.com/chelsea6502/nixos-config nixos
 sudo nixos-generate-config --no-filesystems --root /mnt
 
 # Copy the NixOS configuration to a persistent directory
-sudo cp -r ./nixos/* /mnt/etc/nixos/
+sudo cp -r ./nixos/* /mnt/persist/system/etc/nixos/
+
+# Copy public keys
+sudo cp ./nixos/keys/u2f_keys /mnt/persist/system/home/chelsea/.config/Yubico/
+sudo cp ./nixos/keys/id_ed25519_sk.pub /mnt/persist/system/home/chelsea/.ssh/
 
 # Install NixOS using the flake configuration
 sudo nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
-
-# Copy the NixOS configuration to a persistent directory
-sudo cp -r /mnt/etc/nixos/ /mnt/persist/system/
