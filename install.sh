@@ -19,7 +19,7 @@ sudo nix --experimental-features "nix-command flakes" run github:nix-community/d
 sudo git clone https://github.com/chelsea6502/nixos-config nixos
 
 # Generate the NixOS configuration without filesystem entries
-sudo nixos-generate-config --no-filesystems --root /mnt
+sudo nixos-generate-config --no-filesystems --root /mnt/persist/system/
 
 # Copy the NixOS configuration to a persistent directory
 sudo mkdir -p /mnt/persist/system/etc/nixos/
