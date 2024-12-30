@@ -28,5 +28,7 @@ sudo cp -r ./nixos/* /mnt/persist/system/etc/nixos/
 sudo nixos-install --root /mnt --flake /mnt/etc/nixos#nixos
 
 # Copy public keys
+sudo mkdir -p /mnt/persist/system/home/chelsea/.config/Yubico/
 sudo cp ./nixos/keys/u2f_keys /mnt/persist/system/home/chelsea/.config/Yubico/
+sudo mkdir -p /mnt/persist/system/home/chelsea/.ssh/
 sudo cp ./nixos/keys/id_ed25519_sk.pub /mnt/persist/system/home/chelsea/.ssh/
