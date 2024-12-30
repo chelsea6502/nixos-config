@@ -76,7 +76,6 @@ in {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
     OPENAI_API_KEY = "";
-    SSH_AUTH_SOCK = "$(gpgconf --list-dirs agent-ssh-socket)";
   };
 
   # bash prompt customisation
