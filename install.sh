@@ -23,7 +23,6 @@ sudo nixos-generate-config --no-filesystems --root /mnt/persist/system/
 
 # Copy the NixOS configuration to a persistent directory
 sudo cp -r ./nixos/* /mnt/persist/system/etc/nixos/
-sudo cp -r ./nixos/* /mnt/etc/nixos/
 
 # Install NixOS using the flake configuration
 sudo nixos-install --root /mnt --flake /mnt/persist/system/etc/nixos#nixos
