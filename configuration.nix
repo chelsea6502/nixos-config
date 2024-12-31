@@ -13,6 +13,8 @@ let
   patchedSlstatus = pkgs.slstatus.overrideAttrs
     (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; });
 
+  nixvim = import ./nixvim.nix { inherit config pkgs; };
+
 in {
   # ─────────────────────────────────────────────────────────────────────────────
   # 1. Imports
@@ -118,8 +120,11 @@ in {
   security.polkit.enable = true;
 
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-  sops.defaultSopsFile = ./test.yaml;
-  sops.secrets.example_key = { };
+  sops.defaultSopsFile = ./keys/secrets.yaml;
+  sops.secrets.openai = {
+    mode = "0440";
+    owner = config.users.users.chelsea.name;
+  };
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 6. Nix Settings
@@ -215,7 +220,7 @@ in {
       ];
     };
   };
-  programs.nixvim = ./nixvim.nix;
+  programs.nixvim = nixvim;
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 11. Home Manager Configuration
