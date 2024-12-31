@@ -16,6 +16,8 @@
       url = "github:cynicsketch/nix-mineral";
       flake = false;
     };
+    sops-nix.url = "github:Mic92/sops-nix";
+    sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs = { nixpkgs, ... }@inputs: {
@@ -35,6 +37,7 @@
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
         inputs.impermanence.nixosModules.impermanence
+        inputs.sops-nix.nixosModules.sops
       ];
     };
   };
