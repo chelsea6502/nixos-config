@@ -3,24 +3,21 @@ let
   patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: rec {
     buildInputs = oldAttrs.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
     src = pkgs.fetchurl {
-      url = "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
+      url =
+        "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
       sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg=";
     };
     preConfigure = "cp ${./dwl/config.h} config.h ";
   });
 
-  patchedSlstatus = pkgs.slstatus.overrideAttrs (old: rec {
-    preConfigure = "cp ${./dwl/slstatus/config.h} config.h";
-  });
-in
+  patchedSlstatus = pkgs.slstatus.overrideAttrs
+    (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; });
 
-{
+in {
   # ─────────────────────────────────────────────────────────────────────────────
   # 1. Imports
   # ─────────────────────────────────────────────────────────────────────────────
-  imports = [
-    ./hardware-configuration.nix
-  ];
+  imports = [ ./hardware-configuration.nix ];
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 2. Basic System Settings
@@ -119,6 +116,10 @@ in
 
   security.polkit.enable = true;
 
+  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+  sops.defaultSopsFile = ./test.yaml;
+  sops.secrets.example_key = { };
+
   # ─────────────────────────────────────────────────────────────────────────────
   # 6. Nix Settings
   # ─────────────────────────────────────────────────────────────────────────────
@@ -195,15 +196,15 @@ in
   # 10. User Accounts
   # ─────────────────────────────────────────────────────────────────────────────
   users = {
-    mutableUsers         = false;
+    mutableUsers = false;
     allowNoPasswordLogin = true;
 
     users.chelsea = {
-      isNormalUser  = true;
-      description   = "chelsea";
-      extraGroups   = [ "networkmanager" "wheel" ];
+      isNormalUser = true;
+      description = "chelsea";
+      extraGroups = [ "networkmanager" "wheel" ];
       hashedPassword = "!";
-      packages      = with pkgs; [
+      packages = with pkgs; [
         qutebrowser
         wmenu
         patchedDwl
@@ -214,45 +215,46 @@ in
       ];
     };
   };
+  programs.nixvim = ./nixvim.nix;
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 11. Home Manager Configuration
   # ─────────────────────────────────────────────────────────────────────────────
   home-manager = {
-    useGlobalPkgs       = true;
-    useUserPackages      = true;
-    backupFileExtension  = "backup";
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    backupFileExtension = "backup";
 
     users.chelsea = {
-      home.username      = "chelsea";
+      home.username = "chelsea";
       home.homeDirectory = "/home/chelsea";
-      home.stateVersion  = "24.05";
+      home.stateVersion = "24.05";
 
       programs.home-manager.enable = true;
-      programs.btop.enable        = true;
-      programs.ranger.enable      = true;
-      programs.feh.enable         = true;
+      programs.btop.enable = true;
+      programs.ranger.enable = true;
+      programs.feh.enable = true;
 
-    programs.qutebrowser = {
-      enable   = true;
-      settings = {
-        tabs.show                    = "multiple";
-        statusbar.show               = "in-mode";
-        content.javascript.clipboard = "access-paste";
+      programs.qutebrowser = {
+        enable = true;
+        settings = {
+          tabs.show = "multiple";
+          statusbar.show = "in-mode";
+          content.javascript.clipboard = "access-paste";
+        };
       };
-    };
 
-    programs.foot = {
-      enable   = true;
-      settings = {
-        # Example foot config
-        main.pad = "24x24 center";
+      programs.foot = {
+        enable = true;
+        settings = {
+          # Example foot config
+          main.pad = "24x24 center";
+        };
       };
-    };
 
       programs.git = {
-        enable    = true;
-        userName  = "Chelsea Wilkinson";
+        enable = true;
+        userName = "Chelsea Wilkinson";
         userEmail = "mail@chelseawilkinson.me";
       };
 
@@ -265,9 +267,10 @@ in
   # ─────────────────────────────────────────────────────────────────────────────
   stylix = {
     enable = true;
-    image  = ./dwl/wallpaper.png;
+    image = ./dwl/wallpaper.png;
 
-    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+    base16Scheme =
+      "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
     fonts = {
       serif.package = pkgs.open-sans;
@@ -281,7 +284,7 @@ in
 
       emoji.package = pkgs.noto-fonts-emoji;
       emoji.name = "Noto Color Emoji";
-  };
+    };
 
   };
 
@@ -297,7 +300,7 @@ in
     yubikey-personalization
     yubico-pam
     yubikey-manager
-    gnupg
+    sops
   ];
 
   # ─────────────────────────────────────────────────────────────────────────────
