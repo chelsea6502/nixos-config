@@ -198,89 +198,98 @@ in
   # ─────────────────────────────────────────────────────────────────────────────
   # 10. User Accounts
   # ─────────────────────────────────────────────────────────────────────────────
-  users.mutableUsers = false;
-  users.allowNoPasswordLogin = true;
+  users = {
+    mutableUsers         = false;
+    allowNoPasswordLogin = true;
 
-  # Root user auto-login on TTY
-  services.getty.autologinUser = "chelsea";
-
-  # Regular User
-  users.users.chelsea = {
-    isNormalUser = true;
-    description = "chelsea";
-    extraGroups = [ "networkmanager" "wheel" ];
-    hashedPassword = "!";
-    packages = with pkgs; [
-      qutebrowser
-      wmenu
-      patchedDwl
-      patchedSlstatus
-      st-wl
-      lynis
-      chromium
-    ];
+    users.chelsea = {
+      isNormalUser  = true;
+      description   = "chelsea";
+      extraGroups   = [ "networkmanager" "wheel" ];
+      hashedPassword = "!";
+      packages      = with pkgs; [
+        qutebrowser
+        wmenu
+        patchedDwl
+        patchedSlstatus
+        st-wl
+        lynis
+        chromium
+      ];
+    };
   };
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 11. Home Manager Configuration
   # ─────────────────────────────────────────────────────────────────────────────
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-  home-manager.backupFileExtension = "backup";
+  home-manager = {
+    useGlobalPkgs       = true;
+    useUserPackages      = true;
+    backupFileExtension  = "backup";
 
-  home-manager.users.chelsea = {
-    home.username = "chelsea";
-    home.homeDirectory = "/home/chelsea";
-    home.stateVersion = "24.05";
-    programs.home-manager.enable = true;
-    programs.qutebrowser.enable = true;
-    programs.foot.enable = true;
-    programs.btop.enable = true;
-    programs.ranger.enable = true;
-    programs.feh.enable = true;
+    users.chelsea = {
+      home.username      = "chelsea";
+      home.homeDirectory = "/home/chelsea";
+      home.stateVersion  = "24.05";
 
-    programs.git = {
-      enable = true;
-      userName = "Chelsea Wilkinson";
-      userEmail = "mail@chelseawilkinson.me";
+      programs.home-manager.enable = true;
+      programs.btop.enable        = true;
+      programs.ranger.enable      = true;
+      programs.feh.enable         = true;
+
+      programs.git = {
+        enable    = true;
+        userName  = "Chelsea Wilkinson";
+        userEmail = "mail@chelseawilkinson.me";
+      };
+
+    programs.qutebrowser = {
+      enable   = true;
+      settings = {
+        tabs.show                    = "multiple";
+        statusbar.show               = "in-mode";
+        content.javascript.clipboard = "access-paste";
+      };
     };
 
-    programs.qutebrowser.settings = {
-      tabs.show = "multiple";
-      statusbar.show = "in-mode";
-      content.javascript.clipboard = "access-paste";
+    programs.foot = {
+      enable   = true;
+      settings = {
+        # Example foot config
+        main.pad = "24x24 center";
+      };
     };
 
-    programs.foot.settings = { main.pad = "24x24 center"; };
-
-    stylix.autoEnable = true;
+      stylix.autoEnable = true;
+    };
   };
 
-  # External Home Manager config for Neovim, etc.
-  programs.nixvim = ./nixvim.nix;
+  # ─────────────────────────────────────────────────────────────────────────────
+  # 12. Stylix (Themes, Fonts, Wallpaper)
+  # ─────────────────────────────────────────────────────────────────────────────
+  stylix = {
+    enable = true;
+    image  = ./dwl/wallpaper.png;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 12. Stylix (Theming, Fonts, Wallpapers)
-  # ─────────────────────────────────────────────────────────────────────────────
-  stylix.enable = true;
-  stylix.image = ./dwl/wallpaper.png;
-  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
-  stylix.fonts = {
-    serif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
-    };
-    sansSerif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
-    };
-    monospace = {
-      package = pkgs.fira-code-nerdfont;
-      name = "Fira Code Nerdfont";
-    };
-    emoji = {
-      package = pkgs.noto-fonts-emoji;
-      name = "Noto Color Emoji";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+
+    fonts = {
+      serif = {
+        package = pkgs.open-sans;
+        name    = "Open Sans";
+      };
+      sansSerif = {
+        package = pkgs.open-sans;
+        name    = "Open Sans";
+      };
+      monospace = {
+        package = pkgs.fira-code-nerdfont;
+        name    = "Fira Code Nerdfont";
+      };
+      emoji = {
+        package = pkgs.noto-fonts-emoji;
+        name    = "Noto Color Emoji";
+      };
     };
   };
 
