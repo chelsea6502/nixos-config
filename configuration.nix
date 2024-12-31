@@ -156,16 +156,12 @@ in
 
   programs.bash.shellAliases = {
     edit = "sudo -E -s nvim";
-    find = "sudo -E -s ranger";
     Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
-    EC = "sudo -E -s nvim /etc/nixos/configuration.nix && switch";
-    ECC = "sudo -E -s nvim /etc/nixos/configuration.nix && nix-full";
     Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
     En = "sudo -E -s nvim /etc/nixos/nixvim.nix";
     Ew = "sudo -E -s nvim /etc/nixos/dwl/config.h";
-    EW = "sudo -E -s nvim /etc/nixos/dwl/config.h && switch";
-    saveconf = "sudo cp -R /etc/nixos/*.nix ~/nixos-config/";
-    loadconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
+    saveconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
+    loadconf = "sudo cp -R ~/nixos-config/* /etc/nixos/";
     switch = "sudo nixos-rebuild switch";
     nix-update = "cd /etc/nixos && sudo nix flake update";
     nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
