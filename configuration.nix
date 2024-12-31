@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, config, ... }:
 let
   patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: rec {
     buildInputs = oldAttrs.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
@@ -63,6 +63,7 @@ in {
         "nixos-config"
         ".local/share/qutebrowser"
         ".config/Yubico"
+        ".config/sops"
         {
           directory = ".gnupg";
           mode = "0700";
@@ -148,7 +149,6 @@ in {
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
-    OPENAI_API_KEY = "";
   };
 
   programs.bash.promptInit = ''
