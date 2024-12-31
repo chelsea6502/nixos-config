@@ -237,12 +237,6 @@ in
       programs.ranger.enable      = true;
       programs.feh.enable         = true;
 
-      programs.git = {
-        enable    = true;
-        userName  = "Chelsea Wilkinson";
-        userEmail = "mail@chelseawilkinson.me";
-      };
-
     programs.qutebrowser = {
       enable   = true;
       settings = {
@@ -260,6 +254,12 @@ in
       };
     };
 
+      programs.git = {
+        enable    = true;
+        userName  = "Chelsea Wilkinson";
+        userEmail = "mail@chelseawilkinson.me";
+      };
+
       stylix.autoEnable = true;
     };
   };
@@ -274,23 +274,19 @@ in
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
     fonts = {
-      serif = {
-        package = pkgs.open-sans;
-        name    = "Open Sans";
-      };
-      sansSerif = {
-        package = pkgs.open-sans;
-        name    = "Open Sans";
-      };
-      monospace = {
-        package = pkgs.fira-code-nerdfont;
-        name    = "Fira Code Nerdfont";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-emoji;
-        name    = "Noto Color Emoji";
-      };
-    };
+      serif.package = pkgs.open-sans;
+      serif.name = "Open Sans";
+
+      sansSerif.package = pkgs.open-sans;
+      sansSerif.name = "Open Sans";
+
+      monospace.package = pkgs.fira-code-nerdfont;
+      monospace.name = "Fira Code Nerdfont";
+
+      emoji.package = pkgs.noto-fonts-emoji;
+      emoji.name = "Noto Color Emoji";
+  };
+
   };
 
   # ─────────────────────────────────────────────────────────────────────────────
