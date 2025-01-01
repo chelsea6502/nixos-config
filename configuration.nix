@@ -67,18 +67,10 @@ in {
         ".local/share/chromium"
         ".config/Yubico"
         ".config/sops"
-        #{
-        #  directory = ".gnupg";
-        #  mode = "0700";
-        #}
         {
           directory = ".ssh";
           mode = "0700";
         }
-        #{
-        #  directory = ".local/share/keyrings";
-        #  mode = "0700";
-        #}
       ];
     };
   };
@@ -154,6 +146,7 @@ in {
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
+    NIXOS_OZONE_WL = 1;
   };
 
   programs.bash.promptInit = ''
