@@ -84,7 +84,7 @@
         settings.nix.maxMemoryMB = 5000;
         settings.nix.flake = {
           autoArchive = true;
-          autoEvalInputs = true;
+          #autoEvalInputs = true;
           nixpkgsInputName = "nixpkgs";
         };
       };

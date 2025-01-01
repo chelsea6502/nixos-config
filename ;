@@ -67,18 +67,19 @@ in {
         ".local/share/chromium"
         ".config/Yubico"
         ".config/sops"
-        #{
-        #  directory = ".gnupg";
-        #  mode = "0700";
-        #}
+        {
+          directory = ".gnupg";
+          mode = "0700";
+        }
         {
           directory = ".ssh";
           mode = "0700";
         }
-        #{
-        #  directory = ".local/share/keyrings";
-        #  mode = "0700";
-        #}
+        {
+          directory = ".local/share/keyrings";
+          mode = "0700";
+        }
+        ".local/share/direnv"
       ];
     };
   };
@@ -187,11 +188,12 @@ in {
   };
   services.greetd = {
     enable = true;
-    settings = {
+    settings = rec {
       default_session = {
         command = "${patchedSlstatus}/bin/slstatus -s | ${patchedDwl}/bin/dwl";
         user = "chelsea";
       };
+      default_session = initial_session;
     };
   };
   programs.ssh.startAgent = true;
@@ -210,6 +212,7 @@ in {
       hashedPassword = "!";
       packages = with pkgs; [
         qutebrowser
+        wmenu
         patchedDwl
         patchedSlstatus
         st-wl
@@ -219,12 +222,6 @@ in {
     };
   };
   programs.nixvim = nixvim;
-
-  programs.chromium.extensions = [
-    "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
-    "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-    "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
-  ];
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 11. Home Manager Configuration
@@ -305,12 +302,11 @@ in {
     pulseaudio
     swayidle
     wlr-randr
+    swaybg
     yubikey-personalization
     yubico-pam
     yubikey-manager
     sops
-    wmenu
-    swaybg
   ];
 
   # ─────────────────────────────────────────────────────────────────────────────
