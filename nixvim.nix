@@ -65,6 +65,7 @@
         formatting.nixfmt.enable = true;
         formatting.stylua.enable = true;
         formatting.clang_format.enable = true;
+        formatting.prettier.enable = true;
       };
     };
     cmp = {
@@ -89,6 +90,7 @@
         };
       };
       lua_ls.enable = true;
+      eslint.enable = true;
     };
     luasnip.enable = true;
     telescope.enable = true;
