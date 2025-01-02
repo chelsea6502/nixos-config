@@ -40,5 +40,9 @@
         inputs.sops-nix.nixosModules.sops
       ];
     };
+    devShell = nixpkgs.lib.mkDevShell {
+      packages = with nixpkgs; [ nodejs typescript ];
+    };
+
   };
 }

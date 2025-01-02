@@ -167,6 +167,7 @@ in {
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
     git-auth = "ssh-add -K";
+    shell-init-web = "sudo cp -r /etc/nixos/devShells/web/* ./ && direnv allow";
   };
 
   # ─────────────────────────────────────────────────────────────────────────────
@@ -188,6 +189,7 @@ in {
     };
   };
   programs.ssh.startAgent = true;
+  programs.direnv.enable = true;
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 10. User Accounts
