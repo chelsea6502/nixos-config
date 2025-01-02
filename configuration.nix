@@ -38,7 +38,7 @@ in {
   #boot.loader.grub.enable = true;
   #boot.loader.grub.device = "/dev/nvme0n1";
 
-  boot.kernelPackages = pkgs.linuxPackages_latest;
+  #boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@60" ];
   hardware.display.outputs.HDMI-A-3.mode = "3840x2160@60";
 
