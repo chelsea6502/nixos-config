@@ -125,7 +125,7 @@ in {
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
-  nix.settings.max-jobs = 8;
+  nix.settings.max-jobs = 32;
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 7. Overlays
