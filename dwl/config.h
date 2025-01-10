@@ -36,7 +36,7 @@ static char *tags[] = {"1", "2", "3", "4", "5"};
 /* logging */
 static int log_level = WLR_ERROR;
 
-#define MONITOR "Virtual-1"
+#define MONITOR "HDMI-A-7"
 
 /* Autostart */
 static const char *const autostart[] = {
