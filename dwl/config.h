@@ -36,7 +36,7 @@ static char *tags[] = {"1", "2", "3", "4", "5"};
 /* logging */
 static int log_level = WLR_ERROR;
 
-#define MONITOR "HDMI-A-7"
+#define MONITOR "DP-3"
 
 /* Autostart */
 static const char *const autostart[] = {
@@ -45,8 +45,8 @@ static const char *const autostart[] = {
     "wlr-randr",
     "--output",
     MONITOR,
-    "--custom-mode",
-    "2560x1600@60",
+    "--mode",
+    "3840x2160@240",
     "--scale",
     "2",
     NULL,
