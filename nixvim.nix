@@ -1,201 +1,188 @@
-{ pkgs, self, ... }: {
-  environment.systemPackages = with pkgs; [
-    nerd-fonts.fira-code
-    noto-fonts-emoji
-    nodejs
-    git
-    typescript
-    typescript-language-server
+{ pkgs, ... }: {
+  enable = true;
+  keymaps = [
+    {
+      action = "1<C-u>";
+      key = "<ScrollWheelUp>";
+    }
+    {
+      action = "1<C-d>";
+      key = "<ScrollWheelDown>";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.hover()<CR>";
+      key = "<leader>a";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.type_definition()<CR>";
+      key = "<leader>s";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.diagnostic.open_float()<CR>";
+      key = "<leader>d";
+    }
+    {
+      mode = "n";
+      action = "<cmd>lua vim.lsp.buf.code_action()<CR>";
+      key = "<leader>f";
+    }
+    {
+      mode = "n";
+      action = "<cmd>Telescope project<CR>";
+      key = "FF";
+    }
+    {
+      mode = "n";
+      action = "<cmd>Telescope current_buffer_fuzzy_find theme=dropdown<CR>";
+      key = "/";
+    }
+
   ];
 
-  security.pam.services.sudo_local.touchIdAuth = true;
-  nix.settings.experimental-features = "nix-command flakes";
-
-  system.stateVersion = 5;
-
-  nixpkgs.hostPlatform = "aarch64-darwin";
-
-  stylix.enable = true;
-  stylix.autoEnable = true;
-  stylix.image = "/Users/chelsea/Downloads/test.jpg";
-
-  stylix.base16Scheme =
-    "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
-
-  stylix.fonts = {
-    serif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
+  #colorscheme = "gruvbox-material";
+  clipboard.providers.wl-copy.enable = true;
+  plugins = {
+    lsp-format.enable = true;
+    nvim-autopairs.enable = true;
+    indent-blankline = {
+      enable = true;
+      settings.indent.char = "▏";
     };
-    sansSerif = {
-      package = pkgs.open-sans;
-      name = "Open Sans";
-    };
-    monospace = {
-      package = pkgs.nerd-fonts.fira-code;
-      name = "FiraCode Nerd Font Mono";
-    };
-    emoji = {
-      package = pkgs.noto-fonts-emoji;
-      name = "Noto Color Emoji";
-    };
-    sizes.terminal = 14;
-  };
-
-  users.users.chelsea = {
-    name = "chelsea";
-    home = "/Users/chelsea";
-  };
-
-  home-manager.users.chelsea = {
-    stylix.enable = true;
-    stylix.autoEnable = true;
-    programs.home-manager.enable = true;
-    home.stateVersion = "24.11";
-
-    # Alacritty
-    programs.alacritty.enable = true;
-    programs.alacritty.settings = {
-      cursor.style.shape = "Beam";
-      cursor.style.blinking = "On";
-      window = {
-        startup_mode = "Fullscreen";
-        decorations = "buttonless";
-        padding.x = 14;
-        padding.y = 14;
+    typescript-tools.enable = true;
+    gitsigns.enable = true;
+    gitsigns.settings = {
+      signs = {
+        add.text = "▎";
+        change.text = "▎";
+        delete.text = "";
+        topdelete.text = "";
+        changedelete.text = "▎";
+        untracked.text = "▎";
       };
     };
-
-    # zsh
-    programs.zsh.enable = true;
-    programs.zsh.initContent = ''
-      eval "$(/opt/homebrew/bin/brew shellenv)"
-      export PROMPT="%F{green}%F{blue}%~%f $ "
-    '';
-    programs.zsh.syntaxHighlighting.enable = true;
-    programs.zsh.shellAliases = {
-      edit = "nvim";
-      Ec = "nvim ~/.config/nix-darwin/configuration.nix";
-      EC = "Ec && switch";
-      ECC = "Ec && nix-full";
-      Ef = "nvim ~/.config/nix-darwin/flake.nix";
-      En = "nvim ~/.config/nix-darwin/nixvim.nix";
-      switch = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin/";
-      nix-update = "cd ~/.config/nix-darwin/ && nix flake update";
-      nix-clean = "nix-collect-garbage -d && nix-store --optimise";
-      nix-verify = "nix-store --verify --check-contents";
-      nix-full = "nix-update && switch && nix-clean && nix-verify";
+    none-ls = {
+      enable = true;
+      enableLspFormat = true;
+      sources = {
+        completion.luasnip.enable = true;
+        formatting.nixfmt.enable = true;
+        formatting.stylua.enable = true;
+        formatting.clang_format.enable = true;
+      };
     };
+    cmp = {
+      enable = true;
+      autoEnableSources = true;
+      settings.sources =
+        [ { name = "nvim_lsp"; } { name = "path"; } { name = "buffer"; } ];
+    };
+    treesitter.enable = true;
+    treesitter.settings.auto_install = true;
+    treesitter.settings.highlight.enable = true;
+    lsp.enable = true;
+    lsp.servers = {
+      nil_ls = {
+        enable = true;
+
+        settings.nix.maxMemoryMB = 20000;
+        settings.nix.flake = {
+          autoArchive = true;
+          autoEvalInputs = true;
+        };
+      };
+      lua_ls.enable = true;
+    };
+    luasnip.enable = true;
+    telescope.enable = true;
+    telescope.extensions.project.enable = true;
+    noice.enable = true;
+    web-devicons.enable = true;
   };
 
-  nix.optimise.automatic = true;
-  nix.gc.automatic = true;
-  nix.gc.options = "--delete-older-than 7d";
-
-  nix.settings.max-jobs = 8;
-
-  home-manager.useGlobalPkgs = true;
-  home-manager.useUserPackages = true;
-
-  programs.nixvim = ./nixvim.nix;
-
-  homebrew = {
-    enable = true;
-
-    onActivation = {
-      autoUpdate = true;
-      cleanup = "uninstall";
-      upgrade = true;
-    };
-    casks = [
-      "google-chrome"
-      "discord"
-      "alacritty"
-      "utm"
-      "telegram"
-      "messenger"
-      "github"
-      "eqmac"
-      "spotify"
-      "microsoft-office"
-      "steam"
-      "battle-net"
-      "signal"
-      "moonlight"
-    ];
+  # Declare global options (vim.opt.*)
+  opts = {
+    background = "dark";
+    tabstop = 2;
+    shiftwidth = 2;
+    softtabstop = 2;
+    number = true;
+    colorcolumn = "80";
+    cursorline = true;
+    termguicolors = true;
+    virtualedit = "onemore";
+    textwidth = 80;
+    relativenumber = true;
+    clipboard = "unnamedplus";
+    fillchars = { vert = "\\"; };
+    updatetime = 50;
+    ruler = false;
+    showcmd = false;
+    laststatus = 0;
+    cmdheight = 0;
+    incsearch = true;
+    ignorecase = true;
+    smartcase = true;
+    scrolloff = 10;
+    autoread = true;
+    undofile = true;
+    undodir = "/tmp/.vim-undo-dir";
+    backupdir = ".nvim-history";
   };
 
-  # no bong
-  system.startup.chime = false;
+  extraPlugins = with pkgs; [
+    vimPlugins.no-neck-pain-nvim
+    vimPlugins.gruvbox-material
+  ];
 
-  system.defaults = {
-    # show hidden files 
-    NSGlobalDomain.AppleShowAllFiles = true;
+  extraConfigLua = ''
+    vim.cmd("colorscheme gruvbox-material")
+    require("no-neck-pain").setup({
+    	autocmds = { enableOnVimEnter = true, skipEnteringNoNeckPainBuffer = true },
+    	options = { width = 100, minSideBufferWidth = 100 },
+    	buffers = { right = { enabled = false }, wo = { fillchars = "vert: ,eob: " } },
+    })
 
-    # trackpad sensitivity
-    NSGlobalDomain."com.apple.trackpad.scaling" = 2.0;
+    local luasnip = require("luasnip")
+    local cmp = require("cmp")
 
-    # firm trackpad click
-    trackpad.FirstClickThreshold = 2;
+    cmp.setup({
+    	mapping = {
+    		["<CR>"] = cmp.mapping(function(fallback)
+    			if cmp.visible() then
+    				if luasnip.expandable() then
+    					luasnip.expand()
+    				else
+    					cmp.confirm({ select = true })
+    				end
+    			else
+    				fallback()
+    			end
+    		end),
+    		["<Tab>"] = cmp.mapping(function(fallback)
+    			if cmp.visible() then
+    				cmp.select_next_item()
+    			elseif luasnip.locally_jumpable(1) then
+    				luasnip.jump(1)
+    			else
+    				fallback()
+    			end
+    		end, { "i", "s" }),
+    		["<S-Tab>"] = cmp.mapping(function(fallback)
+    			if cmp.visible() then
+    				cmp.select_prev_item()
+    			elseif luasnip.locally_jumpable(-1) then
+    				luasnip.jump(-1)
+    			else
+    				fallback()
+    			end
+    		end, { "i", "s" }),
+    	},
+    })
+  '';
 
-    # auto hide dock
-    dock.autohide = true;
-
-    # hide files on desktop
-    WindowManager.StandardHideDesktopIcons = true;
-
-    # control 
-    controlcenter = {
-      AirDrop = false;
-      Bluetooth = false;
-      BatteryShowPercentage = true;
-    };
-
-    # auto-install updates
-    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
-
-    finder = {
-      ShowPathbar = true;
-      QuitMenuItem = true;
-      FXPreferredViewStyle = "clmv";
-      FXRemoveOldTrashItems = true;
-    };
-
-    dock.show-recents = false;
-    dock.persistent-apps = [
-      "/Applications/Spotify.app"
-      "/Applications/Safari.app"
-      "/System/Applications/Notes.app"
-      "/Applications/Google Chrome.app"
-      "/Applications/UTM.app"
-      "/Applications/Discord.app"
-      "/Applications/Messenger.app"
-      "/Applications/GitHub Desktop.app"
-      "/Applications/Alacritty.app"
-      "/Applications/Telegram.app"
-      "/System/Applications/Messages.app"
-      "/System/Applications/Mail.app"
-    ];
-
-  };
-
-  services.aerospace.enable = true;
-  services.aerospace.settings = {
-    gaps = {
-      inner.horizontal = 8;
-      outer.left = 8;
-      outer.bottom = 8;
-      outer.top = 8;
-      outer.right = 8;
-
-    };
-  };
-
-  system.primaryUser = "chelsea";
-
-  services.jankyborders.enable = true;
-  services.jankyborders.active_color = "0xFFFFFFFF";
-  services.jankyborders.inactive_color = "0x88FFFFFF";
-  services.jankyborders.width = 2.0;
-
+  # Declare global variables (vim.g.*)
+  globals = { mapleader = " "; };
 }
