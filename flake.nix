@@ -22,12 +22,12 @@
 
   outputs = { nixpkgs, ... }@inputs: {
     nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "aarch64-linux";
+      system = "x86_64-linux";
 
       specialArgs = { inherit inputs; };
       modules = [
         inputs.disko.nixosModules.default
-        (import ./disko.nix { device = "/dev/vda"; })
+        (import ./disko.nix { device = "/dev/nvme1"; })
 
         ./configuration.nix
         #./security.nix
