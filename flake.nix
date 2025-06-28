@@ -5,12 +5,12 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     impermanence.url = "github:nix-community/impermanence";
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    home-manager.url = "github:nix-community/home-manager/release-24.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    stylix.url = "github:danth/stylix/release-24.11";
+    stylix.url = "github:danth/stylix/release-25.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
-    nixvim.url = "github:nix-community/nixvim/nixos-24.11";
+    nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nix-mineral = {
       url = "github:cynicsketch/nix-mineral";
@@ -27,7 +27,7 @@
       specialArgs = { inherit inputs; };
       modules = [
         inputs.disko.nixosModules.default
-        (import ./disko.nix { device = "/dev/nvme1n1"; })
+        (import ./disko.nix { device = "/dev/nvme1"; })
 
         ./configuration.nix
         #./security.nix

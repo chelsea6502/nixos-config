@@ -39,8 +39,8 @@ in {
   #boot.loader.grub.device = "/dev/nvme0n1";
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "video=3840x2160@60" ];
-  hardware.display.outputs.HDMI-A-7.mode = "3840x2160@60";
+  boot.kernelParams = [ "video=3840x2160@240" ];
+  hardware.display.outputs.DP-3.mode = "3840x2160@240";
 
   # Wait-online optimizations
   boot.initrd.systemd.network.wait-online.enable = false;
