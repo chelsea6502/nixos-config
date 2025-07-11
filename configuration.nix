@@ -1,21 +1,31 @@
-{ pkgs, lib, config, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}:
 let
   patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: rec {
-    buildInputs = oldAttrs.buildInputs ++ [ pkgs.fcft pkgs.pixman pkgs.libdrm ];
+    buildInputs = oldAttrs.buildInputs ++ [
+      pkgs.fcft
+      pkgs.pixman
+      pkgs.libdrm
+    ];
     src = pkgs.fetchurl {
-      url =
-        "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
+      url = "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
       sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg=";
     };
     preConfigure = "cp ${./dwl/config.h} config.h ";
   });
 
-  patchedSlstatus = pkgs.slstatus.overrideAttrs
-    (old: rec { preConfigure = "cp ${./dwl/slstatus/config.h} config.h"; });
+  patchedSlstatus = pkgs.slstatus.overrideAttrs (old: rec {
+    preConfigure = "cp ${./dwl/slstatus/config.h} config.h";
+  });
 
   nixvim = import ./nixvim.nix { inherit config pkgs; };
 
-in {
+in
+{
   # ─────────────────────────────────────────────────────────────────────────────
   # 1. Imports
   # ─────────────────────────────────────────────────────────────────────────────
@@ -121,7 +131,10 @@ in {
   # ─────────────────────────────────────────────────────────────────────────────
   # 6. Nix Settings
   # ─────────────────────────────────────────────────────────────────────────────
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
@@ -130,15 +143,6 @@ in {
   # ─────────────────────────────────────────────────────────────────────────────
   # 7. Overlays
   # ─────────────────────────────────────────────────────────────────────────────
-  nixpkgs.overlays = [
-    (final: prev: {
-      wld = final.callPackage ./st-wl/wld/default.nix { };
-      st-wl = final.callPackage ./st-wl/default.nix {
-        wld = final.wld;
-        conf = builtins.readFile ./st-wl/config.h;
-      };
-    })
-  ];
 
   # ─────────────────────────────────────────────────────────────────────────────
   # 8. Environment Variables & Shell Settings
@@ -201,13 +205,15 @@ in {
     users.chelsea = {
       isNormalUser = true;
       description = "chelsea";
-      extraGroups = [ "networkmanager" "wheel" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+      ];
       hashedPassword = "!";
       packages = with pkgs; [
         qutebrowser
         patchedDwl
         patchedSlstatus
-        st-wl
         lynis
         chromium
       ];
@@ -273,8 +279,7 @@ in {
     enable = true;
     image = ./dwl/wallpaper.png;
 
-    base16Scheme =
-      "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+    base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
     fonts = {
       serif.package = pkgs.open-sans;

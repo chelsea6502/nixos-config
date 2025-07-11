@@ -12,37 +12,35 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
-    nix-mineral = {
-      url = "github:cynicsketch/nix-mineral";
-      flake = false;
-    };
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs = { nixpkgs, ... }@inputs: {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
+  outputs =
+    { nixpkgs, ... }@inputs:
+    {
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
 
-      specialArgs = { inherit inputs; };
-      modules = [
-        inputs.disko.nixosModules.default
-        (import ./disko.nix { device = "/dev/nvme1"; })
+        specialArgs = { inherit inputs; };
+        modules = [
+          inputs.disko.nixosModules.default
+          (import ./disko.nix { device = "/dev/nvme1"; })
 
-        ./configuration.nix
-        #./security.nix
-        #"${nixpkgs}/nixos/modules/profiles/hardened.nix"
-        #"${inputs.nix-mineral}/nix-mineral.nix"
-        inputs.home-manager.nixosModules.home-manager
-        inputs.stylix.nixosModules.stylix
-        inputs.nixvim.nixosModules.nixvim
-        inputs.impermanence.nixosModules.impermanence
-        inputs.sops-nix.nixosModules.sops
-      ];
+          ./configuration.nix
+          inputs.home-manager.nixosModules.home-manager
+          inputs.stylix.nixosModules.stylix
+          inputs.nixvim.nixosModules.nixvim
+          inputs.impermanence.nixosModules.impermanence
+          inputs.sops-nix.nixosModules.sops
+        ];
+      };
+      devShell = nixpkgs.lib.mkDevShell {
+        packages = with nixpkgs; [
+          nodejs
+          typescript
+        ];
+      };
+
     };
-    devShell = nixpkgs.lib.mkDevShell {
-      packages = with nixpkgs; [ nodejs typescript ];
-    };
-
-  };
 }
