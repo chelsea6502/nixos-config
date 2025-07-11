@@ -25,7 +25,7 @@
         specialArgs = { inherit inputs; };
         modules = [
           inputs.disko.nixosModules.default
-          (import ./disko.nix { device = "/dev/nvme1"; })
+          (import ./disko.nix { device = "/dev/sda"; })
 
           ./configuration.nix
           inputs.home-manager.nixosModules.home-manager
