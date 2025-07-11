@@ -254,14 +254,6 @@ in
         };
       };
 
-      programs.foot = {
-        enable = true;
-        settings = {
-          # Example foot config
-          main.pad = "24x24 center";
-        };
-      };
-
       programs.git = {
         enable = true;
         userName = "Chelsea Wilkinson";
