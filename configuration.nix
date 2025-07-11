@@ -34,7 +34,7 @@ in
   # ─────────────────────────────────────────────────────────────────────────────
   # 2. Basic System Settings
   # ─────────────────────────────────────────────────────────────────────────────
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
   networking.hostName = "nixos";
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
