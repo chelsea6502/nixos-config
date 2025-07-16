@@ -36,7 +36,7 @@ static char *tags[] = {"1", "2", "3", "4", "5"};
 /* logging */
 static int log_level = WLR_ERROR;
 
-#define MONITOR "DP-3"
+#define MONITOR "Virtual-1"
 
 /* Autostart */
 static const char *const autostart[] = {
@@ -45,8 +45,8 @@ static const char *const autostart[] = {
     "wlr-randr",
     "--output",
     MONITOR,
-    "--mode",
-    "3840x2160@240",
+    "--custom-mode",
+    "3840x2160",
     "--scale",
     "2",
     NULL,
@@ -56,9 +56,7 @@ static const char *const autostart[] = {
     "-i",
     "/etc/nixos/dwl/wallpaper.png",
     NULL,
-    "foot",
-    NULL,
-    "qutebrowser",
+    "prlcp &",
     NULL,
     NULL /* terminate */
 };
@@ -114,7 +112,7 @@ static const int repeat_delay = 600;
 static const int tap_to_click = 1;
 static const int tap_and_drag = 1;
 static const int drag_lock = 1;
-static const int natural_scrolling = 1;
+static const int natural_scrolling = 0;
 static const int disable_while_typing = 1;
 static const int left_handed = 0;
 static const int middle_button_emulation = 0;
@@ -178,7 +176,7 @@ static const int cursor_timeout = 3;
   }
 
 /* commands */
-static const char *termcmd[] = {"foot", NULL};
+static const char *termcmd[] = {"alacritty", NULL};
 static const char *browsercmd[] = {"qutebrowser", NULL};
 static const char *menucmd[] = {"wmenu-run", "-n", "#d4be98", "-N",
                                 "#282828",   "-s", "#3b3349", "-S",
@@ -192,7 +190,7 @@ static const char *voldowncmd[] = {"pactl", "set-sink-volume", "0", "-5%",
 static const Key keys[] = {
     /* Note that Shift changes certain key codes: c -> C, 2 -> at, etc. */
     /* modifier                  key                 function        argument */
-    {MODKEY, XKB_KEY_p, spawn, {.v = menucmd}},
+    {MODKEY, XKB_KEY_Return, spawn, {.v = menucmd}},
     {MODKEY, XKB_KEY_w, spawn, {.v = browsercmd}},
     {MODKEY | WLR_MODIFIER_SHIFT, XKB_KEY_Return, spawn, {.v = termcmd}},
     {MODKEY, XKB_KEY_b, togglebar, {0}},
