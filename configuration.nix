@@ -2,6 +2,7 @@
   pkgs,
   config,
   lib,
+  nix-modules,
   ...
 }:
 let
@@ -22,7 +23,7 @@ let
     preConfigure = "cp ${./dwl/slstatus/config.h} config.h";
   });
 
-  nixvim = import ./nixvim.nix { inherit config pkgs; };
+  nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
 in
 {
@@ -136,14 +137,13 @@ in
       ];
       initialPassword = "blah";
       packages = with pkgs; [
-        qutebrowser
         patchedDwl
         patchedSlstatus
-        lynis
         chromium
         clang
         lazygit
         typescript
+        zellij
       ];
     };
   };
@@ -180,15 +180,6 @@ in
       programs.ranger.enable = true;
       programs.feh.enable = true;
 
-      programs.qutebrowser = {
-        enable = true;
-        settings = {
-          tabs.show = "multiple";
-          statusbar.show = "in-mode";
-          content.javascript.clipboard = "access-paste";
-        };
-      };
-
       programs.git = {
         enable = true;
         userName = "Chelsea Wilkinson";
@@ -210,6 +201,9 @@ in
 
       stylix.autoEnable = true;
 
+      xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
+        inherit pkgs;
+      };
     };
   };
 
