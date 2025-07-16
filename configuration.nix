@@ -1,6 +1,5 @@
 {
   pkgs,
-  config,
   lib,
   nix-modules,
   ...
@@ -98,6 +97,7 @@ in
     git-auth = "ssh-add -K";
     desk = "wlr-randr --output Virtual-1 --custom-mode 3840x2160 --scale 2";
     lap = "wlr-randr --output Virtual-1 --mode 2560x1600 --scale 2";
+    z = "zellij";
   };
 
   # ─────────────────────────────────────────────────────────────────────────────
@@ -144,6 +144,7 @@ in
         lazygit
         typescript
         zellij
+        qutebrowser
       ];
     };
   };
@@ -153,6 +154,7 @@ in
     "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
     "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
     "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
+    "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
   ];
 
   # ─────────────────────────────────────────────────────────────────────────────
@@ -176,8 +178,6 @@ in
       };
 
       programs.home-manager.enable = true;
-      programs.btop.enable = true;
-      programs.ranger.enable = true;
       programs.feh.enable = true;
 
       programs.git = {
@@ -197,6 +197,15 @@ in
         window.option_as_alt = "Both";
 
         font.size = lib.mkForce 11;
+      };
+
+      programs.qutebrowser = {
+        enable = true;
+        settings = {
+          tabs.show = "multiple";
+          statusbar.show = "in-mode";
+          content.javascript.clipboard = "access-paste";
+        };
       };
 
       stylix.autoEnable = true;
