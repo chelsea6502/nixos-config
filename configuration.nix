@@ -26,27 +26,16 @@ let
 
 in
 {
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 1. Imports
-  # ─────────────────────────────────────────────────────────────────────────────
   imports = [ ./hardware-configuration.nix ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 2. Basic System Settings
-  # ─────────────────────────────────────────────────────────────────────────────
-  system.stateVersion = "24.11";
+  system.stateVersion = "25.05";
   networking.hostName = "nixos";
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   networking.firewall.enable = true;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 3. Boot Configuration
-  # ─────────────────────────────────────────────────────────────────────────────
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  #boot.loader.grub.enable = true;
-  #boot.loader.grub.device = "/dev/nvme0n1";
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@240" ];
@@ -56,81 +45,8 @@ in
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 4. File Systems & Btrfs Logic
-  # ─────────────────────────────────────────────────────────────────────────────
-  fileSystems."/persist".neededForBoot = true;
-
-  environment.persistence."/persist/system" = {
-    enable = true; # NB: Defaults to true, not needed
-    hideMounts = true;
-    directories = [
-      "/etc/nixos"
-      "/var/lib/nixos"
-      "/etc/NetworkManager/system-connections"
-    ];
-    files = [ "/etc/machine-id" ];
-    users.chelsea = {
-      directories = [
-        "nixos-config"
-        ".local/share/qutebrowser"
-        ".local/share/chromium"
-        ".config/Yubico"
-        ".config/sops"
-        {
-          directory = ".ssh";
-          mode = "0700";
-        }
-      ];
-    };
-  };
-
-  boot.initrd.postDeviceCommands = lib.mkAfter ''
-    mkdir /btrfs_tmp
-    mount /dev/root_vg/root /btrfs_tmp
-    if [[ -e /btrfs_tmp/root ]]; then
-        mkdir -p /btrfs_tmp/old_roots
-        timestamp=$(date --date="@$(stat -c %Y /btrfs_tmp/root)" "+%Y-%m-%-d_%H:%M:%S")
-        mv /btrfs_tmp/root "/btrfs_tmp/old_roots/$timestamp"
-    fi
-
-    delete_subvolume_recursively() {
-        IFS=$'\n'
-        for i in $(btrfs subvolume list -o "$1" | cut -f 9- -d ' '); do
-            delete_subvolume_recursively "/btrfs_tmp/$i"
-        done
-        btrfs subvolume delete "$1"
-    }
-
-    for i in $(find /btrfs_tmp/old_roots/ -maxdepth 1 -mtime +30); do
-        delete_subvolume_recursively "$i"
-    done
-
-    btrfs subvolume create /btrfs_tmp/root
-    umount /btrfs_tmp
-  '';
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 5. Security & Authentication
-  # ─────────────────────────────────────────────────────────────────────────────
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-  };
-  services.udev.packages = [ pkgs.yubikey-personalization ];
-
   security.polkit.enable = true;
 
-  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-  sops.defaultSopsFile = ./keys/secrets.yaml;
-  sops.secrets.openai = {
-    mode = "0440";
-    owner = config.users.users.chelsea.name;
-  };
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 6. Nix Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -140,13 +56,6 @@ in
   nix.gc.options = "--delete-older-than 7d";
   nix.settings.max-jobs = 32;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 7. Overlays
-  # ─────────────────────────────────────────────────────────────────────────────
-
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 8. Environment Variables & Shell Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
@@ -174,9 +83,6 @@ in
     shell-init-web = "sudo cp -r /etc/nixos/devShells/web/* ./ && direnv allow";
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 9. Services
-  # ─────────────────────────────────────────────────────────────────────────────
   services.openssh.enable = false;
   services.pipewire = {
     enable = true;
@@ -195,9 +101,6 @@ in
   programs.ssh.startAgent = true;
   programs.direnv.enable = true;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 10. User Accounts
-  # ─────────────────────────────────────────────────────────────────────────────
   users = {
     mutableUsers = false;
     allowNoPasswordLogin = true;
@@ -209,7 +112,7 @@ in
         "networkmanager"
         "wheel"
       ];
-      hashedPassword = "!";
+      initialPassword = "blah";
       packages = with pkgs; [
         qutebrowser
         patchedDwl
@@ -227,9 +130,6 @@ in
     "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
   ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 11. Home Manager Configuration
-  # ─────────────────────────────────────────────────────────────────────────────
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -238,7 +138,7 @@ in
     users.chelsea = {
       home.username = "chelsea";
       home.homeDirectory = "/home/chelsea";
-      home.stateVersion = "24.11";
+      home.stateVersion = "25.05";
 
       programs.home-manager.enable = true;
       programs.btop.enable = true;
@@ -257,7 +157,6 @@ in
       programs.foot = {
         enable = true;
         settings = {
-          # Example foot config
           main.pad = "24x24 center";
         };
       };
@@ -272,9 +171,6 @@ in
     };
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 12. Stylix (Themes, Fonts, Wallpaper)
-  # ─────────────────────────────────────────────────────────────────────────────
   stylix = {
     enable = true;
     image = ./dwl/wallpaper.png;
@@ -297,9 +193,6 @@ in
 
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 13. Global System Packages
-  # ─────────────────────────────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     git
     pulseaudio
@@ -313,8 +206,5 @@ in
     swaybg
   ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 14. FUSE Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   programs.fuse.userAllowOther = true;
 }
