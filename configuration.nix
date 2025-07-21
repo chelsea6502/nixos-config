@@ -24,7 +24,7 @@ let
   });
 
   # Handle nixvim source based on whether nix-modules is available
-  nixvim =  "${nix-modules}/nixvim.nix" { inherit pkgs; };
+  nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
 in
 {
