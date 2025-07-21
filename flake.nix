@@ -7,7 +7,7 @@
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
     stylix.url = "github:danth/stylix/release-25.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
-    nixvim.url = "github:chelsea6502/nixvim-no-neck-pain-plugin";
+    nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nix-modules.url = "github:chelsea6502/nix-modules";
     nix-modules.flake = false;
