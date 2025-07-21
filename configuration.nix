@@ -183,11 +183,8 @@ in
 
       stylix.autoEnable = true;
 
-      # Zellij config (conditional on nix-modules availability)
-      xdg.configFile = lib.optionalAttrs (nix-modules != null) {
-        "zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
-          inherit pkgs;
-        };
+      xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
+        inherit pkgs;
       };
     };
   };
