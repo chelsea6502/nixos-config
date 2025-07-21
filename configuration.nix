@@ -4,28 +4,6 @@
   nix-modules,
   ...
 }:
-let
-  patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: {
-    buildInputs = oldAttrs.buildInputs ++ [
-      pkgs.fcft
-      pkgs.pixman
-      pkgs.libdrm
-    ];
-    src = pkgs.fetchurl {
-      url = "https://codeberg.org/chelsea6502/dwl/archive/113e917f44b78b4c67eecdc437f4ae62ff24b87d.tar.gz";
-      sha256 = "sha256-y5UC3AVbEFojzTwRx6YmuWyvmRcAMO//Y6QQoZUyqZg=";
-    };
-    preConfigure = "cp ${./dwl/config.h} config.h ";
-  });
-
-  patchedSlstatus = pkgs.slstatus.overrideAttrs (old: {
-    preConfigure = "cp ${./dwl/slstatus/config.h} config.h";
-  });
-
-  # Handle nixvim source based on whether nix-modules is available
-  nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
-
-in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -92,7 +70,7 @@ in
     enable = true;
     settings = {
       default_session = {
-        command = "${patchedSlstatus}/bin/slstatus -s | ${patchedDwl}/bin/dwl";
+        command = "${pkgs.sway}/bin/sway";
         user = "chelsea";
       };
     };
@@ -113,8 +91,6 @@ in
       ];
       initialPassword = "blah";
       packages = with pkgs; [
-        patchedDwl
-        patchedSlstatus
         chromium
         clang
         lazygit
@@ -124,7 +100,7 @@ in
       ];
     };
   };
-  programs.nixvim = nixvim;
+  programs.nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
   programs.chromium.extensions = [
     "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
@@ -138,60 +114,85 @@ in
     useUserPackages = true;
     backupFileExtension = "backup";
 
-    users.chelsea = {
-      home.username = "chelsea";
-      home.homeDirectory = "/home/chelsea";
-      home.stateVersion = "25.05";
+    users.chelsea =
+      { config, ... }:
+      {
+        home.username = "chelsea";
+        home.homeDirectory = "/home/chelsea";
+        home.stateVersion = "25.05";
 
-      home.pointerCursor = {
-        gtk.enable = true;
-        package = pkgs.adwaita-icon-theme;
-        name = "Adwaita";
-        size = 16;
-      };
+        home.pointerCursor = {
+          gtk.enable = true;
+          package = pkgs.adwaita-icon-theme;
+          name = "Adwaita";
+          size = 16;
+        };
 
-      programs.home-manager.enable = true;
-      programs.feh.enable = true;
+        programs.home-manager.enable = true;
+        programs.feh.enable = true;
 
-      programs.git = {
-        enable = true;
-        userName = "Chelsea Wilkinson";
-        userEmail = "mail@chelseawilkinson.me";
-      };
+        wayland.windowManager.sway = {
+          enable = true;
+          config = {
+            modifier = "Mod4";
+            terminal = "alacritty";
+            startup = [
+              { command = "qutebrowser"; }
+            ];
+            gaps = {
+              smartGaps = true;
+              smartBorders = "no_gaps";
+              inner = 10;
+              outer = 10;
+            };
+            floating.criteria = [ { title = "Parallels Shared Clipboard"; } ];
+            window.titlebar = false;
+            bars = [
+              ({ position = "top"; } // config.stylix.targets.sway.exportedBarConfig)
+            ];
 
-      # Alacritty
-      programs.alacritty.enable = true;
-      programs.alacritty.settings = {
-        cursor.style.shape = "Beam";
-        cursor.style.blinking = "On";
-        window.decorations = "buttonless";
-        window.padding.x = 14;
-        window.padding.y = 14;
-        window.option_as_alt = "Both";
+          };
+        };
 
-        font.size = lib.mkForce 11;
-      };
+        programs.git = {
+          enable = true;
+          userName = "Chelsea Wilkinson";
+          userEmail = "mail@chelseawilkinson.me";
+        };
 
-      programs.qutebrowser = {
-        enable = true;
-        settings = {
-          tabs.show = "multiple";
-          statusbar.show = "in-mode";
-          content.javascript.clipboard = "access-paste";
+        # Alacritty
+        programs.alacritty.enable = true;
+        programs.alacritty.settings = {
+          cursor.style.shape = "Beam";
+          cursor.style.blinking = "On";
+          window.decorations = "buttonless";
+          window.padding.x = 14;
+          window.padding.y = 14;
+          window.option_as_alt = "Both";
+
+          font.size = lib.mkForce 11;
+        };
+
+        programs.qutebrowser = {
+          enable = true;
+          settings = {
+            tabs.show = "multiple";
+            statusbar.show = "in-mode";
+            content.javascript.clipboard = "access-paste";
+          };
+        };
+
+        stylix.autoEnable = true;
+
+        xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
+          inherit pkgs;
         };
       };
-
-      stylix.autoEnable = true;
-
-      xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
-        inherit pkgs;
-      };
-    };
   };
 
   stylix = {
     enable = true;
-    image = ./dwl/wallpaper.png;
+    image = ./wallpaper.png;
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
