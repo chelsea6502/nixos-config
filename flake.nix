@@ -26,11 +26,12 @@
       };
       modules = [
         ./configuration.nix
-        ./modules/parallels.nix
+        ./modules/mac.nix
         
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
+        inputs.sops-nix.nixosModules.sops
         {
           nixpkgs.overlays = [
             (final: prev: {
@@ -50,7 +51,7 @@
       };
       modules = [
         ./configuration.nix
-        ./modules/x86-hardware.nix
+        ./modules/pc.nix
         
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
