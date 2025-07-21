@@ -16,43 +16,17 @@
     zjstatus.url = "github:dj95/zjstatus";
   };
 
-  outputs = { nixpkgs, ... }@inputs: {
-    # Default configuration (Parallels/aarch64-linux)
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "aarch64-linux";
-      specialArgs = {
+  outputs = { nixpkgs, ... }@inputs:
+    let
+      # Common specialArgs for all configurations
+      commonSpecialArgs = {
         inherit inputs;
         inherit (inputs) nix-modules;
       };
-      modules = [
-        ./configuration.nix
-        ./modules/mac.nix
-        
-        inputs.home-manager.nixosModules.home-manager
-        inputs.stylix.nixosModules.stylix
-        inputs.nixvim.nixosModules.nixvim
-        inputs.sops-nix.nixosModules.sops
-        {
-          nixpkgs.overlays = [
-            (final: prev: {
-              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-            })
-          ];
-        }
-      ];
-    };
 
-    # x86_64-linux configuration (main PC)
-    nixosConfigurations.nixos-x86 = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = {
-        inherit inputs;
-        inherit (inputs) nix-modules;
-      };
-      modules = [
+      # Common modules shared across configurations
+      commonModules = [
         ./configuration.nix
-        ./modules/pc.nix
-        
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
@@ -65,6 +39,21 @@
           ];
         }
       ];
+
+      # Helper function to create a NixOS system configuration
+      mkSystem = system: platformModule: nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = commonSpecialArgs;
+        modules = commonModules ++ [ platformModule ];
+      };
+    in
+    {
+      nixosConfigurations = {
+        # Default configuration (Parallels/aarch64-linux)
+        nixos = mkSystem "aarch64-linux" ./modules/mac.nix;
+        
+        # x86_64-linux configuration (main PC)
+        nixos-x86 = mkSystem "x86_64-linux" ./modules/pc.nix;
+      };
     };
-  };
 }
