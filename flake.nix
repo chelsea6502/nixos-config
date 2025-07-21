@@ -16,7 +16,8 @@
     zjstatus.url = "github:dj95/zjstatus";
   };
 
-  outputs = { nixpkgs, ... }@inputs:
+  outputs =
+    { nixpkgs, ... }@inputs:
     let
       # Common specialArgs for all configurations
       commonSpecialArgs = {
@@ -41,19 +42,22 @@
       ];
 
       # Helper function to create a NixOS system configuration
-      mkSystem = system: platformModule: nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = commonSpecialArgs;
-        modules = commonModules ++ [ platformModule ];
-      };
+      mkSystem =
+        system: platformModule:
+        nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = commonSpecialArgs;
+          modules = commonModules ++ [ platformModule ];
+        };
     in
     {
       nixosConfigurations = {
         # Default configuration (Parallels/aarch64-linux)
-        nixos = mkSystem "aarch64-linux" ./modules/mac.nix;
-        
+        nixos = mkSystem "aarch64-linux" ./overrides/mac.nix;
+
         # x86_64-linux configuration (main PC)
-        nixos-x86 = mkSystem "x86_64-linux" ./modules/pc.nix;
+        nixos-x86 = mkSystem "x86_64-linux" ./overrides/pc.nix;
       };
     };
 }
+
