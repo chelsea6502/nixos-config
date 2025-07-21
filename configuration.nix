@@ -2,7 +2,7 @@
   pkgs,
   lib,
   config,
-  nix-modules ? null,
+  nix-modules,
   ...
 }:
 let
@@ -24,9 +24,7 @@ let
   });
 
   # Handle nixvim source based on whether nix-modules is available
-  nixvim = if nix-modules != null
-    then import "${nix-modules}/nixvim.nix" { inherit pkgs; }
-    else import ./nixvim.nix { inherit config pkgs; };
+  nixvim =  "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
 in
 {
