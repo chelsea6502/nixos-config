@@ -1,12 +1,11 @@
 {
   pkgs,
   lib,
-  config,
   nix-modules,
   ...
 }:
 let
-  patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: rec {
+  patchedDwl = pkgs.dwl.overrideAttrs (oldAttrs: {
     buildInputs = oldAttrs.buildInputs ++ [
       pkgs.fcft
       pkgs.pixman
@@ -19,7 +18,7 @@ let
     preConfigure = "cp ${./dwl/config.h} config.h ";
   });
 
-  patchedSlstatus = pkgs.slstatus.overrideAttrs (old: rec {
+  patchedSlstatus = pkgs.slstatus.overrideAttrs (old: {
     preConfigure = "cp ${./dwl/slstatus/config.h} config.h";
   });
 
@@ -28,23 +27,14 @@ let
 
 in
 {
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 1. Imports
-  # ─────────────────────────────────────────────────────────────────────────────
   imports = [ ./hardware-configuration.nix ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 2. Basic System Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   system.stateVersion = "25.05";
   networking.hostName = "nixos";
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   networking.firewall.enable = true;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 3. Boot Configuration
-  # ─────────────────────────────────────────────────────────────────────────────
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -56,9 +46,6 @@ in
 
   security.polkit.enable = true;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 6. Nix Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
@@ -68,9 +55,6 @@ in
   nix.gc.options = "--delete-older-than 7d";
   nix.settings.max-jobs = 2;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 8. Environment Variables & Shell Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
     EDITOR = "nvim";
@@ -98,9 +82,6 @@ in
     z = "zellij";
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 9. Services
-  # ─────────────────────────────────────────────────────────────────────────────
   services.openssh.enable = false;
   services.pipewire = {
     enable = true;
@@ -119,9 +100,6 @@ in
   programs.ssh.startAgent = true;
   programs.direnv.enable = true;
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 10. User Accounts
-  # ─────────────────────────────────────────────────────────────────────────────
   users = {
     mutableUsers = false;
     allowNoPasswordLogin = true;
@@ -155,9 +133,6 @@ in
     "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
   ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 11. Home Manager Configuration
-  # ─────────────────────────────────────────────────────────────────────────────
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
@@ -217,9 +192,6 @@ in
     };
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 12. Stylix (Themes, Fonts, Wallpaper)
-  # ─────────────────────────────────────────────────────────────────────────────
   stylix = {
     enable = true;
     image = ./dwl/wallpaper.png;
@@ -242,9 +214,6 @@ in
 
   };
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 13. Global System Packages
-  # ─────────────────────────────────────────────────────────────────────────────
   environment.systemPackages = with pkgs; [
     git
     pulseaudio
@@ -253,8 +222,5 @@ in
     swaybg
   ];
 
-  # ─────────────────────────────────────────────────────────────────────────────
-  # 14. FUSE Settings
-  # ─────────────────────────────────────────────────────────────────────────────
   programs.fuse.userAllowOther = true;
 }
