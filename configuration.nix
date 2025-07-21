@@ -76,6 +76,12 @@
   };
   programs.ssh.startAgent = true;
 
+  environment.systemPackages = with pkgs; [
+    git
+    wlr-randr
+    swaybg
+  ];
+
   users = {
     mutableUsers = false;
     allowNoPasswordLogin = true;
@@ -90,11 +96,10 @@
       initialPassword = "blah";
       packages = with pkgs; [
         chromium
-        clang
         lazygit
-        typescript
         zellij
         qutebrowser
+        typescript
       ];
     };
   };
@@ -187,10 +192,4 @@
     };
 
   };
-
-  environment.systemPackages = with pkgs; [
-    git
-    wlr-randr
-    swaybg
-  ];
 }

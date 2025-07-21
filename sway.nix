@@ -11,7 +11,9 @@
       inner = 10;
       outer = 10;
     };
-    floating.criteria = [ { title = "Parallels Shared Clipboard"; } ];
+    floating.criteria = [
+      { title = "Parallels Shared Clipboard"; }
+    ];
     window.titlebar = false;
     bars = [
       (
