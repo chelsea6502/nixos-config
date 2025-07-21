@@ -48,7 +48,7 @@
     Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
     Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
     En = "sudo -E -s nvim /etc/nixos/nixvim.nix";
-    Ew = "sudo -E -s nvim /etc/nixos/dwl/config.h";
+    Ew = "sudo -E -s nvim /etc/nixos/sway.nix";
     saveconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
     loadconf = "sudo cp -R ~/nixos-config/* /etc/nixos/";
     switch = "sudo nixos-rebuild switch";
@@ -131,28 +131,7 @@
         programs.home-manager.enable = true;
         programs.feh.enable = true;
 
-        wayland.windowManager.sway = {
-          enable = true;
-          config = {
-            modifier = "Mod4";
-            terminal = "alacritty";
-            startup = [
-              { command = "qutebrowser"; }
-            ];
-            gaps = {
-              smartGaps = true;
-              smartBorders = "no_gaps";
-              inner = 10;
-              outer = 10;
-            };
-            floating.criteria = [ { title = "Parallels Shared Clipboard"; } ];
-            window.titlebar = false;
-            bars = [
-              ({ position = "top"; } // config.stylix.targets.sway.exportedBarConfig)
-            ];
-
-          };
-        };
+        wayland.windowManager.sway = import ./sway.nix { inherit config; };
 
         programs.git = {
           enable = true;
