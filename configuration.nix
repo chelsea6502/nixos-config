@@ -31,7 +31,6 @@
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
-  nix.settings.max-jobs = 2;
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
@@ -76,7 +75,6 @@
     };
   };
   programs.ssh.startAgent = true;
-  programs.direnv.enable = true;
 
   users = {
     mutableUsers = false;
@@ -129,7 +127,6 @@
         };
 
         programs.home-manager.enable = true;
-        programs.feh.enable = true;
 
         wayland.windowManager.sway = import ./sway.nix { inherit config; };
 
@@ -193,11 +190,7 @@
 
   environment.systemPackages = with pkgs; [
     git
-    pulseaudio
     wlr-randr
-    wmenu
     swaybg
   ];
-
-  programs.fuse.userAllowOther = true;
 }
