@@ -184,7 +184,7 @@
       sansSerif.package = pkgs.open-sans;
       sansSerif.name = "Open Sans";
 
-      monospace.package = pkgs.fira-code-nerdfont;
+      monospace.package = pkgs.nerd-fonts.fira-code;
       monospace.name = "Fira Code Nerdfont";
 
       emoji.package = pkgs.noto-fonts-emoji;
