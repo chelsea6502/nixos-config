@@ -143,7 +143,9 @@
       programs.alacritty.settings.window.padding.x = 14;
       programs.alacritty.settings.window.padding.y = 14;
       programs.alacritty.settings.window.option_as_alt = "Both";
-      programs.alacritty.settings.font.size = lib.mkForce 11;
+      programs.alacritty.settings.font.size = lib.mkForce 10;
+
+      services.mako.enable = true;
 
       programs.vscode = {
         enable = true;
