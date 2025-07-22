@@ -17,7 +17,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
-
+  
   # PC-specific boot configuration
   boot.kernelParams = [ "video=3840x2160@240" ];
   hardware.display.outputs = {
@@ -29,7 +29,7 @@
   networking.dhcpcd.wait = "background";
 
   security.polkit.enable = true;
-
+  
   # Security features for PC systems
   security.pam.services = {
     login.u2fAuth = true;
@@ -54,7 +54,7 @@
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
-
+  
   # Performance settings
   nix.settings.max-jobs = 32;
 
