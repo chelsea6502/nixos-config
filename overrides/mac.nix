@@ -8,23 +8,7 @@
   # Parallels-specific configuration
   hardware.parallels.enable = true;
 
-  # Override PC performance settings for Mac/Parallels
-  nix.settings.max-jobs = lib.mkForce 2;
-  
-  # Disable PC-specific boot parameters
-  boot.kernelParams = lib.mkForce [];
-  
-  # Remove PC-specific hardware display configuration
-  hardware.display = lib.mkForce {};
-  
-  # Disable PC-specific security features
-  security.pam.services = lib.mkForce {};
-  services.udev.packages = lib.mkForce [];
-  
-  # Disable SOPS configuration for Mac
-  sops.age.keyFile = lib.mkForce null;
-  sops.defaultSopsFile = lib.mkForce null;
-  sops.secrets = lib.mkForce {};
+  nix.settings.max-jobs = 2;
 
   # Parallels-specific shell aliases for display management
   programs.bash.shellAliases = {

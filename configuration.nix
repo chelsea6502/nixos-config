@@ -17,35 +17,12 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  
-  # PC-specific boot configuration
-  boot.kernelParams = [ "video=3840x2160@240" ];
-  hardware.display.outputs = {
-    DP-3.mode = "3840x2160@240";
-  };
 
   # Wait-online optimizations
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
 
   security.polkit.enable = true;
-  
-  # Security features for PC systems
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-  };
-  services.udev.packages = [ pkgs.yubikey-personalization ];
-
-  # SOPS configuration
-  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-  sops.defaultSopsFile = ./keys/secrets.yaml;
-  sops.secrets = {
-    openai = {
-      mode = "0440";
-      owner = "chelsea";
-    };
-  };
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -54,9 +31,6 @@
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
-  
-  # Performance settings
-  nix.settings.max-jobs = 32;
 
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = 1;
@@ -106,10 +80,6 @@
     git
     wlr-randr
     swaybg
-    # PC-specific packages
-    yubikey-personalization
-    yubico-pam
-    yubikey-manager
   ];
 
   users = {
