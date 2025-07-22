@@ -69,6 +69,8 @@
     z = "zellij";
   };
 
+  security.pam.services.swaylock = { };
+
   services.openssh.enable = false;
   services.pipewire.enable = true;
   services.pipewire.alsa.enable = true;
@@ -146,6 +148,29 @@
       programs.alacritty.settings.font.size = lib.mkForce 10;
 
       services.mako.enable = true;
+      programs.swaylock.enable = true;
+      services = {
+        swayidle = {
+          enable = true;
+          package = pkgs.swayidle;
+          timeouts = [
+            {
+              timeout = 180;
+              command = "${pkgs.libnotify}/bin/notify-send 'Locking in 5 seconds' -t 5000";
+            }
+            # {
+            #   timeout = 185;
+            #   command = "${pkgs.systemd}/bin/systemctl suspend";
+            # }
+          ];
+          events = [
+            {
+              event = "before-sleep";
+              command = "${pkgs.swaylock-effects}/bin/swaylock";
+            }
+          ];
+        };
+      };
 
       programs.vscode = {
         enable = true;
