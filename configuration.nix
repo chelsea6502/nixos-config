@@ -17,7 +17,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  
+
   # PC-specific boot configuration
   boot.kernelParams = [ "video=3840x2160@240" ];
   hardware.display.outputs = {
@@ -29,7 +29,7 @@
   networking.dhcpcd.wait = "background";
 
   security.polkit.enable = true;
-  
+
   # Security features for PC systems
   security.pam.services = {
     login.u2fAuth = true;
@@ -54,7 +54,7 @@
   nix.optimise.automatic = true;
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
-  
+
   # Performance settings
   nix.settings.max-jobs = 32;
 
@@ -135,8 +135,8 @@
   ];
 
   home-manager.useGlobalPkgs = true;
-  home-manager.useUserPkgs = true;
-  home-manager.backupFileExtension = true;
+  home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "hm-backup";
 
   home-manager.users.chelsea =
     { config, ... }:
@@ -188,14 +188,14 @@
 
   stylix.enable = true;
   stylix.image = ./wallpaper.png;
-  stylix.base16scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
+  stylix.base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
-  stylix.font.serif.package = pkgs.open-sans;
-  stylix.font.serif.name = "Open Sans";
-  stylix.font.sansSerif.package = pkgs.open-sans;
-  stylix.font.sansSerif.name = "Open Sans";
-  stylix.font.monospace.package = pkgs.fira-code-nerdfont;
-  stylix.font.monospace.name = "Fira Code Nerdfont";
-  stylix.font.emoji.package = pkgs.noto-fonts-emoji;
-  stylix.font.emoji.name = "Noto Color Emoji";
+  stylix.fonts.serif.package = pkgs.open-sans;
+  stylix.fonts.serif.name = "Open Sans";
+  stylix.fonts.sansSerif.package = pkgs.open-sans;
+  stylix.fonts.sansSerif.name = "Open Sans";
+  stylix.fonts.monospace.package = pkgs.fira-code-nerdfont;
+  stylix.fonts.monospace.name = "Fira Code Nerdfont";
+  stylix.fonts.emoji.package = pkgs.noto-fonts-emoji;
+  stylix.fonts.emoji.name = "Noto Color Emoji";
 }
