@@ -16,6 +16,13 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+  # Security features for x86_64-linux systems
+  security.pam.services = {
+    login.u2fAuth = true;
+    sudo.u2fAuth = true;
+  };
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
   boot.kernelParams = [ "video=3840x2160@240" ];
@@ -87,7 +94,7 @@
     git
     wlr-randr
     swaybg
-        yubikey-personalization
+    yubikey-personalization
     yubico-pam
     yubikey-manager
   ];

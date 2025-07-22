@@ -52,7 +52,7 @@
     in
     {
       nixosConfigurations = {
-        nixos = mkSystem "x86_64-linux" ./overrides/pc.nix;
+        nixos = mkSystem "x86_64-linux";
         nixos-mac = mkSystem "aarch64-linux" ./overrides/mac.nix;
       };
     };
