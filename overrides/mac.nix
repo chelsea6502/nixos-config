@@ -8,7 +8,9 @@
   # Parallels-specific configuration
   hardware.parallels.enable = true;
 
-  nix.settings.max-jobs = 2;
+  nix.settings.max-jobs = lib.mkForce 2;
+
+  boot.kernelParams = lib.mkForce [  ];
 
   # Parallels-specific shell aliases for display management
   programs.bash.shellAliases = {

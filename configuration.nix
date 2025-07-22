@@ -18,7 +18,14 @@
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  # Wait-online optimizations
+  boot.kernelParams = [ "video=3840x2160@240" ];
+  hardware.display.outputs.DP-3.mode = "3840x2160@240";
+
+  nix.settings.max-jobs = 32;
+
+  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+  sops.defaultSopsFile = ../keys/secrets.yaml;
+
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
 
@@ -80,6 +87,9 @@
     git
     wlr-randr
     swaybg
+        yubikey-personalization
+    yubico-pam
+    yubikey-manager
   ];
 
   users = {
