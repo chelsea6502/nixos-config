@@ -112,7 +112,6 @@
     git
     wlr-randr
     swaybg
-    # PC-specific packages
     yubikey-personalization
     yubico-pam
     yubikey-manager

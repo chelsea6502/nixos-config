@@ -26,9 +26,12 @@
   sops.defaultSopsFile = lib.mkForce null;
   sops.secrets = lib.mkForce {};
 
-  # Parallels-specific shell aliases for display management
+  # Parallels-specific shell aliases for display management and nixos-mac configuration
   programs.bash.shellAliases = {
     desk = "wlr-randr --output Virtual-1 --custom-mode 3840x2160 --scale 2";
     lap = "wlr-randr --output Virtual-1 --mode 2560x1600 --scale 2";
+    # Override nixos rebuild commands to use nixos-mac configuration
+    switch = "sudo nixos-rebuild switch --flake .#nixos-mac";
+    nix-full = "nix-update && switch && nix-clean && nix-verify";
   };
 }
