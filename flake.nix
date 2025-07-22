@@ -52,11 +52,8 @@
     in
     {
       nixosConfigurations = {
-        # Default configuration (Parallels/aarch64-linux)
-        nixos = mkSystem "aarch64-linux" ./overrides/mac.nix;
-
-        # x86_64-linux configuration (main PC)
-        nixos-x86 = mkSystem "x86_64-linux" ./overrides/pc.nix;
+        nixos = mkSystem "x86_64-linux" ./overrides/pc.nix;
+        nixos-mac = mkSystem "aarch64-linux" ./overrides/mac.nix;
       };
     };
 }
