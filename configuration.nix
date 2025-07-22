@@ -17,10 +17,8 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   # Security features for x86_64-linux systems
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-  };
+  security.pam.services.login.u2fAuth = true;
+  security.pam.services.sudo.u2fAuth = true;
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -46,11 +44,9 @@
   nix.gc.automatic = true;
   nix.gc.options = "--delete-older-than 7d";
 
-  environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = 1;
-    EDITOR = "nvim";
-    NIXOS_OZONE_WL = 1;
-  };
+  environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = 1;
+  environment.sessionVariables.EDITOR = "nvim";
+  environment.sessionVariables.NIXOS_OZONE_WL = 1;
 
   programs.bash.promptInit = ''
     PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
@@ -74,20 +70,12 @@
   };
 
   services.openssh.enable = false;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    pulse.enable = true;
-  };
-  services.greetd = {
-    enable = true;
-    settings = {
-      default_session = {
-        command = "${pkgs.sway}/bin/sway";
-        user = "chelsea";
-      };
-    };
-  };
+  services.pipewire.enable = true;
+  services.pipewire.alsa.enable = true;
+  services.pipewire.pulse.enable = true;
+  services.greetd.enable = true;
+  services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
+  services.greetd.settings.default_session.user = "chelsea";
   programs.ssh.startAgent = true;
 
   environment.systemPackages = with pkgs; [
@@ -99,27 +87,22 @@
     yubikey-manager
   ];
 
-  users = {
-    mutableUsers = false;
-    allowNoPasswordLogin = true;
-
-    users.chelsea = {
-      isNormalUser = true;
-      description = "chelsea";
-      extraGroups = [
-        "networkmanager"
-        "wheel"
-      ];
-      initialPassword = "blah";
-      packages = with pkgs; [
-        chromium
-        lazygit
-        zellij
-        qutebrowser
-        typescript
-      ];
-    };
-  };
+  users.mutableUsers = false;
+  users.allowNoPasswordLogin = true;
+  users.users.chelsea.isNormalUser = true;
+  users.users.chelsea.description = "chelsea";
+  users.users.chelsea.extraGroups = [
+    "networkmanager"
+    "wheel"
+  ];
+  users.users.chelsea.initialPassword = "blah";
+  users.users.chelsea.packages = with pkgs; [
+    chromium
+    lazygit
+    zellij
+    qutebrowser
+    typescript
+  ];
   programs.nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
   programs.chromium.extensions = [
@@ -129,64 +112,56 @@
     "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
   ];
 
-  home-manager = {
-    useGlobalPkgs = true;
-    useUserPackages = true;
-    backupFileExtension = "backup";
+  home-manager.useGlobalPkgs = true;
+  home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "backup";
 
-    users.chelsea =
-      { config, ... }:
-      {
-        home.username = "chelsea";
-        home.homeDirectory = "/home/chelsea";
-        home.stateVersion = "25.05";
+  home-manager.users.chelsea =
+    { config, ... }:
+    {
+      home.username = "chelsea";
+      home.homeDirectory = "/home/chelsea";
+      home.stateVersion = "25.05";
 
-        home.pointerCursor = {
-          gtk.enable = true;
-          package = pkgs.adwaita-icon-theme;
-          name = "Adwaita";
-          size = 16;
-        };
+      home.pointerCursor.gtk.enable = true;
+      home.pointerCursor.package = pkgs.adwaita-icon-theme;
+      home.pointerCursor.name = "Adwaita";
+      home.pointerCursor.size = 16;
 
-        programs.home-manager.enable = true;
+      programs.home-manager.enable = true;
+      wayland.windowManager.sway = import ./sway.nix { inherit config; };
 
-        wayland.windowManager.sway = import ./sway.nix { inherit config; };
+      programs.git.enable = true;
+      programs.git.userName = "Chelsea Wilkinson";
+      programs.git.userEmail = "mail@chelseawilkinson.me";
 
-        programs.git = {
-          enable = true;
-          userName = "Chelsea Wilkinson";
-          userEmail = "mail@chelseawilkinson.me";
-        };
+      # Alacritty
+      programs.alacritty.enable = true;
+      programs.alacritty.settings.cursor.style.shape = "Beam";
+      programs.alacritty.settings.cursor.style.blinking = "On";
+      programs.alacritty.settings.window.decorations = "buttonless";
+      programs.alacritty.settings.window.padding.x = 14;
+      programs.alacritty.settings.window.padding.y = 14;
+      programs.alacritty.settings.window.option_as_alt = "Both";
+      programs.alacritty.settings.font.size = lib.mkForce 11;
 
-        # Alacritty
-        programs.alacritty.enable = true;
-        programs.alacritty.settings = {
-          cursor.style.shape = "Beam";
-          cursor.style.blinking = "On";
-          window.decorations = "buttonless";
-          window.padding.x = 14;
-          window.padding.y = 14;
-          window.option_as_alt = "Both";
-
-          font.size = lib.mkForce 11;
-        };
-
-        programs.qutebrowser = {
-          enable = true;
-          settings = {
-            tabs.show = "multiple";
-            statusbar.show = "in-mode";
-            content.javascript.clipboard = "access-paste";
-          };
-        };
-
-        stylix.autoEnable = true;
-
-        xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" {
-          inherit pkgs;
-        };
+      programs.vscode = {
+        enable = true;
+        package = pkgs.vscodium;
+        profiles.default.extensions = with pkgs.vscode-extensions; [
+          rooveterinaryinc.roo-cline
+        ];
       };
-  };
+
+      programs.qutebrowser.enable = true;
+      programs.qutebrowser.settings.tabs.show = "multiple";
+      programs.qutebrowser.settings.statusbar.show = "in-mode";
+      programs.qutebrowser.settings.content.javascript.clipboard = "access-paste";
+
+      stylix.autoEnable = true;
+
+      xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" { inherit pkgs; };
+    };
 
   stylix = {
     enable = true;
@@ -194,19 +169,14 @@
 
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
 
-    fonts = {
-      serif.package = pkgs.open-sans;
-      serif.name = "Open Sans";
-
-      sansSerif.package = pkgs.open-sans;
-      sansSerif.name = "Open Sans";
-
-      monospace.package = pkgs.nerd-fonts.fira-code;
-      monospace.name = "Fira Code Nerdfont";
-
-      emoji.package = pkgs.noto-fonts-emoji;
-      emoji.name = "Noto Color Emoji";
-    };
+    fonts.serif.package = pkgs.open-sans;
+    fonts.serif.name = "Open Sans";
+    fonts.sansSerif.package = pkgs.open-sans;
+    fonts.sansSerif.name = "Open Sans";
+    fonts.monospace.package = pkgs.nerd-fonts.fira-code;
+    fonts.monospace.name = "Fira Code Nerdfont";
+    fonts.emoji.package = pkgs.noto-fonts-emoji;
+    fonts.emoji.name = "Noto Color Emoji";
 
   };
 }

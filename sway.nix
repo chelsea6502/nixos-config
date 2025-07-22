@@ -16,12 +16,9 @@
     ];
     window.titlebar = false;
     bars = [
-      (
-        {
-          position = "top";
-        }
-        // config.stylix.targets.sway.exportedBarConfig
-      )
+      ({
+        position = "top";
+      } // config.stylix.targets.sway.exportedBarConfig)
     ];
 
   };

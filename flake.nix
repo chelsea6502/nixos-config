@@ -53,7 +53,7 @@
     {
       nixosConfigurations = {
         nixos = mkSystem "x86_64-linux";
-        nixos-mac = mkSystem "aarch64-linux" ./overrides/mac.nix;
+        nixos-mac = mkSystem "aarch64-linux" ./mac.nix;
       };
     };
 }
