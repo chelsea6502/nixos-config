@@ -15,6 +15,7 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
+    impermanence.url = "github:nix-community/impermanence";
     zjstatus.url = "github:dj95/zjstatus";
   };
 
@@ -31,11 +32,13 @@
       commonModules = [
         ./configuration.nix
         (import ./disko.nix { })
+        (import ./impermanence.nix { inherit inputs; })
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
         inputs.sops-nix.nixosModules.sops
         inputs.disko.nixosModules.disko
+        inputs.impermanence.nixosModules.impermanence
         {
           nixpkgs.overlays = [
             (final: prev: {

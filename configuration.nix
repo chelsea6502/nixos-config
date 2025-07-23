@@ -30,7 +30,7 @@
 
   nix.settings.max-jobs = 32;
 
-  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+  sops.age.keyFile = "/persistent/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
   sops.defaultSopsFile = ./keys/secrets.yaml;
 

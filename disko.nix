@@ -21,9 +21,23 @@
             root = {
               size = "100%";
               content = {
-                type = "filesystem";
-                format = "ext4";
-                mountpoint = "/";
+                type = "btrfs";
+                extraArgs = [ "-f" ];
+                subvolumes = {
+                  "/root" = {
+                    mountpoint = "/";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                  "/persistent" = {
+                    mountpoint = "/persistent";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                    neededForBoot = true;
+                  };
+                  "/nix" = {
+                    mountpoint = "/nix";
+                    mountOptions = [ "compress=zstd" "noatime" ];
+                  };
+                };
               };
             };
           };
