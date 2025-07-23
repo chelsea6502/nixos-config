@@ -9,6 +9,10 @@ fi
 
 DISK=$1
 CONFIG=$2
+
+# Enable flakes for the installation process
+export NIX_CONFIG="experimental-features = nix-command flakes"
+
 git clone https://github.com/chelsea6502/nixos-config.git /tmp/nixos-config
 cd /tmp/nixos-config
 nix profile install nixpkgs#disko
