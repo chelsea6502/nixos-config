@@ -13,6 +13,8 @@
     nix-modules.flake = false;
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
+    disko.url = "github:nix-community/disko";
+    disko.inputs.nixpkgs.follows = "nixpkgs";
     zjstatus.url = "github:dj95/zjstatus";
   };
 
@@ -28,10 +30,12 @@
       # Common modules shared across configurations
       commonModules = [
         ./configuration.nix
+        (import ./disko.nix { })
         inputs.home-manager.nixosModules.home-manager
         inputs.stylix.nixosModules.stylix
         inputs.nixvim.nixosModules.nixvim
         inputs.sops-nix.nixosModules.sops
+        inputs.disko.nixosModules.disko
         {
           nixpkgs.overlays = [
             (final: prev: {
