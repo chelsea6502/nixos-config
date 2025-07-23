@@ -31,7 +31,8 @@
   nix.settings.max-jobs = 32;
 
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-  sops.defaultSopsFile = ../keys/secrets.yaml;
+  sops.age.generateKey = true;
+  sops.defaultSopsFile = ./keys/secrets.yaml;
   
   # Decrypt wifi passwords
   sops.secrets.wifi_brisbane_password = {};
