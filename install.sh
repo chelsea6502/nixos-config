@@ -11,6 +11,8 @@ DISK=$1
 CONFIG=$2
 
 # Enable flakes for the installation process
+mkdir -p ~/.config/nix
+echo "experimental-features = nix-command flakes" > ~/.config/nix/nix.conf
 export NIX_CONFIG="experimental-features = nix-command flakes"
 
 git clone https://github.com/chelsea6502/nixos-config.git /tmp/nixos-config
