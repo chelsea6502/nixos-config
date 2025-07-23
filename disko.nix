@@ -2,35 +2,28 @@
 {
   disko.devices = {
     disk = {
-      main = {
-        type = "disk";
+      my-disk = {
         device = device;
+        type = "disk";
         content = {
           type = "gpt";
           partitions = {
             ESP = {
-              priority = 1;
-              name = "ESP";
-              start = "1M";
-              end = "128M";
               type = "EF00";
+              size = "500M";
               content = {
                 type = "filesystem";
                 format = "vfat";
                 mountpoint = "/boot";
-                mountOptions = [ "defaults" ];
+                mountOptions = [ "umask=0077" ];
               };
             };
             root = {
-              priority = 2;
-              name = "root";
-              start = "128M";
-              end = "100%";
+              size = "100%";
               content = {
                 type = "filesystem";
                 format = "ext4";
                 mountpoint = "/";
-                mountOptions = [ "defaults" ];
               };
             };
           };
