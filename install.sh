@@ -15,6 +15,13 @@ mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" > ~/.config/nix/nix.conf
 export NIX_CONFIG="experimental-features = nix-command flakes"
 
+# Add cachix binary caches to speed up installation
+nix profile install nixpkgs#cachix
+cachix use nix-community
+cachix use nixvim
+cachix use stylix
+cachix use mic92
+
 git clone https://github.com/chelsea6502/nixos-config.git /tmp/nixos-config
 cd /tmp/nixos-config
 nix profile install nixpkgs#disko

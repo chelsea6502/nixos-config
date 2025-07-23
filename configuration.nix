@@ -12,6 +12,52 @@
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   networking.firewall.enable = true;
+  
+  # Enable NetworkManager
+  networking.networkmanager.enable = true;
+  
+  # Declaratively configure wifi networks
+  networking.networkmanager.ensureProfiles.profiles = {
+    "Brisbane-WiFi" = {
+      connection = {
+        id = "Brisbane-WiFi";
+        type = "wifi";
+        autoconnect = true;
+      };
+      wifi = {
+        ssid = "WilcoX";
+        mode = "infrastructure";
+      };
+      wifi-security = {
+        auth-alg = "open";
+        key-mgmt = "wpa-psk";
+        psk = "$BRISBANE_WIFI_PSK";
+      };
+    };
+    
+    "Melbourne-WiFi" = {
+      connection = {
+        id = "Melbourne-WiFi";
+        type = "wifi";
+        autoconnect = false;
+      };
+      wifi = {
+        ssid = "MikroTik-8E379D";
+        mode = "infrastructure";
+      };
+      wifi-security = {
+        auth-alg = "open";
+        key-mgmt = "wpa-psk";
+        psk = "$MELBOURNE_WIFI_PSK";
+      };
+    };
+  };
+  
+  # Create environment variables from secrets for NetworkManager
+  networking.networkmanager.ensureProfiles.environmentFiles = [
+    config.sops.secrets.wifi_brisbane_password.path
+    config.sops.secrets.wifi_melbourne_password.path
+  ];
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -30,6 +76,10 @@
 
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.defaultSopsFile = ../keys/secrets.yaml;
+  
+  # Decrypt wifi passwords
+  sops.secrets.wifi_brisbane_password = {};
+  sops.secrets.wifi_melbourne_password = {};
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
