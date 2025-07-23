@@ -82,26 +82,6 @@
         "type": "github"
       }
     },
-    "disko": {
-      "inputs": {
-        "nixpkgs": [
-          "nixpkgs"
-        ]
-      },
-      "locked": {
-        "lastModified": 1753140376,
-        "narHash": "sha256-7lrVrE0jSvZHrxEzvnfHFE/Wkk9DDqb+mYCodI5uuB8=",
-        "owner": "nix-community",
-        "repo": "disko",
-        "rev": "545aba02960caa78a31bd9a8709a0ad4b6320a5c",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-community",
-        "repo": "disko",
-        "type": "github"
-      }
-    },
     "firefox-gnome-theme": {
       "flake": false,
       "locked": {
@@ -281,11 +261,11 @@
     "nix-modules": {
       "flake": false,
       "locked": {
-        "lastModified": 1753182315,
-        "narHash": "sha256-UjCpQMOMcyBSnXOFq1uHrzbdQvAWuwYKIKIwG4V9yX4=",
+        "lastModified": 1753261502,
+        "narHash": "sha256-/T/rlAGo1pBSfaWWPJRZMtsQ6Ll5kxIQx7fwi0iKm5c=",
         "owner": "chelsea6502",
         "repo": "nix-modules",
-        "rev": "218f50681c4bf9fe56052959d918a1f398592949",
+        "rev": "0a1c48851f1ede5b08c23361ae1b5e62b61cf855",
         "type": "github"
       },
       "original": {
@@ -400,7 +380,6 @@
     },
     "root": {
       "inputs": {
-        "disko": "disko",
         "home-manager": "home-manager",
         "nix-modules": "nix-modules",
         "nixpkgs": "nixpkgs",
