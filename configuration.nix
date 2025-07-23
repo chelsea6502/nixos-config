@@ -33,10 +33,6 @@
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
   sops.defaultSopsFile = ./keys/secrets.yaml;
-  
-  # Decrypt wifi passwords
-  sops.secrets.wifi_brisbane_password = {};
-  sops.secrets.wifi_melbourne_password = {};
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
