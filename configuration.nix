@@ -16,53 +16,9 @@
   # Enable NetworkManager
   networking.networkmanager.enable = true;
   
-  # Declaratively configure wifi networks
-  networking.networkmanager.ensureProfiles.profiles = {
-    "Brisbane-WiFi" = {
-      connection = {
-        id = "Brisbane-WiFi";
-        type = "wifi";
-        autoconnect = true;
-      };
-      wifi = {
-        ssid = "WilcoX";
-        mode = "infrastructure";
-      };
-      wifi-security = {
-        auth-alg = "open";
-        key-mgmt = "wpa-psk";
-        psk = "$BRISBANE_WIFI_PSK";
-      };
-    };
-    
-    "Melbourne-WiFi" = {
-      connection = {
-        id = "Melbourne-WiFi";
-        type = "wifi";
-        autoconnect = false;
-      };
-      wifi = {
-        ssid = "MikroTik-8E379D";
-        mode = "infrastructure";
-      };
-      wifi-security = {
-        auth-alg = "open";
-        key-mgmt = "wpa-psk";
-        psk = "$MELBOURNE_WIFI_PSK";
-      };
-    };
-  };
-  
-  # Create environment variables from secrets for NetworkManager
-  networking.networkmanager.ensureProfiles.environmentFiles = [
-    config.sops.secrets.wifi_brisbane_password.path
-    config.sops.secrets.wifi_melbourne_password.path
-  ];
-
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Security features for x86_64-linux systems
   security.pam.services.login.u2fAuth = true;
   security.pam.services.sudo.u2fAuth = true;
   services.udev.packages = [ pkgs.yubikey-personalization ];
