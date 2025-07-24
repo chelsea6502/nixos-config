@@ -24,7 +24,6 @@
       # Common specialArgs for all configurations
       commonSpecialArgs = {
         inherit inputs;
-        inherit (inputs) nix-modules;
       };
 
       # Common modules shared across configurations
