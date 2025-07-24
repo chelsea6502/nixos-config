@@ -44,7 +44,7 @@
         system: platformModule:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit inputs; };
+          specialArgs = { inherit (inputs) nix-modules; };
           modules = commonModules ++ [ platformModule ];
         };
     in
