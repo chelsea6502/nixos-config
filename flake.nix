@@ -21,6 +21,12 @@
   outputs =
     { nixpkgs, ... }@inputs:
     let
+      # Common specialArgs for all configurations
+      commonSpecialArgs = {
+        inherit inputs;
+        inherit (inputs) nix-modules;
+      };
+
       # Common modules shared across configurations
       commonModules = [
         ./configuration.nix
@@ -44,7 +50,7 @@
         system: platformModule:
         nixpkgs.lib.nixosSystem {
           inherit system;
-          specialArgs = { inherit (inputs) nix-modules; };
+          specialArgs = commonSpecialArgs;
           modules = commonModules ++ [ platformModule ];
         };
     in

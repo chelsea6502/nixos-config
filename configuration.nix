@@ -12,10 +12,39 @@
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
   networking.firewall.enable = true;
-  
+
   # Enable NetworkManager
   networking.networkmanager.enable = true;
-  
+
+  networking.networkmanager.ensureProfiles.profiles = {
+    WilcoX = {
+      connection = {
+        id = "home-wifi";
+        permissions = "";
+        type = "wifi";
+      };
+      ipv4 = {
+        dns-search = "";
+        method = "auto";
+      };
+      ipv6 = {
+        addr-gen-mode = "stable-privacy";
+        dns-search = "";
+        method = "auto";
+      };
+      wifi = {
+        mac-address-blacklist = "";
+        mode = "infrastructure";
+        ssid = "Home Wi-Fi";
+      };
+      wifi-security = {
+        auth-alg = "open";
+        key-mgmt = "wpa-psk";
+        psk = "<insert>";
+      };
+    };
+  };
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
@@ -74,6 +103,22 @@
 
   security.pam.services.swaylock = { };
 
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
+  services.blueman.enable = true;
+
+  hardware.bluetooth.settings = {
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+    };
+
+    "Device D2:02:D1:A9:2F:0A" = {
+      Name = "BT5.0MOUSE2";
+      Trusted = true;
+      Blocked = false;
+    };
+  };
+
   services.openssh.enable = false;
   services.pipewire.enable = true;
   services.pipewire.alsa.enable = true;
@@ -90,6 +135,7 @@
     yubikey-personalization
     yubico-pam
     yubikey-manager
+    clang
   ];
 
   users.mutableUsers = false;
