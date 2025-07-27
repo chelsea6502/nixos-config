@@ -126,25 +126,7 @@
   services.greetd.enable = true;
   services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
   services.greetd.settings.default_session.user = "chelsea";
-
-  programs.ssh = {
-    enable = true;
-    startAgent = true;
-    knownHosts = {
-      "github.com" = {
-        hostNames = [ "github.com" ];
-        publicKey = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCj7ndNxQowgcQnjshcLrqPEiiphnt+VTTvDP6mHBL9j1aNUkY4Ump9TqJIGTZP9QvQMiHs5IfCywBmBUwPJqSuN7xzAAW8A/dYE8YnUOWBGHTp8+xzW7q1eOWN8zj8WNf/xc1i6W1oBCKLRlLJFnD8sOL9gPmG0Ua/V7Ag1lDfHdFh4VVhRJjW8O+1GQjYNJ8tKNZJcD+V4VfsBSa7u4U7lv2rAK8z8JnP4WZCWdQk6T4T9MO2b1EQWJ8Bk6UzQF";
-      };
-      "github.com-ed25519" = {
-        hostNames = [ "github.com" ];
-        publicKey = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIOMqqnkVzrm0SdG6UOoqKLsabgH5C9okWi0dh2l9GKJl";
-      };
-    };
-    extraConfig = ''
-      AddKeysToAgent yes
-      IdentitiesOnly yes
-    '';
-  };
+  programs.ssh.startAgent = true;
 
   environment.systemPackages = with pkgs; [
     git
