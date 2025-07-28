@@ -19,33 +19,21 @@
   networking.networkmanager.ensureProfiles.profiles = {
     WilcoX = {
       connection = {
-        id = "home-wifi";
-        permissions = "";
+        id = "WilcoX";
         type = "wifi";
       };
-      ipv4 = {
-        dns-search = "";
-        method = "auto";
-      };
-      ipv6 = {
-        addr-gen-mode = "stable-privacy";
-        dns-search = "";
-        method = "auto";
-      };
       wifi = {
-        mac-address-blacklist = "";
-        mode = "infrastructure";
-        ssid = "Home Wi-Fi";
+        ssid = "WilcoX";
       };
       wifi-security = {
-        auth-alg = "open";
         key-mgmt = "wpa-psk";
-        psk = "<insert>";
+        psk = "milawa78";
       };
     };
   };
 
   boot.loader.systemd-boot.enable = true;
+
   boot.loader.efi.canTouchEfiVariables = true;
 
   security.pam.services.login.u2fAuth = true;
@@ -136,8 +124,26 @@
     yubico-pam
     yubikey-manager
     clang
+    nodejs
+    docker
+    awscli2
+    aws-sam-cli
   ];
 
+  virtualisation.docker.rootless.enable = true;
+  virtualisation.docker.rootless.setSocketVariable = true;
+  virtualisation.docker = {
+    enable = true;
+    daemon.settings = {
+      experimental = true;
+      default-address-pools = [
+        {
+          base = "172.30.0.0/16";
+          size = 24;
+        }
+      ];
+    };
+  };
   users.mutableUsers = false;
   users.allowNoPasswordLogin = true;
   users.users.chelsea.isNormalUser = true;
@@ -145,6 +151,7 @@
   users.users.chelsea.extraGroups = [
     "networkmanager"
     "wheel"
+    "docker"
   ];
   users.users.chelsea.initialPassword = "blah";
   users.users.chelsea.packages = with pkgs; [
@@ -204,13 +211,13 @@
           package = pkgs.swayidle;
           timeouts = [
             {
-              timeout = 180;
-              command = "${pkgs.libnotify}/bin/notify-send 'Locking in 5 seconds' -t 5000";
+              timeout = 290;
+              command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
             }
-            # {
-            #   timeout = 185;
-            #   command = "${pkgs.systemd}/bin/systemctl suspend";
-            # }
+            {
+              timeout = 300;
+              command = "${pkgs.systemd}/bin/systemctl suspend";
+            }
           ];
           events = [
             {

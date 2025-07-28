@@ -4,7 +4,6 @@
   config = {
     modifier = "Mod4";
     terminal = "alacritty";
-    startup = [ { command = "qutebrowser"; } ];
     output = {
       "DP-3" = {
         mode = "3840x2160@240Hz";
