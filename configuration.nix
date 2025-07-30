@@ -77,7 +77,6 @@
     Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
     Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
     En = "sudo -E -s nvim /etc/nixos/nixvim.nix";
-    Ew = "sudo -E -s nvim /etc/nixos/sway.nix";
     saveconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
     loadconf = "sudo cp -R ~/nixos-config/* /etc/nixos/";
     switch = "sudo nixos-rebuild switch";
@@ -180,7 +179,30 @@
       home.pointerCursor.size = 16;
 
       programs.home-manager.enable = true;
-      wayland.windowManager.sway = import ./sway.nix { inherit config pkgs; };
+      wayland.windowManager.sway = {
+        enable = true;
+        config = {
+          modifier = "Mod4";
+          terminal = "alacritty";
+          output = {
+            "DP-3" = {
+              mode = "3840x2160@240Hz";
+              scale = "2";
+            };
+          };
+          gaps = {
+            smartGaps = true;
+            smartBorders = "no_gaps";
+            inner = 10;
+            outer = 10;
+          };
+          floating.criteria = [
+            { title = "Parallels Shared Clipboard"; }
+          ];
+          window.titlebar = false;
+          bars = [ ];
+        };
+      };
 
       programs.git.enable = true;
       programs.git.userName = "Chelsea Wilkinson";
