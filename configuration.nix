@@ -185,6 +185,7 @@
       programs.git.enable = true;
       programs.git.userName = "Chelsea Wilkinson";
       programs.git.userEmail = "mail@chelseawilkinson.me";
+      programs.git.extraConfig.pull.rebase = true;
 
       # Alacritty
       programs.alacritty.enable = true;
@@ -231,6 +232,7 @@
           modules-left = [ "sway/workspaces" ];
           modules-center = [ "sway/window" ];
           modules-right = [
+            #"<volume>"
             "cpu"
             "temperature"
             "memory"
@@ -243,6 +245,7 @@
           cpu.interval = 1;
 
           temperature.format = "({temperatureC}C)";
+          temperature.thermal-zone = 1;
           temperature.interval = 1;
 
           memory.format = "| {used}GiB ({percentage}%)";

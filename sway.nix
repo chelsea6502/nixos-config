@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ ... }:
 {
   enable = true;
   config = {
@@ -20,6 +20,7 @@
       { title = "Parallels Shared Clipboard"; }
     ];
     window.titlebar = false;
+    bars = [ ];
     # bars = [
     #   (
     #     {
