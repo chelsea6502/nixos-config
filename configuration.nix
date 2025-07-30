@@ -262,6 +262,7 @@
       * {
         font-size: 12px;
         min-height: 0;
+				border-radius: 0;
       }
       ";
 
