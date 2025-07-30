@@ -13,21 +13,13 @@
   i18n.defaultLocale = "en_AU.UTF-8";
   networking.firewall.enable = true;
 
-  # Enable NetworkManager
   networking.networkmanager.enable = true;
-
   networking.networkmanager.ensureProfiles.profiles.WilcoX = {
-    connection = {
-      id = "WilcoX";
-      type = "wifi";
-    };
-    wifi = {
-      ssid = "WilcoX";
-    };
-    wifi-security = {
-      key-mgmt = "wpa-psk";
-      psk = "milawa78";
-    };
+    connection.id = "WilcoX";
+    connection.type = "wifi";
+    wifi.ssid = "WilcoX";
+    wifi-security.key-mgmt = "wpa-psk";
+    wifi-security.psk = "milawa78";
   };
 
   boot.loader.systemd-boot.enable = true;
@@ -178,19 +170,21 @@
 
       programs.home-manager.enable = true;
       wayland.windowManager.sway.enable = true;
-      wayland.windowManager.sway.config.modifier = "Mod4";
-      wayland.windowManager.sway.config.terminal = "alacritty";
-      wayland.windowManager.sway.config.bars = [ ];
-      wayland.windowManager.sway.config.output."DP-3".mode = "3840x2160@240Hz";
-      wayland.windowManager.sway.config.output."DP-3".scale = "2";
-      wayland.windowManager.sway.config.window.titlebar = false;
-      wayland.windowManager.sway.config.gaps.smartGaps = true;
-      wayland.windowManager.sway.config.gaps.smartBorders = "no_gaps";
-      wayland.windowManager.sway.config.gaps.inner = 10;
-      wayland.windowManager.sway.config.gaps.outer = 10;
-      wayland.windowManager.sway.config.floating.criteria = [
-        { title = "Parallels Shared Clipboard"; }
-      ];
+      wayland.windowManager.sway.config = {
+        modifier = "Mod4";
+        terminal = "alacritty";
+        bars = [ ];
+        output."DP-3".mode = "3840x2160@240Hz";
+        output."DP-3".scale = "2";
+        window.titlebar = false;
+        gaps.smartGaps = true;
+        gaps.smartBorders = "no_gaps";
+        gaps.inner = 10;
+        gaps.outer = 10;
+        floating.criteria = [
+          { title = "Parallels Shared Clipboard"; }
+        ];
+      };
 
       programs.git.enable = true;
       programs.git.userName = "Chelsea Wilkinson";
@@ -199,13 +193,15 @@
 
       # Alacritty
       programs.alacritty.enable = true;
-      programs.alacritty.settings.cursor.style.shape = "Beam";
-      programs.alacritty.settings.cursor.style.blinking = "On";
-      programs.alacritty.settings.window.decorations = "buttonless";
-      programs.alacritty.settings.window.padding.x = 14;
-      programs.alacritty.settings.window.padding.y = 14;
-      programs.alacritty.settings.window.option_as_alt = "Both";
-      programs.alacritty.settings.font.size = lib.mkForce 10;
+      programs.alacritty.settings = {
+        cursor.style.shape = "Beam";
+        cursor.style.blinking = "On";
+        window.decorations = "buttonless";
+        window.padding.x = 14;
+        window.padding.y = 14;
+        window.option_as_alt = "Both";
+        font.size = lib.mkForce 10;
+      };
 
       services.mako.enable = true;
 
