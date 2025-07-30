@@ -173,6 +173,8 @@
       wayland.windowManager.sway.config = {
         modifier = "Mod4";
         terminal = "alacritty";
+        menu = "rofi -show run";
+
         bars = [ ];
         output."DP-3".mode = "3840x2160@240Hz";
         output."DP-3".scale = "2";
@@ -266,6 +268,19 @@
         clock.format = "| {:%a %d %b %I:%M:%S%p} |";
         clock.interval = 1;
       };
+
+      programs.rofi = {
+        enable = true;
+        package = pkgs.rofi-wayland;
+        extraConfig = {
+          modi = "run";
+          hide-scrollbar = true;
+        };
+
+        theme = lib.mkForce "gruvbox-dark-soft";
+      };
+
+      home.packages = [ pkgs.bemoji ];
 
       programs.vscode.enable = true;
       programs.vscode.package = pkgs.vscodium;

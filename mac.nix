@@ -15,7 +15,7 @@
 
   programs.bash.shellAliases = {
     desk = "wlr-randr --output Virtual-1 --custom-mode 3840x2160 --scale 2";
-    lap = "wlr-randr --output Virtual-1 --mode 2560x1600 --scale 1.5";
+    lap = "wlr-randr --output Virtual-1 --mode 2560x1600 --scale 2";
     Em = "edit /etc/nixos/mac.nix";
     switch = lib.mkForce "sudo nixos-rebuild switch --flake /etc/nixos/#nixos-mac";
   };
