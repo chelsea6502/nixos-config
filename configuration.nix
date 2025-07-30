@@ -16,19 +16,17 @@
   # Enable NetworkManager
   networking.networkmanager.enable = true;
 
-  networking.networkmanager.ensureProfiles.profiles = {
-    WilcoX = {
-      connection = {
-        id = "WilcoX";
-        type = "wifi";
-      };
-      wifi = {
-        ssid = "WilcoX";
-      };
-      wifi-security = {
-        key-mgmt = "wpa-psk";
-        psk = "milawa78";
-      };
+  networking.networkmanager.ensureProfiles.profiles.WilcoX = {
+    connection = {
+      id = "WilcoX";
+      type = "wifi";
+    };
+    wifi = {
+      ssid = "WilcoX";
+    };
+    wifi-security = {
+      key-mgmt = "wpa-psk";
+      psk = "milawa78";
     };
   };
 
@@ -179,30 +177,20 @@
       home.pointerCursor.size = 16;
 
       programs.home-manager.enable = true;
-      wayland.windowManager.sway = {
-        enable = true;
-        config = {
-          modifier = "Mod4";
-          terminal = "alacritty";
-          output = {
-            "DP-3" = {
-              mode = "3840x2160@240Hz";
-              scale = "2";
-            };
-          };
-          gaps = {
-            smartGaps = true;
-            smartBorders = "no_gaps";
-            inner = 10;
-            outer = 10;
-          };
-          floating.criteria = [
-            { title = "Parallels Shared Clipboard"; }
-          ];
-          window.titlebar = false;
-          bars = [ ];
-        };
-      };
+      wayland.windowManager.sway.enable = true;
+      wayland.windowManager.sway.config.modifier = "Mod4";
+      wayland.windowManager.sway.config.terminal = "alacritty";
+      wayland.windowManager.sway.config.bars = [ ];
+      wayland.windowManager.sway.config.output."DP-3".mode = "3840x2160@240Hz";
+      wayland.windowManager.sway.config.output."DP-3".scale = "2";
+      wayland.windowManager.sway.config.window.titlebar = false;
+      wayland.windowManager.sway.config.gaps.smartGaps = true;
+      wayland.windowManager.sway.config.gaps.smartBorders = "no_gaps";
+      wayland.windowManager.sway.config.gaps.inner = 10;
+      wayland.windowManager.sway.config.gaps.outer = 10;
+      wayland.windowManager.sway.config.floating.criteria = [
+        { title = "Parallels Shared Clipboard"; }
+      ];
 
       programs.git.enable = true;
       programs.git.userName = "Chelsea Wilkinson";
@@ -220,81 +208,74 @@
       programs.alacritty.settings.font.size = lib.mkForce 10;
 
       services.mako.enable = true;
+
       programs.swaylock.enable = true;
-      services = {
-        swayidle = {
-          enable = true;
-          package = pkgs.swayidle;
-          timeouts = [
-            {
-              timeout = 290;
-              command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
-            }
-            {
-              timeout = 300;
-              command = "${pkgs.systemd}/bin/systemctl suspend";
-            }
-          ];
-          events = [
-            {
-              event = "before-sleep";
-              command = "${pkgs.swaylock-effects}/bin/swaylock";
-            }
-          ];
-        };
-      };
+
+      services.swayidle.enable = true;
+      services.swayidle.package = pkgs.swayidle;
+      services.swayidle.timeouts = [
+        {
+          timeout = 290;
+          command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
+        }
+        {
+          timeout = 300;
+          command = "${pkgs.systemd}/bin/systemctl suspend";
+        }
+      ];
+      services.swayidle.events = [
+        {
+          event = "before-sleep";
+          command = "${pkgs.swaylock-effects}/bin/swaylock";
+        }
+      ];
 
       programs.waybar.enable = true;
       programs.waybar.systemd.enable = true;
-      programs.waybar.settings = {
-        mainBar = {
-          layer = "top";
-          position = "top";
-          height = 18;
-          modules-left = [ "sway/workspaces" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [
-            #"<volume>"
-            "cpu"
-            "temperature"
-            "memory"
-            "disk"
-            #"network"
-            #"battery"
-            "clock"
-          ];
-          cpu.format = "| {usage}%";
-          cpu.interval = 1;
-
-          temperature.format = "({temperatureC}C)";
-          temperature.thermal-zone = 1;
-          temperature.interval = 1;
-
-          memory.format = "| {used}GiB ({percentage}%)";
-          memory.interval = 1;
-
-          disk.format = "| {used} ({percentage_used}%)";
-          disk.interval = 1;
-
-          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-          clock.interval = 1;
-        };
-      };
       programs.waybar.style = "
       * {
         font-size: 12px;
         min-height: 0;
 				border-radius: 0;
-      }
-      ";
-
-      programs.vscode = {
-        enable = true;
-        package = pkgs.vscodium;
-        profiles.default.extensions = with pkgs.vscode-extensions; [
-          rooveterinaryinc.roo-cline
+      }";
+      programs.waybar.settings.mainBar = {
+        layer = "top";
+        position = "top";
+        height = 18;
+        modules-left = [ "sway/workspaces" ];
+        modules-center = [ "sway/window" ];
+        modules-right = [
+          #"<volume>"
+          "cpu"
+          "temperature"
+          "memory"
+          "disk"
+          #"network"
+          #"battery"
+          "clock"
         ];
+        cpu.format = "| {usage}%";
+        cpu.interval = 1;
+
+        temperature.format = "({temperatureC}C)";
+        temperature.thermal-zone = 1;
+        temperature.interval = 1;
+
+        memory.format = "| {used}GiB ({percentage}%)";
+        memory.interval = 1;
+
+        disk.format = "| {used} ({percentage_used}%)";
+        disk.interval = 1;
+
+        clock.format = "| {:%a %d %b %I:%M:%S%p} |";
+        clock.interval = 1;
       };
+
+      programs.vscode.enable = true;
+      programs.vscode.package = pkgs.vscodium;
+      programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
+        rooveterinaryinc.roo-cline
+      ];
 
       programs.qutebrowser.enable = true;
       programs.qutebrowser.settings.tabs.show = "multiple";
@@ -320,6 +301,5 @@
     fonts.monospace.name = "Fira Code Nerdfont";
     fonts.emoji.package = pkgs.noto-fonts-emoji;
     fonts.emoji.name = "Noto Color Emoji";
-
   };
 }
