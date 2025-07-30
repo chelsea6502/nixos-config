@@ -94,12 +94,8 @@
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
-
   hardware.bluetooth.settings = {
-    General = {
-      Enable = "Source,Sink,Media,Socket";
-    };
-
+    General.Enable = "Source,Sink,Media,Socket";
     "Device D2:02:D1:A9:2F:0A" = {
       Name = "BT5.0MOUSE2";
       Trusted = true;
@@ -125,25 +121,21 @@
     yubikey-manager
     clang
     nodejs
-    docker
     awscli2
     aws-sam-cli
   ];
 
+  virtualisation.docker.enable = true;
+  virtualisation.docker.daemon.settings.experimental = true;
+  virtualisation.docker.daemon.settings.default-address-pools = [
+    {
+      base = "172.30.0.0/16";
+      size = 24;
+    }
+  ];
   virtualisation.docker.rootless.enable = true;
   virtualisation.docker.rootless.setSocketVariable = true;
-  virtualisation.docker = {
-    enable = true;
-    daemon.settings = {
-      experimental = true;
-      default-address-pools = [
-        {
-          base = "172.30.0.0/16";
-          size = 24;
-        }
-      ];
-    };
-  };
+
   users.mutableUsers = false;
   users.allowNoPasswordLogin = true;
   users.users.chelsea.isNormalUser = true;
@@ -152,6 +144,7 @@
     "networkmanager"
     "wheel"
     "docker"
+    "input"
   ];
   users.users.chelsea.initialPassword = "blah";
   users.users.chelsea.packages = with pkgs; [
@@ -187,7 +180,7 @@
       home.pointerCursor.size = 16;
 
       programs.home-manager.enable = true;
-      wayland.windowManager.sway = import ./sway.nix { inherit config; };
+      wayland.windowManager.sway = import ./sway.nix { inherit config pkgs; };
 
       programs.git.enable = true;
       programs.git.userName = "Chelsea Wilkinson";
@@ -227,6 +220,46 @@
           ];
         };
       };
+
+      programs.waybar.enable = true;
+      programs.waybar.systemd.enable = true;
+      programs.waybar.settings = {
+        mainBar = {
+          layer = "top";
+          position = "top";
+          height = 18;
+          modules-left = [ "sway/workspaces" ];
+          modules-center = [ "sway/window" ];
+          modules-right = [
+            "cpu"
+            "temperature"
+            "memory"
+            "disk"
+            "clock"
+          ];
+          cpu.format = "| {usage}%";
+          cpu.interval = 1;
+
+          temperature.format = "({temperatureC}C)";
+          temperature.interval = 1;
+
+          memory.format = "| {used}GiB ({percentage}%)";
+          memory.interval = 1;
+
+          disk.format = "| {used} ({percentage_used}%)";
+          disk.interval = 1;
+
+          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
+          clock.interval = 1;
+        };
+      };
+      programs.waybar.style = ''
+        											* {
+        												font-family: monospace;
+        												font-size: 12px;
+        												min-height: 0;
+        											}
+      '';
 
       programs.vscode = {
         enable = true;

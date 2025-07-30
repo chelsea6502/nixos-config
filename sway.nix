@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, pkgs, ... }:
 {
   enable = true;
   config = {
@@ -20,14 +20,15 @@
       { title = "Parallels Shared Clipboard"; }
     ];
     window.titlebar = false;
-    bars = [
-      (
-        {
-          position = "top";
-        }
-        // config.stylix.targets.sway.exportedBarConfig
-      )
-    ];
+    # bars = [
+    #   (
+    #     {
+    #       position = "top";
+    #       statusCommand = "${pkgs.i3status}/bin/i3status";
+    #     }
+    #     // config.stylix.targets.sway.exportedBarConfig
+    #   )
+    # ];
 
   };
 }
