@@ -235,6 +235,8 @@
             "temperature"
             "memory"
             "disk"
+            #"network"
+            #"battery"
             "clock"
           ];
           cpu.format = "| {usage}%";
@@ -253,13 +255,12 @@
           clock.interval = 1;
         };
       };
-      programs.waybar.style = ''
-        											* {
-        												font-family: monospace;
-        												font-size: 12px;
-        												min-height: 0;
-        											}
-      '';
+      programs.waybar.style = "
+      * {
+        font-size: 12px;
+        min-height: 0;
+      }
+      ";
 
       programs.vscode = {
         enable = true;
