@@ -313,4 +313,7 @@
     fonts.emoji.package = pkgs.noto-fonts-emoji;
     fonts.emoji.name = "Noto Color Emoji";
   };
+
+  # Enable Chinese 
+  fonts.packages = with pkgs; [ noto-fonts-cjk-sans ];
 }
