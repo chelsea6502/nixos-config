@@ -34,7 +34,6 @@
 
   boot.kernelParams = [ "video=3840x2160@240" ];
   hardware.display.outputs.DP-3.mode = "3840x2160@240";
-
   nix.settings.max-jobs = 32;
 
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
@@ -314,6 +313,6 @@
     fonts.emoji.name = "Noto Color Emoji";
   };
 
-  # Enable Chinese 
+  # Enable Chinese
   fonts.packages = with pkgs; [ noto-fonts-cjk-sans ];
 }
