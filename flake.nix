@@ -8,7 +8,6 @@
     stylix.url = "github:danth/stylix/release-25.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nix-modules.url = "github:chelsea6502/nix-modules";
     nix-modules.flake = false;
     sops-nix.url = "github:Mic92/sops-nix";
@@ -51,7 +50,6 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = commonSpecialArgs;
-          modules = commonModules ++ [ platformModule ];
         };
     in
     {

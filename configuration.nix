@@ -1,6 +1,7 @@
 {
   pkgs,
   lib,
+  config,
   nix-modules,
   ...
 }:
@@ -39,6 +40,12 @@
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
   sops.defaultSopsFile = ./keys/secrets.yaml;
+  sops.secrets.github_token = {};
+  
+  # Configure Nix to use GitHub token to avoid rate limiting
+  nix.settings.access-tokens = [
+    "github.com=${config.sops.secrets.github_token.path}"
+  ];
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
@@ -75,6 +82,8 @@
     nix-full = "nix-update && switch && nix-clean && nix-verify";
     git-auth = "ssh-add -K";
     z = "zellij";
+
+    pydev = "nix develop /etc/nixos/devShells/Python/ && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt";
   };
 
   security.pam.services.swaylock = { };
@@ -111,6 +120,12 @@
     nodejs
     awscli2
     aws-sam-cli
+
+    python3
+    python3Packages.pip
+    python3Packages.numpy
+    python3Packages.pandas
+    python3Packages.virtualenv
   ];
 
   virtualisation.docker.enable = true;
@@ -141,6 +156,7 @@
     zellij
     qutebrowser
     typescript
+    libreoffice
   ];
   programs.nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
 
