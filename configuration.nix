@@ -37,15 +37,21 @@
   hardware.display.outputs.DP-3.mode = "3840x2160@240";
   nix.settings.max-jobs = 32;
 
+  # SOPS configuration
+  sops.defaultSopsFile = ./keys/secrets.yaml;
+  sops.defaultSopsFormat = "yaml";
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
-  sops.defaultSopsFile = ./keys/secrets.yaml;
   sops.secrets.github_token = {};
+  
   
   # Configure Nix to use GitHub token to avoid rate limiting
   nix.settings.access-tokens = [
     "github.com=${config.sops.secrets.github_token.path}"
   ];
+  
+  # Ensure the GitHub token file is readable by nix daemon
+  nix.settings.trusted-users = [ "root" "@wheel" ];
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
@@ -76,7 +82,7 @@
     saveconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
     loadconf = "sudo cp -R ~/nixos-config/* /etc/nixos/";
     switch = "sudo nixos-rebuild switch";
-    nix-update = "cd /etc/nixos && sudo nix flake update";
+    nix-update = "cd /etc/nixos && sudo NIX_CONFIG=\"access-tokens = github.com=$(sudo cat /run/secrets/github_token)\" nix flake update";
     nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";

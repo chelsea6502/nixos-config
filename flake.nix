@@ -50,6 +50,7 @@
         nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = commonSpecialArgs;
+          modules = commonModules ++ [ platformModule ];
         };
     in
     {
