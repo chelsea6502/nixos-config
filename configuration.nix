@@ -89,7 +89,7 @@
     git-auth = "ssh-add -K";
     z = "zellij";
 
-    pydev = "nix-shell -E '(import /etc/nixos/python-fhs.nix {})' --command 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt'";
+    pydev = "nix-shell -E '(import /etc/nixos/devShells/python.nix {})' --command 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt'";
   };
 
   security.pam.services.swaylock = { };
