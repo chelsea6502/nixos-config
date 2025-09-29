@@ -21,36 +21,36 @@ let
     stdenv.cc.cc
   ];
   
-  # All packages included for comprehensive Python development
-  conditionalPkgs = with pkgs; [
-    # Math/Science libraries
+  # All system libraries for comprehensive Python development
+  systemPkgs = with pkgs; [
+    # Math/Science libraries (numpy, scipy, pandas, matplotlib)
     blas lapack openblas libffi
     
-    # GUI/Graphics libraries
+    # GUI/Graphics libraries (tkinter, PyQt, PySide, matplotlib, pillow)
     glib gtk3 cairo pango gdk-pixbuf atk freetype fontconfig
     
-    # Web/HTTP libraries
+    # Web/HTTP libraries (requests, urllib3, httpx, aiohttp)
     curl openssl libssh
     
-    # Database libraries
+    # Database libraries (sqlite, psycopg, pymongo)
     sqlite
     
-    # XML/parsing libraries
+    # XML/parsing libraries (lxml, beautifulsoup, xml)
     libxml2 libxslt expat
     
-    # Compression libraries
+    # Compression libraries (zipfile, tarfile, gzip)
     bzip2 xz zstd
     
-    # System utilities
+    # System utilities (psutil)
     util-linux systemd
     
-    # Crypto libraries
+    # Crypto libraries (cryptography, pycrypto)
     libsodium
     
-    # Terminal/CLI libraries
+    # Terminal/CLI libraries (click, readline)
     ncurses readline
     
-    # File attribute libraries
+    # File attribute libraries (xattr)
     attr acl
   ];
 
@@ -58,33 +58,24 @@ let
 in
 (pkgs.buildFHSEnv (base // {
   name = "python-fhs";
-  targetPkgs = pkgs: basePkgs ++ conditionalPkgs;
+  targetPkgs = pkgs: basePkgs ++ systemPkgs;
   
   runScript = "bash";
   
   profile = ''
-    echo "🐍 Python FHS Environment"
-    echo "=========================="
-    echo "Python: $(python3 --version)"
-    echo "Pip: $(pip3 --version)"
-    echo ""
+    echo "🐍 Python FHS Environment - $(python3 --version)"
     
     # Auto-setup if requirements.txt exists and no .venv
     if [ -f "requirements.txt" ] && [ ! -d ".venv" ]; then
-      echo "🔄 Auto-setting up Python environment..."
+      echo "🔄 Setting up virtual environment..."
       python3 -m venv .venv
       source .venv/bin/activate
       pip install -r requirements.txt
-      echo "✅ Environment ready! Virtual environment is activated."
+      echo "✅ Ready!"
     elif [ -d ".venv" ]; then
-      echo "🔄 Activating existing virtual environment..."
+      echo "🔄 Activating virtual environment..."
       source .venv/bin/activate
-      echo "✅ Virtual environment activated: $(which python)"
-    else
-      echo "💡 Usage:"
-      echo "  python3 -m venv .venv"
-      echo "  source .venv/bin/activate"
-      echo "  pip install numpy scipy matplotlib pandas"
+      echo "✅ Activated: $(which python)"
     fi
   '';
   
