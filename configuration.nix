@@ -89,7 +89,7 @@
     git-auth = "ssh-add -K";
     z = "zellij";
 
-    pydev = "nix develop /etc/nixos/devShells/Python/ && python -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt";
+    pydev = "nix-shell -E '(import /etc/nixos/python-fhs.nix {})' --command 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt'";
   };
 
   security.pam.services.swaylock = { };
@@ -115,6 +115,21 @@
   services.greetd.settings.default_session.user = "chelsea";
   programs.ssh.startAgent = true;
 
+  # Enable nix-ld for pip install compatibility with compiled packages
+  programs.nix-ld = {
+    enable = true;
+    libraries = with pkgs; [
+      zlib zstd stdenv.cc.cc curl openssl attr libssh bzip2 libxml2 acl libsodium util-linux xz systemd
+      # Additional libraries commonly needed for Python packages
+      glib gtk3 cairo pango gdk-pixbuf atk
+      libffi ncurses readline sqlite
+      # Math/science libraries
+      blas lapack openblas
+      # Graphics libraries
+      freetype fontconfig
+    ];
+  };
+
   environment.systemPackages = with pkgs; [
     git
     wlr-randr
@@ -127,7 +142,24 @@
     awscli2
     aws-sam-cli
 
-    python3
+    # Python with nix-ld compatibility
+    (writeShellScriptBin "python" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${python3}/bin/python "$@"
+    '')
+    (writeShellScriptBin "python3" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${python3}/bin/python3 "$@"
+    '')
+    (writeShellScriptBin "pip" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${python3}/bin/pip "$@"
+    '')
+    (writeShellScriptBin "pip3" ''
+      export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+      exec ${python3}/bin/pip3 "$@"
+    '')
+    
     python3Packages.pip
     python3Packages.numpy
     python3Packages.pandas
