@@ -209,6 +209,7 @@ in
     git
     wlr-randr
     swaybg
+    shotman
     yubikey-personalization
     yubico-pam
     yubikey-manager
@@ -299,6 +300,11 @@ in
           floating.criteria = [
             { title = "Parallels Shared Clipboard"; }
           ];
+          keybindings = lib.mkOptionDefault {
+            "Mod4+p" = "exec shotman --capture window";
+            "Mod4+Shift+p" = "exec shotman --capture region";
+            "Mod4+Ctrl+p" = "exec shotman --capture output";
+          };
         };
 
         programs.git = {
