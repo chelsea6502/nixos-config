@@ -16,23 +16,18 @@
     disko.inputs.nixpkgs.follows = "nixpkgs";
   };
 
-  outputs =
-    { nixpkgs, ... }@inputs:
-    {
-      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {
-          inherit inputs;
-          inherit (inputs) nix-modules;
-        };
-        modules = [
-          ./configuration.nix
-          inputs.home-manager.nixosModules.home-manager
-          inputs.stylix.nixosModules.stylix
-          inputs.nixvim.nixosModules.nixvim
-          inputs.sops-nix.nixosModules.sops
-          inputs.disko.nixosModules.disko
-        ];
-      };
+  outputs = { nixpkgs, ... }@inputs: {
+    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+      system = "x86_64-linux";
+      specialArgs = { inherit inputs; };
+      modules = [
+        ./configuration.nix
+        inputs.home-manager.nixosModules.home-manager
+        inputs.stylix.nixosModules.stylix
+        inputs.nixvim.nixosModules.nixvim
+        inputs.sops-nix.nixosModules.sops
+        inputs.disko.nixosModules.disko
+      ];
     };
+  };
 }

@@ -2,7 +2,7 @@
   pkgs,
   lib,
   config,
-  nix-modules,
+  inputs,
   ...
 }:
 let
@@ -203,7 +203,7 @@ in
       packages = with pkgs; [ chromium lazygit zellij qutebrowser typescript libreoffice ];
     };
   };
-  programs.nixvim = import "${nix-modules}/nixvim.nix" { inherit pkgs; };
+  programs.nixvim = import "${inputs.nix-modules}/nixvim.nix" { inherit pkgs; };
 
   programs.chromium.extensions = [
     "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
