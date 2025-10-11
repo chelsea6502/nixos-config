@@ -15,6 +15,7 @@
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
     zjstatus.url = "github:dj95/zjstatus";
+    zjstatus.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =

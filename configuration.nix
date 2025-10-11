@@ -42,13 +42,14 @@
   sops.defaultSopsFormat = "yaml";
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
-  sops.secrets.github_token = {};
+  # sops.secrets.github_token = {};
   
   
   # Configure Nix to use GitHub token to avoid rate limiting
-  nix.settings.access-tokens = [
-    "github.com=${config.sops.secrets.github_token.path}"
-  ];
+  # Temporarily disabled due to invalid/expired token
+  # nix.settings.access-tokens = [
+  #   "github.com=${config.sops.secrets.github_token.path}"
+  # ];
   
   # Ensure the GitHub token file is readable by nix daemon
   nix.settings.trusted-users = [ "root" "@wheel" ];
@@ -62,9 +63,17 @@
     "nix-command"
     "flakes"
   ];
+  
+  # Automatic store optimization - hard-links identical files
+  nix.settings.auto-optimise-store = true;
   nix.optimise.automatic = true;
-  nix.gc.automatic = true;
-  nix.gc.options = "--delete-older-than 7d";
+  
+  # Automatic garbage collection
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
 
   environment.sessionVariables.WLR_NO_HARDWARE_CURSORS = 1;
   environment.sessionVariables.EDITOR = "nvim";
@@ -82,8 +91,8 @@
     saveconf = "sudo cp -R /etc/nixos/* ~/nixos-config/";
     loadconf = "sudo cp -R ~/nixos-config/* /etc/nixos/";
     switch = "sudo nixos-rebuild switch";
-    nix-update = "cd /etc/nixos && sudo NIX_CONFIG=\"access-tokens = github.com=$(sudo cat /run/secrets/github_token)\" nix flake update";
-    nix-clean = "sudo nix-collect-garbage -d && sudo nix-store --optimise";
+    nix-update = "cd /etc/nixos && sudo nix flake update";
+    nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
     git-auth = "ssh-add -K";
