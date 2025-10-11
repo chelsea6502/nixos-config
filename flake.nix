@@ -20,44 +20,29 @@
 
   outputs =
     { nixpkgs, ... }@inputs:
-    let
-      # Common specialArgs for all configurations
-      commonSpecialArgs = {
-        inherit inputs;
-        inherit (inputs) nix-modules;
-      };
-
-      # Common modules shared across configurations
-      commonModules = [
-        ./configuration.nix
-        (import ./disko.nix { })
-        inputs.home-manager.nixosModules.home-manager
-        inputs.stylix.nixosModules.stylix
-        inputs.nixvim.nixosModules.nixvim
-        inputs.sops-nix.nixosModules.sops
-        inputs.disko.nixosModules.disko
-        {
-          nixpkgs.overlays = [
-            (final: prev: {
-              zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-            })
-          ];
-        }
-      ];
-
-      # Helper function to create a NixOS system configuration
-      mkSystem =
-        system: platformModule:
-        nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = commonSpecialArgs;
-          modules = commonModules ++ [ platformModule ];
-        };
-    in
     {
-      nixosConfigurations = {
-        nixos = mkSystem "x86_64-linux" { };
-        nixos-mac = mkSystem "aarch64-linux" ./mac.nix;
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+          inherit (inputs) nix-modules;
+        };
+        modules = [
+          ./configuration.nix
+          (import ./disko.nix { })
+          inputs.home-manager.nixosModules.home-manager
+          inputs.stylix.nixosModules.stylix
+          inputs.nixvim.nixosModules.nixvim
+          inputs.sops-nix.nixosModules.sops
+          inputs.disko.nixosModules.disko
+          {
+            nixpkgs.overlays = [
+              (final: prev: {
+                zjstatus = inputs.zjstatus.packages.${prev.system}.default;
+              })
+            ];
+          }
+        ];
       };
     };
 }

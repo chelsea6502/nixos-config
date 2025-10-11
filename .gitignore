@@ -1,7 +1,6 @@
 # NixOS specific
 /cachix
 cachix.nix
-hardware-configuration.nix
 
 # Nix build results
 result
