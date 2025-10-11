@@ -2,7 +2,7 @@
 #!nix-shell -i bash
 
 # Python FHS Environment for maximum pip install compatibility
-# Usage: nix-shell devShells/python.nix
+# Usage: nix-shell python.nix
 # This creates a traditional Linux-like environment where pip packages work reliably
 
 { pkgs ? import <nixpkgs> { } }:
