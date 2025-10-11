@@ -35,7 +35,7 @@
 
   boot.kernelParams = [ "video=3840x2160@240" ];
   hardware.display.outputs.DP-3.mode = "3840x2160@240";
-  nix.settings.max-jobs = 32;
+  nix.settings.max-jobs = "auto";
 
   # SOPS configuration
   sops.defaultSopsFile = ./keys/secrets.yaml;
@@ -119,11 +119,14 @@
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
   hardware.bluetooth.settings = {
-    General.Enable = "Source,Sink,Media,Socket";
-    "Device D2:02:D1:A9:2F:0A" = {
-      Name = "BT5.0MOUSE2";
-      Trusted = true;
-      Blocked = false;
+    General = {
+      Enable = "Source,Sink,Media,Socket";
+      AutoEnable = true;
+    };
+    Policy = {
+      AutoEnable = true;
+      ReconnectAttempts = 7;
+      ReconnectIntervals = "1,2,4,8,16,32,64";
     };
   };
 
