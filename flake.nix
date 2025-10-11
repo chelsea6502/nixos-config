@@ -14,8 +14,6 @@
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";
     disko.inputs.nixpkgs.follows = "nixpkgs";
-    zjstatus.url = "github:dj95/zjstatus";
-    zjstatus.inputs.nixpkgs.follows = "nixpkgs";
   };
 
   outputs =
@@ -35,13 +33,6 @@
           inputs.nixvim.nixosModules.nixvim
           inputs.sops-nix.nixosModules.sops
           inputs.disko.nixosModules.disko
-          {
-            nixpkgs.overlays = [
-              (final: prev: {
-                zjstatus = inputs.zjstatus.packages.${prev.system}.default;
-              })
-            ];
-          }
         ];
       };
     };

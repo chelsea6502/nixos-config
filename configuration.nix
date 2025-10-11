@@ -12,7 +12,6 @@
   networking.hostName = "nixos";
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
-  networking.firewall.enable = true;
 
   networking.networkmanager.enable = true;
   networking.networkmanager.ensureProfiles.profiles.WilcoX = {
@@ -42,22 +41,12 @@
   sops.defaultSopsFormat = "yaml";
   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
   sops.age.generateKey = true;
-  # sops.secrets.github_token = {};
-  
-  
-  # Configure Nix to use GitHub token to avoid rate limiting
-  # Temporarily disabled due to invalid/expired token
-  # nix.settings.access-tokens = [
-  #   "github.com=${config.sops.secrets.github_token.path}"
-  # ];
   
   # Ensure the GitHub token file is readable by nix daemon
   nix.settings.trusted-users = [ "root" "@wheel" ];
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
-
-  security.polkit.enable = true;
 
   nix.settings.experimental-features = [
     "nix-command"
@@ -77,7 +66,6 @@
   ];
   
   # Automatic store optimization - hard-links identical files
-  nix.settings.auto-optimise-store = true;
   nix.optimise.automatic = true;
   
   # Automatic garbage collection
@@ -115,20 +103,22 @@
 
   security.pam.services.swaylock = { };
 
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  services.blueman.enable = true;
-  hardware.bluetooth.settings = {
-    General = {
-      Enable = "Source,Sink,Media,Socket";
-      AutoEnable = true;
-    };
-    Policy = {
-      AutoEnable = true;
-      ReconnectAttempts = 7;
-      ReconnectIntervals = "1,2,4,8,16,32,64";
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        Enable = "Source,Sink,Media,Socket";
+        AutoEnable = true;
+      };
+      Policy = {
+        AutoEnable = true;
+        ReconnectAttempts = 7;
+        ReconnectIntervals = "1,2,4,8,16,32,64";
+      };
     };
   };
+  services.blueman.enable = true;
 
   services.openssh.enable = false;
   services.pipewire.enable = true;
@@ -371,8 +361,6 @@
       programs.qutebrowser.settings.content.javascript.clipboard = "access-paste";
 
       stylix.autoEnable = true;
-
-      xdg.configFile."zellij/layouts/default.kdl" = import "${nix-modules}/zellij.nix" { inherit pkgs; };
     };
 
   stylix = {
