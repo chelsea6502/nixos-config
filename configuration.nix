@@ -5,8 +5,60 @@
   nix-modules,
   ...
 }:
+let
+  # Python FHS Environment for maximum pip install compatibility
+  pythonFHS = pkgs.buildFHSEnv {
+    name = "python-fhs";
+    targetPkgs = pkgs: with pkgs; [
+      python3 python3Packages.pip python3Packages.virtualenv
+      python3Packages.setuptools python3Packages.wheel
+      gcc glibc pkg-config zlib stdenv.cc.cc
+      blas lapack openblas libffi glib gtk3 cairo pango gdk-pixbuf
+      atk freetype fontconfig curl openssl libssh sqlite libxml2
+      libxslt expat bzip2 xz zstd util-linux systemd libsodium
+      ncurses readline attr acl
+    ];
+    runScript = "bash";
+    profile = ''
+      if [ -f "requirements.txt" ] && [ ! -d ".venv" ]; then
+        python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt
+      elif [ -d ".venv" ]; then
+        source .venv/bin/activate
+      fi
+    '';
+  };
+in
 {
   imports = [ ./hardware-configuration.nix ];
+
+  # Disk configuration
+  disko.devices.disk.my-disk = {
+    device = "/dev/sda";
+    type = "disk";
+    content = {
+      type = "gpt";
+      partitions = {
+        ESP = {
+          type = "EF00";
+          size = "500M";
+          content = {
+            type = "filesystem";
+            format = "vfat";
+            mountpoint = "/boot";
+            mountOptions = [ "umask=0077" ];
+          };
+        };
+        root = {
+          size = "100%";
+          content = {
+            type = "filesystem";
+            format = "ext4";
+            mountpoint = "/";
+          };
+        };
+      };
+    };
+  };
 
   system.stateVersion = "25.05";
   networking.hostName = "nixos";
@@ -97,7 +149,7 @@
     git-auth = "ssh-add -K";
     z = "zellij";
 
-    pydev = "nix-shell -E '(import /etc/nixos/python.nix {})' --command 'python3 -m venv .venv && source .venv/bin/activate && pip install -r requirements.txt'";
+    pydev = "${pythonFHS}/bin/python-fhs";
   };
 
   hardware.bluetooth = {

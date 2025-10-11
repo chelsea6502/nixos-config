@@ -27,7 +27,6 @@
         };
         modules = [
           ./configuration.nix
-          (import ./disko.nix { })
           inputs.home-manager.nixosModules.home-manager
           inputs.stylix.nixosModules.stylix
           inputs.nixvim.nixosModules.nixvim
