@@ -158,7 +158,6 @@ in
   };
   services.blueman.enable = true;
 
-  services.openssh.enable = false;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
@@ -199,7 +198,6 @@ in
     allowNoPasswordLogin = true;
     users.chelsea = {
       isNormalUser = true;
-      description = "chelsea";
       extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
       initialPassword = "blah";
       packages = with pkgs; [ chromium lazygit zellij qutebrowser typescript libreoffice ];
@@ -221,8 +219,6 @@ in
     users.chelsea =
       { config, ... }:
       {
-      home.username = "chelsea";
-      home.homeDirectory = "/home/chelsea";
       home.stateVersion = "25.05";
 
       home.pointerCursor.gtk.enable = true;
@@ -272,7 +268,6 @@ in
       programs.swaylock.enable = true;
 
       services.swayidle.enable = true;
-      services.swayidle.package = pkgs.swayidle;
       services.swayidle.timeouts = [
         {
           timeout = 290;
