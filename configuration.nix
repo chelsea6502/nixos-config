@@ -68,27 +68,23 @@ in
   disko.devices.disk.my-disk = {
     device = "/dev/sda";
     type = "disk";
-    content = {
-      type = "gpt";
-      partitions = {
-        ESP = {
-          type = "EF00";
-          size = "500M";
-          content = {
-            type = "filesystem";
-            format = "vfat";
-            mountpoint = "/boot";
-            mountOptions = [ "umask=0077" ];
-          };
-        };
-        root = {
-          size = "100%";
-          content = {
-            type = "filesystem";
-            format = "ext4";
-            mountpoint = "/";
-          };
-        };
+    content.type = "gpt";
+    content.partitions.ESP = {
+      type = "EF00";
+      size = "500M";
+      content = {
+        type = "filesystem";
+        format = "vfat";
+        mountpoint = "/boot";
+        mountOptions = [ "umask=0077" ];
+      };
+    };
+    content.partitions.root = {
+      size = "100%";
+      content = {
+        type = "filesystem";
+        format = "ext4";
+        mountpoint = "/";
       };
     };
   };
@@ -98,19 +94,19 @@ in
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
 
-  networking.networkmanager.enable = true;
-  networking.networkmanager.ensureProfiles.profiles.WilcoX = {
-    connection.id = "WilcoX";
-    connection.type = "wifi";
-    wifi.ssid = "WilcoX";
-    wifi-security.key-mgmt = "wpa-psk";
-    wifi-security.psk = "milawa78";
+  networking.networkmanager = {
+    enable = true;
+    ensureProfiles.profiles.WilcoX = {
+      connection.id = "WilcoX";
+      connection.type = "wifi";
+      wifi.ssid = "WilcoX";
+      wifi-security.key-mgmt = "wpa-psk";
+      wifi-security.psk = "milawa78";
+    };
   };
 
-  boot.loader = {
-    systemd-boot.enable = true;
-    efi.canTouchEfiVariables = true;
-  };
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
   security.pam.services = {
     login.u2fAuth = true;
@@ -125,10 +121,12 @@ in
   hardware.display.outputs.DP-3.mode = "3840x2160@240";
 
   # SOPS configuration
-  sops.defaultSopsFile = ./keys/secrets.yaml;
-  sops.defaultSopsFormat = "yaml";
-  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-  sops.age.generateKey = true;
+  sops = {
+    defaultSopsFile = ./keys/secrets.yaml;
+    defaultSopsFormat = "yaml";
+    age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+    age.generateKey = true;
+  };
 
   boot.initrd.systemd.network.wait-online.enable = false;
   networking.dhcpcd.wait = "background";
@@ -191,10 +189,8 @@ in
     pydev = "${pythonFHS}/bin/python-fhs";
   };
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
 
   services.pipewire = {
@@ -202,9 +198,11 @@ in
     alsa.enable = true;
     pulse.enable = true;
   };
-  services.greetd.enable = true;
-  services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
-  services.greetd.settings.default_session.user = "chelsea";
+  services.greetd = {
+    enable = true;
+    settings.default_session.command = "${pkgs.sway}/bin/sway";
+    settings.default_session.user = "chelsea";
+  };
   programs.ssh.startAgent = true;
 
   environment.systemPackages = with pkgs; [
@@ -222,10 +220,8 @@ in
 
   virtualisation.docker = {
     enable = true;
-    rootless = {
-      enable = true;
-      setSocketVariable = true;
-    };
+    rootless.enable = true;
+    rootless.setSocketVariable = true;
     daemon.settings = {
       experimental = true;
       default-address-pools = [
@@ -277,10 +273,12 @@ in
       {
         home.stateVersion = "25.05";
 
-        home.pointerCursor.gtk.enable = true;
-        home.pointerCursor.package = pkgs.adwaita-icon-theme;
-        home.pointerCursor.name = "Adwaita";
-        home.pointerCursor.size = 16;
+        home.pointerCursor = {
+          gtk.enable = true;
+          package = pkgs.adwaita-icon-theme;
+          name = "Adwaita";
+          size = 16;
+        };
 
         programs.home-manager.enable = true;
         wayland.windowManager.sway.enable = true;
@@ -288,34 +286,39 @@ in
           modifier = "Mod4";
           terminal = "alacritty";
           menu = "rofi -show run";
-
           bars = [ ];
           output."DP-3".mode = "3840x2160@240Hz";
           output."DP-3".scale = "2";
           window.titlebar = false;
-          gaps.smartGaps = true;
-          gaps.smartBorders = "no_gaps";
-          gaps.inner = 10;
-          gaps.outer = 10;
+          gaps = {
+            smartGaps = true;
+            smartBorders = "no_gaps";
+            inner = 10;
+            outer = 10;
+          };
           floating.criteria = [
             { title = "Parallels Shared Clipboard"; }
           ];
         };
 
-        programs.git.enable = true;
-        programs.git.userName = "Chelsea Wilkinson";
-        programs.git.userEmail = "mail@chelseawilkinson.me";
-        programs.git.extraConfig.pull.rebase = true;
+        programs.git = {
+          enable = true;
+          userName = "Chelsea Wilkinson";
+          userEmail = "mail@chelseawilkinson.me";
+          extraConfig.pull.rebase = true;
+        };
 
         # Alacritty
         programs.alacritty.enable = true;
         programs.alacritty.settings = {
           cursor.style.shape = "Beam";
           cursor.style.blinking = "On";
-          window.decorations = "buttonless";
-          window.padding.x = 14;
-          window.padding.y = 14;
-          window.option_as_alt = "Both";
+          window = {
+            decorations = "buttonless";
+            padding.x = 14;
+            padding.y = 14;
+            option_as_alt = "Both";
+          };
           font.size = lib.mkForce 10;
         };
 
@@ -341,62 +344,63 @@ in
           }
         ];
 
-        programs.waybar.enable = true;
-        programs.waybar.systemd.enable = true;
-        programs.waybar.style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
-        programs.waybar.settings.mainBar = {
-          layer = "top";
-          position = "top";
-          height = 18;
-          modules-left = [ "sway/workspaces" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [
-            "cpu"
-            "temperature"
-            "memory"
-            "disk"
-            "clock"
-          ];
-          cpu.format = "| {usage}%";
-          cpu.interval = 1;
-
-          temperature.format = "({temperatureC}C)";
-          temperature.thermal-zone = 1;
-          temperature.interval = 1;
-
-          memory.format = "| {used}GiB ({percentage}%)";
-          memory.interval = 1;
-
-          disk.format = "| {used} ({percentage_used}%)";
-          disk.interval = 1;
-
-          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-          clock.interval = 1;
+        programs.waybar = {
+          enable = true;
+          systemd.enable = true;
+          style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
+          settings.mainBar = {
+            layer = "top";
+            position = "top";
+            height = 18;
+            modules-left = [ "sway/workspaces" ];
+            modules-center = [ "sway/window" ];
+            modules-right = [
+              "cpu"
+              "temperature"
+              "memory"
+              "disk"
+              "clock"
+            ];
+            cpu.format = "| {usage}%";
+            cpu.interval = 1;
+            temperature.format = "({temperatureC}C)";
+            temperature.thermal-zone = 1;
+            temperature.interval = 1;
+            memory.format = "| {used}GiB ({percentage}%)";
+            memory.interval = 1;
+            disk.format = "| {used} ({percentage_used}%)";
+            disk.interval = 1;
+            clock.format = "| {:%a %d %b %I:%M:%S%p} |";
+            clock.interval = 1;
+          };
         };
 
         programs.rofi = {
           enable = true;
           package = pkgs.rofi-wayland;
-          extraConfig = {
-            modi = "run";
-            hide-scrollbar = true;
-          };
-
+          extraConfig.modi = "run";
+          extraConfig.hide-scrollbar = true;
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
         home.packages = [ pkgs.bemoji ];
 
-        programs.vscode.enable = true;
-        programs.vscode.package = pkgs.vscodium;
-        programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
-          rooveterinaryinc.roo-cline
-        ];
+        programs.vscode = {
+          enable = true;
+          package = pkgs.vscodium;
+          profiles.default.extensions = with pkgs.vscode-extensions; [
+            rooveterinaryinc.roo-cline
+          ];
+        };
 
-        programs.qutebrowser.enable = true;
-        programs.qutebrowser.settings.tabs.show = "multiple";
-        programs.qutebrowser.settings.statusbar.show = "in-mode";
-        programs.qutebrowser.settings.content.javascript.clipboard = "access-paste";
+        programs.qutebrowser = {
+          enable = true;
+          settings = {
+            tabs.show = "multiple";
+            statusbar.show = "in-mode";
+            content.javascript.clipboard = "access-paste";
+          };
+        };
 
         stylix.autoEnable = true;
       };
@@ -414,22 +418,14 @@ in
     image = ./wallpaper.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
     fonts = {
-      serif = {
-        package = pkgs.open-sans;
-        name = "Open Sans";
-      };
-      sansSerif = {
-        package = pkgs.open-sans;
-        name = "Open Sans";
-      };
-      monospace = {
-        package = pkgs.nerd-fonts.fira-code;
-        name = "Fira Code Nerdfont";
-      };
-      emoji = {
-        package = pkgs.noto-fonts-emoji;
-        name = "Noto Color Emoji";
-      };
+      serif.package = pkgs.open-sans;
+      serif.name = "Open Sans";
+      sansSerif.package = pkgs.open-sans;
+      sansSerif.name = "Open Sans";
+      monospace.package = pkgs.nerd-fonts.fira-code;
+      monospace.name = "Fira Code Nerdfont";
+      emoji.package = pkgs.noto-fonts-emoji;
+      emoji.name = "Noto Color Emoji";
     };
   };
 }
