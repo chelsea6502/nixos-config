@@ -9,15 +9,48 @@ let
   # Python FHS Environment for maximum pip install compatibility
   pythonFHS = pkgs.buildFHSEnv {
     name = "python-fhs";
-    targetPkgs = pkgs: with pkgs; [
-      python3 python3Packages.pip python3Packages.virtualenv
-      python3Packages.setuptools python3Packages.wheel
-      gcc glibc pkg-config zlib stdenv.cc.cc
-      blas lapack openblas libffi glib gtk3 cairo pango gdk-pixbuf
-      atk freetype fontconfig curl openssl libssh sqlite libxml2
-      libxslt expat bzip2 xz zstd util-linux systemd libsodium
-      ncurses readline attr acl
-    ];
+    targetPkgs =
+      pkgs: with pkgs; [
+        python3
+        python3Packages.pip
+        python3Packages.virtualenv
+        python3Packages.setuptools
+        python3Packages.wheel
+        gcc
+        glibc
+        pkg-config
+        zlib
+        stdenv.cc.cc
+        blas
+        lapack
+        openblas
+        libffi
+        glib
+        gtk3
+        cairo
+        pango
+        gdk-pixbuf
+        atk
+        freetype
+        fontconfig
+        curl
+        openssl
+        libssh
+        sqlite
+        libxml2
+        libxslt
+        expat
+        bzip2
+        xz
+        zstd
+        util-linux
+        systemd
+        libsodium
+        ncurses
+        readline
+        attr
+        acl
+      ];
     runScript = "bash";
     profile = ''
       if [ -f "requirements.txt" ] && [ ! -d ".venv" ]; then
@@ -82,7 +115,7 @@ in
   security.pam.services = {
     login.u2fAuth = true;
     sudo.u2fAuth = true;
-    swaylock = {};
+    swaylock = { };
   };
   services.udev.packages = [ pkgs.yubikey-personalization ];
 
@@ -102,9 +135,15 @@ in
 
   nix = {
     settings = {
-      experimental-features = [ "nix-command" "flakes" ];
+      experimental-features = [
+        "nix-command"
+        "flakes"
+      ];
       max-jobs = "auto";
-      trusted-users = [ "root" "@wheel" ];
+      trusted-users = [
+        "root"
+        "@wheel"
+      ];
       substituters = [
         "https://cache.nixos.org"
         "https://nix-community.cachix.org"
@@ -189,7 +228,12 @@ in
     };
     daemon.settings = {
       experimental = true;
-      default-address-pools = [{ base = "172.30.0.0/16"; size = 24; }];
+      default-address-pools = [
+        {
+          base = "172.30.0.0/16";
+          size = 24;
+        }
+      ];
     };
   };
 
@@ -198,9 +242,21 @@ in
     allowNoPasswordLogin = true;
     users.chelsea = {
       isNormalUser = true;
-      extraGroups = [ "networkmanager" "wheel" "docker" "input" ];
+      extraGroups = [
+        "networkmanager"
+        "wheel"
+        "docker"
+        "input"
+      ];
       initialPassword = "blah";
-      packages = with pkgs; [ chromium lazygit zellij qutebrowser typescript libreoffice ];
+      packages = with pkgs; [
+        chromium
+        lazygit
+        zellij
+        qutebrowser
+        typescript
+        libreoffice
+      ];
     };
   };
   programs.nixvim = import "${inputs.nix-modules}/nixvim.nix" { inherit pkgs; };
@@ -219,138 +275,161 @@ in
     users.chelsea =
       { config, ... }:
       {
-      home.stateVersion = "25.05";
+        home.stateVersion = "25.05";
 
-      home.pointerCursor.gtk.enable = true;
-      home.pointerCursor.package = pkgs.adwaita-icon-theme;
-      home.pointerCursor.name = "Adwaita";
-      home.pointerCursor.size = 16;
+        home.pointerCursor.gtk.enable = true;
+        home.pointerCursor.package = pkgs.adwaita-icon-theme;
+        home.pointerCursor.name = "Adwaita";
+        home.pointerCursor.size = 16;
 
-      programs.home-manager.enable = true;
-      wayland.windowManager.sway.enable = true;
-      wayland.windowManager.sway.config = {
-        modifier = "Mod4";
-        terminal = "alacritty";
-        menu = "rofi -show run";
+        programs.home-manager.enable = true;
+        wayland.windowManager.sway.enable = true;
+        wayland.windowManager.sway.config = {
+          modifier = "Mod4";
+          terminal = "alacritty";
+          menu = "rofi -show run";
 
-        bars = [ ];
-        output."DP-3".mode = "3840x2160@240Hz";
-        output."DP-3".scale = "2";
-        window.titlebar = false;
-        gaps.smartGaps = true;
-        gaps.smartBorders = "no_gaps";
-        gaps.inner = 10;
-        gaps.outer = 10;
-        floating.criteria = [
-          { title = "Parallels Shared Clipboard"; }
-        ];
-      };
-
-      programs.git.enable = true;
-      programs.git.userName = "Chelsea Wilkinson";
-      programs.git.userEmail = "mail@chelseawilkinson.me";
-      programs.git.extraConfig.pull.rebase = true;
-
-      # Alacritty
-      programs.alacritty.enable = true;
-      programs.alacritty.settings = {
-        cursor.style.shape = "Beam";
-        cursor.style.blinking = "On";
-        window.decorations = "buttonless";
-        window.padding.x = 14;
-        window.padding.y = 14;
-        window.option_as_alt = "Both";
-        font.size = lib.mkForce 10;
-      };
-
-      services.mako.enable = true;
-
-      programs.swaylock.enable = true;
-
-      services.swayidle.enable = true;
-      services.swayidle.timeouts = [
-        {
-          timeout = 290;
-          command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
-        }
-        {
-          timeout = 300;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      services.swayidle.events = [
-        {
-          event = "before-sleep";
-          command = "${pkgs.swaylock-effects}/bin/swaylock";
-        }
-      ];
-
-      programs.waybar.enable = true;
-      programs.waybar.systemd.enable = true;
-      programs.waybar.style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
-      programs.waybar.settings.mainBar = {
-        layer = "top";
-        position = "top";
-        height = 18;
-        modules-left = [ "sway/workspaces" ];
-        modules-center = [ "sway/window" ];
-        modules-right = [ "cpu" "temperature" "memory" "disk" "clock" ];
-        cpu.format = "| {usage}%";
-        cpu.interval = 1;
-
-        temperature.format = "({temperatureC}C)";
-        temperature.thermal-zone = 1;
-        temperature.interval = 1;
-
-        memory.format = "| {used}GiB ({percentage}%)";
-        memory.interval = 1;
-
-        disk.format = "| {used} ({percentage_used}%)";
-        disk.interval = 1;
-
-        clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-        clock.interval = 1;
-      };
-
-      programs.rofi = {
-        enable = true;
-        package = pkgs.rofi-wayland;
-        extraConfig = {
-          modi = "run";
-          hide-scrollbar = true;
+          bars = [ ];
+          output."DP-3".mode = "3840x2160@240Hz";
+          output."DP-3".scale = "2";
+          window.titlebar = false;
+          gaps.smartGaps = true;
+          gaps.smartBorders = "no_gaps";
+          gaps.inner = 10;
+          gaps.outer = 10;
+          floating.criteria = [
+            { title = "Parallels Shared Clipboard"; }
+          ];
         };
 
-        theme = lib.mkForce "gruvbox-dark-soft";
-      };
+        programs.git.enable = true;
+        programs.git.userName = "Chelsea Wilkinson";
+        programs.git.userEmail = "mail@chelseawilkinson.me";
+        programs.git.extraConfig.pull.rebase = true;
 
-      home.packages = [ pkgs.bemoji ];
+        # Alacritty
+        programs.alacritty.enable = true;
+        programs.alacritty.settings = {
+          cursor.style.shape = "Beam";
+          cursor.style.blinking = "On";
+          window.decorations = "buttonless";
+          window.padding.x = 14;
+          window.padding.y = 14;
+          window.option_as_alt = "Both";
+          font.size = lib.mkForce 10;
+        };
 
-      programs.vscode.enable = true;
-      programs.vscode.package = pkgs.vscodium;
-      programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
-        rooveterinaryinc.roo-cline
-      ];
+        services.mako.enable = true;
 
-      programs.qutebrowser.enable = true;
-      programs.qutebrowser.settings.tabs.show = "multiple";
-      programs.qutebrowser.settings.statusbar.show = "in-mode";
-      programs.qutebrowser.settings.content.javascript.clipboard = "access-paste";
+        programs.swaylock.enable = true;
 
-      stylix.autoEnable = true;
+        services.swayidle.enable = true;
+        services.swayidle.timeouts = [
+          {
+            timeout = 290;
+            command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
+          }
+          {
+            timeout = 300;
+            command = "${pkgs.systemd}/bin/systemctl suspend";
+          }
+        ];
+        services.swayidle.events = [
+          {
+            event = "before-sleep";
+            command = "${pkgs.swaylock-effects}/bin/swaylock";
+          }
+        ];
+
+        programs.waybar.enable = true;
+        programs.waybar.systemd.enable = true;
+        programs.waybar.style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
+        programs.waybar.settings.mainBar = {
+          layer = "top";
+          position = "top";
+          height = 18;
+          modules-left = [ "sway/workspaces" ];
+          modules-center = [ "sway/window" ];
+          modules-right = [
+            "cpu"
+            "temperature"
+            "memory"
+            "disk"
+            "clock"
+          ];
+          cpu.format = "| {usage}%";
+          cpu.interval = 1;
+
+          temperature.format = "({temperatureC}C)";
+          temperature.thermal-zone = 1;
+          temperature.interval = 1;
+
+          memory.format = "| {used}GiB ({percentage}%)";
+          memory.interval = 1;
+
+          disk.format = "| {used} ({percentage_used}%)";
+          disk.interval = 1;
+
+          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
+          clock.interval = 1;
+        };
+
+        programs.rofi = {
+          enable = true;
+          package = pkgs.rofi-wayland;
+          extraConfig = {
+            modi = "run";
+            hide-scrollbar = true;
+          };
+
+          theme = lib.mkForce "gruvbox-dark-soft";
+        };
+
+        home.packages = [ pkgs.bemoji ];
+
+        programs.vscode.enable = true;
+        programs.vscode.package = pkgs.vscodium;
+        programs.vscode.profiles.default.extensions = with pkgs.vscode-extensions; [
+          rooveterinaryinc.roo-cline
+        ];
+
+        programs.qutebrowser.enable = true;
+        programs.qutebrowser.settings.tabs.show = "multiple";
+        programs.qutebrowser.settings.statusbar.show = "in-mode";
+        programs.qutebrowser.settings.content.javascript.clipboard = "access-paste";
+
+        stylix.autoEnable = true;
       };
   };
 
-  fonts.packages = with pkgs; [ open-sans nerd-fonts.fira-code noto-fonts-emoji noto-fonts-cjk-sans ];
+  fonts.packages = with pkgs; [
+    open-sans
+    nerd-fonts.fira-code
+    noto-fonts-emoji
+    noto-fonts-cjk-sans
+  ];
 
   stylix = {
     enable = true;
     image = ./wallpaper.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
     fonts = {
-      serif = { package = pkgs.open-sans; name = "Open Sans"; };
-      sansSerif = { package = pkgs.open-sans; name = "Open Sans"; };
-      monospace = { package = pkgs.nerd-fonts.fira-code; name = "Fira Code Nerdfont"; };
-      emoji = { package = pkgs.noto-fonts-emoji; name = "Noto Color Emoji"; };
+      serif = {
+        package = pkgs.open-sans;
+        name = "Open Sans";
+      };
+      sansSerif = {
+        package = pkgs.open-sans;
+        name = "Open Sans";
+      };
+      monospace = {
+        package = pkgs.nerd-fonts.fira-code;
+        name = "Fira Code Nerdfont";
+      };
+      emoji = {
+        package = pkgs.noto-fonts-emoji;
+        name = "Noto Color Emoji";
+      };
     };
   };
 }
