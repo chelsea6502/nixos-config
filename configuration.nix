@@ -141,6 +141,7 @@ in
     secrets.bluetooth_mouse_mac.mode = "0400";
     secrets.github_token.mode = "0400";
     secrets.ssh_authorized_key.mode = "0400";
+    secrets.anthropic_api_key.mode = "0400";
   };
 
   # ============================================================================
@@ -330,6 +331,9 @@ in
           secrets.github_token = {
             path = "${config.sops.defaultSymlinkPath}/github_token";
           };
+          secrets.anthropic_api_key = {
+            path = "${config.sops.defaultSymlinkPath}/anthropic_api_key";
+          };
         };
 
         home.pointerCursor = {
@@ -376,6 +380,7 @@ in
         programs.bash = {
           enable = true;
           initExtra = ''
+            export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
             export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
             export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
           '';
@@ -466,6 +471,9 @@ in
           profiles.default.extensions = with pkgs.vscode-extensions; [
             rooveterinaryinc.roo-cline
           ];
+          userSettings = {
+            "roo-cline.anthropicApiKey" = builtins.readFile config.sops.secrets.anthropic_api_key.path;
+          };
         };
 
         programs.qutebrowser = {
