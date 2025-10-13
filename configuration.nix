@@ -383,6 +383,7 @@ in
             export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
             export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
             export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
+            export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
           '';
         };
 
@@ -472,7 +473,7 @@ in
             rooveterinaryinc.roo-cline
           ];
           userSettings = {
-            "roo-cline.anthropicApiKey" = builtins.readFile config.sops.secrets.anthropic_api_key.path;
+            "roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
           };
         };
 
