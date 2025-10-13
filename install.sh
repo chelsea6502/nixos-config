@@ -1,14 +1,13 @@
 #!/usr/bin/env bash
 set -e
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <disk> <config>"
-    echo "Example: $0 /dev/sda nixos"
-    exit 1
-fi
+DISK=${1:-/dev/sda}
+CONFIG=${2:-nixos}
 
-DISK=$1
-CONFIG=$2
+echo "Installing NixOS with:"
+echo "  Disk: $DISK"
+echo "  Config: $CONFIG"
+echo ""
 
 # Enable flakes for the installation process
 mkdir -p ~/.config/nix
@@ -16,7 +15,8 @@ echo "experimental-features = nix-command flakes" > ~/.config/nix/nix.conf
 export NIX_CONFIG="experimental-features = nix-command flakes"
 
 # Clone the configuration repository directly to /etc/nixos
-sudo mkdir -p /etc/nixos
+# Remove existing /etc/nixos if it exists to avoid git clone conflicts
+sudo rm -rf /etc/nixos
 sudo git clone https://github.com/chelsea6502/nixos-config.git /etc/nixos
 cd /etc/nixos
 
