@@ -469,11 +469,13 @@ in
         programs.vscode = {
           enable = true;
           package = pkgs.vscodium;
-          profiles.default.extensions = with pkgs.vscode-extensions; [
-            rooveterinaryinc.roo-cline
-          ];
-          userSettings = {
-            "roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
+          profiles.default = {
+            extensions = with pkgs.vscode-extensions; [
+              rooveterinaryinc.roo-cline
+            ];
+            userSettings = {
+              "roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
+            };
           };
         };
 
