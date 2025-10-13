@@ -140,7 +140,6 @@ in
     secrets.wifi_env.mode = "0400";
     secrets.bluetooth_mouse_mac.mode = "0400";
     secrets.github_token.mode = "0400";
-    secrets.ssh_authorized_key.mode = "0400";
     secrets.anthropic_api_key.mode = "0400";
   };
 
@@ -210,7 +209,6 @@ in
     nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
-    git-auth = "ssh-add -K";
 
     pydev = "${python}/bin/python-fhs";
   };
@@ -245,6 +243,9 @@ in
   };
 
   programs.ssh.startAgent = true;
+  programs.ssh.extraConfig = ''
+    PKCS11Provider ${pkgs.yubico-piv-tool}/lib/libykcs11.so
+  '';
 
   virtualisation.docker = {
     enable = true;
@@ -278,9 +279,6 @@ in
         "input"
       ];
       hashedPassword = "!";
-      openssh.authorizedKeys.keyFiles = [
-        config.sops.secrets.ssh_authorized_key.path
-      ];
       packages = with pkgs; [
         chromium
         lazygit
@@ -351,7 +349,7 @@ in
           terminal = "alacritty";
           menu = "rofi -show run";
           bars = [ ];
-          output."DP-1" = {
+          output."DP-3" = {
             mode = "3840x2160@240Hz";
             scale = "2";
           };
@@ -375,6 +373,17 @@ in
           extraConfig.pull.rebase = true;
           extraConfig.credential.helper = "store";
           extraConfig.user.email = "\${GIT_USER_EMAIL}";
+        };
+
+        programs.ssh = {
+          enable = true;
+          matchBlocks = {
+            "*" = {
+              extraOptions = {
+                PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
+              };
+            };
+          };
         };
 
         programs.bash = {
