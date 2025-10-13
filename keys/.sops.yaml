@@ -1,0 +1,9 @@
+keys:
+  - &yubikey_slot1 age1yubikey1q0fth62auxvxc2cc6t9x9r0ectmluuttcqy7ru0yfpyhgjkcq99yu7xwdlw
+  - &yubikey_slot2 age1yubikey1qgtaefnn7s72vd0q3lxntuc6kf3z3hy6e9znsekn5u2j3yuke8fquva2d44
+creation_rules:
+  - path_regex: secrets.yaml$
+    key_groups:
+    - age:
+      - *yubikey_slot1
+      - *yubikey_slot2
