@@ -9,8 +9,6 @@
     stylix.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.url = "github:nix-community/nixvim/nixos-25.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
-    nix-modules.url = "github:chelsea6502/nix-modules";
-    nix-modules.flake = false;
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
     disko.url = "github:nix-community/disko";

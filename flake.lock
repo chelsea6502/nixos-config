@@ -246,22 +246,6 @@
         "type": "github"
       }
     },
-    "nix-modules": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1760161518,
-        "narHash": "sha256-LuyJhEhjDWG5NDeh9cy4OsfndGNepk6VHMkYaXvV47A=",
-        "owner": "chelsea6502",
-        "repo": "nix-modules",
-        "rev": "3880da6d4720fb3abd70e613fb079d9f899abea2",
-        "type": "github"
-      },
-      "original": {
-        "owner": "chelsea6502",
-        "repo": "nix-modules",
-        "type": "github"
-      }
-    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1760139962,
@@ -355,7 +339,6 @@
       "inputs": {
         "disko": "disko",
         "home-manager": "home-manager",
-        "nix-modules": "nix-modules",
         "nixpkgs": "nixpkgs",
         "nixvim": "nixvim",
         "sops-nix": "sops-nix",
