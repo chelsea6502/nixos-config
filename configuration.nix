@@ -495,13 +495,13 @@
         programs.git = {
           enable = true;
           userName = "Chelsea Wilkinson";
+          userEmail = "mail@chelseawilkinson.me";
           signing = {
             key = "0x4416C8B9A73A97EC";
             signByDefault = true;
           };
           extraConfig.pull.rebase = true;
           extraConfig.credential.helper = "store";
-          extraConfig.user.email = "\${GIT_USER_EMAIL}";
         };
 
         programs.gpg.enable = true;
