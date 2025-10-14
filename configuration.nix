@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  inputs,
   config,
   ...
 }:
@@ -348,13 +347,28 @@
 
         blink-cmp.enable = true;
         blink-cmp.settings = {
-          keymap."<Tab>" = [ "select_next" "fallback" ];
-          keymap."<S-Tab>" = [ "select_prev" "fallback" ];
-          keymap."<Enter>" = [ "accept" "fallback" ];
+          keymap."<Tab>" = [
+            "select_next"
+            "fallback"
+          ];
+          keymap."<S-Tab>" = [
+            "select_prev"
+            "fallback"
+          ];
+          keymap."<Enter>" = [
+            "accept"
+            "fallback"
+          ];
           signature.enabled = true;
           completion.documentation.auto_show = true;
           completion.list.selection.preselect = false;
-          sources.default = [ "lsp" "path" "buffer" "snippets" "copilot" ];
+          sources.default = [
+            "lsp"
+            "path"
+            "buffer"
+            "snippets"
+            "copilot"
+          ];
           sources.providers.copilot.async = true;
           sources.providers.copilot.module = "blink-copilot";
           sources.providers.copilot.name = "copilot";
@@ -394,7 +408,10 @@
         lazygit.enable = true;
       };
 
-      extraPlugins = with pkgs.vimPlugins; [ gruvbox-material no-neck-pain-nvim ];
+      extraPlugins = with pkgs.vimPlugins; [
+        gruvbox-material
+        no-neck-pain-nvim
+      ];
 
       extraConfigLua = ''
         vim.deprecate = function() end
