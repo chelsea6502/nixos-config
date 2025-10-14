@@ -170,7 +170,6 @@
     sops
     age-plugin-yubikey
     gnupg
-    pinentry-curses
   ];
 
   programs.bash.promptInit = ''
