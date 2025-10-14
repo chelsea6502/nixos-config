@@ -5,24 +5,6 @@
   config,
   ...
 }:
-let
-  python = pkgs.buildFHSEnv {
-    name = "python-fhs";
-    targetPkgs =
-      pkgs: with pkgs; [
-        python3
-        python3Packages.pip
-        python3Packages.virtualenv
-      ];
-    runScript = "bash";
-    profile = ''
-      [ ! -f "requirements.txt" ] && return
-      virtualenv .venv
-      source .venv/bin/activate
-      pip install -q -r requirements.txt
-    '';
-  };
-in
 {
   imports = [ ./hardware-configuration.nix ];
 
@@ -153,9 +135,7 @@ in
         "nix-command"
         "flakes"
       ];
-      trusted-users = [
-        "root"
-      ];
+      trusted-users = [ "root" ];
       substituters = [
         "https://nix-community.cachix.org"
         "https://nixpkgs-wayland.cachix.org"
@@ -210,7 +190,19 @@ in
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
 
-    pydev = "${python}/bin/python-fhs";
+    pydev = "${
+      pkgs.buildFHSEnv {
+        name = "python-fhs";
+        targetPkgs =
+          pkgs: with pkgs; [
+            python3
+            python3Packages.pip
+            python3Packages.virtualenv
+          ];
+        runScript = "bash";
+        profile = ''[ ! -f "requirements.txt" ] && return; virtualenv .venv; source .venv/bin/activate; pip install -q -r requirements.txt'';
+      }
+    }/bin/python-fhs";
   };
 
   i18n.inputMethod = {
@@ -320,18 +312,10 @@ in
           defaultSopsFile = ./keys/secrets.yaml;
           defaultSymlinkPath = "/run/user/1000/secrets";
           defaultSecretsMountPoint = "/run/user/1000/secrets.d";
-          environment = {
-            PATH = "${pkgs.age-plugin-yubikey}/bin:$PATH";
-          };
-          secrets.git_user_email = {
-            path = "${config.sops.defaultSymlinkPath}/git_user_email";
-          };
-          secrets.github_token = {
-            path = "${config.sops.defaultSymlinkPath}/github_token";
-          };
-          secrets.anthropic_api_key = {
-            path = "${config.sops.defaultSymlinkPath}/anthropic_api_key";
-          };
+          environment.PATH = "${pkgs.age-plugin-yubikey}/bin:$PATH";
+          secrets.git_user_email.path = "${config.sops.defaultSymlinkPath}/git_user_email";
+          secrets.github_token.path = "${config.sops.defaultSymlinkPath}/github_token";
+          secrets.anthropic_api_key.path = "${config.sops.defaultSymlinkPath}/anthropic_api_key";
         };
 
         home.pointerCursor = {
@@ -377,13 +361,7 @@ in
 
         programs.ssh = {
           enable = true;
-          matchBlocks = {
-            "*" = {
-              extraOptions = {
-                PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
-              };
-            };
-          };
+          matchBlocks."*".extraOptions.PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
         };
 
         programs.bash = {
@@ -479,12 +457,8 @@ in
           enable = true;
           package = pkgs.vscodium;
           profiles.default = {
-            extensions = with pkgs.vscode-extensions; [
-              rooveterinaryinc.roo-cline
-            ];
-            userSettings = {
-              "roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
-            };
+            extensions = with pkgs.vscode-extensions; [ rooveterinaryinc.roo-cline ];
+            userSettings."roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
           };
         };
 
