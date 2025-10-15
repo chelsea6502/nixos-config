@@ -529,7 +529,10 @@
         };
 
         programs.gpg.enable = true;
-        programs.gpg.scdaemonSettings.disable-ccid = true;
+        programs.gpg.scdaemonSettings = {
+          disable-ccid = true;
+          pcsc-shared = true;
+        };
 
         services.gpg-agent.enable = true;
         services.gpg-agent.pinentry.package = pkgs.pinentry-curses;
