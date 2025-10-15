@@ -86,6 +86,16 @@
     ''}";
   };
 
+  systemd.services.gpg-restore-trustdb = {
+    description = "Restore GPG trust database";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "chelsea";
+      ExecStart = "${pkgs.coreutils}/bin/cp -f /etc/nixos/keys/trustdb.gpg /home/chelsea/.gnupg/trustdb.gpg";
+    };
+  };
+
   # ============================================================================
   # SECURITY
   # ============================================================================
@@ -155,6 +165,8 @@
   environment.sessionVariables = {
     EDITOR = "nvim";
     NIXOS_OZONE_WL = "1";
+    PASSWORD_STORE_DIR = "/run/media/chelsea/password-store";
+    PASSWORD_STORE_ENABLE_EXTENSIONS = "true";
   };
 
   environment.systemPackages = with pkgs; [
@@ -170,6 +182,14 @@
     sops
     age-plugin-yubikey
     gnupg
+    pass
+    passExtensions.pass-otp
+    passExtensions.pass-tomb
+    tomb
+    cryptsetup
+    pinentry-curses
+    wl-clipboard
+    tree
   ];
 
   programs.bash.promptInit = ''
@@ -185,6 +205,9 @@
     nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
     nix-verify = "sudo nix-store --verify --check-contents";
     nix-full = "nix-update && switch && nix-clean && nix-verify";
+
+    pass-open = "sudo -E tomb open /etc/nixos/keys/password-store.tomb -k /etc/nixos/keys/password-store.tomb.key";
+    pass-close = "sudo tomb close password-store";
 
     pydev = "${
       pkgs.buildFHSEnv {
@@ -432,6 +455,7 @@
     "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
     "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
     "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
+    "oblajhnjmknenodebpekmkliopipoolo" # ChromePass (pass integration)
   ];
 
   # ============================================================================
