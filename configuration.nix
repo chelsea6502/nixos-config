@@ -537,11 +537,8 @@
         programs.ssh = {
           enable = true;
           addKeysToAgent = "yes";
-          matchBlocks."*" = {
-            identityFile = null;
-            extraOptions = {
-              PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
-            };
+          matchBlocks."*".extraOptions = {
+            PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
           };
         };
 
