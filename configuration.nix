@@ -21,7 +21,7 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@240" ];
-  boot.initrd.systemd.enable = true;
+  # boot.initrd.systemd.enable = true;  # Disabled: incompatible with Yubikey LUKS
 
   # LUKS Encryption with Yubikey Pre-Boot Authentication
   # Note: These settings will be active after reinstallation with encrypted root
@@ -58,6 +58,7 @@
   # DISK
   # ============================================================================
 
+  # Disko handles partitioning only; install.sh handles LUKS+Yubikey
   disko.devices.disk.my-disk = {
     device = "/dev/nvme0n1";
     type = "disk";
@@ -75,18 +76,9 @@
     content.partitions.root = {
       size = "100%";
       content = {
-        type = "luks";
-        name = "cryptroot";
-        settings = {
-          allowDiscards = true;
-          # Note: The actual LUKS setup with Yubikey will be done via the setup script
-          # This disko config is for reference during reinstallation
-        };
-        content = {
-          type = "filesystem";
-          format = "ext4";
-          mountpoint = "/";
-        };
+        type = "filesystem";
+        format = "ext4";
+        mountpoint = "/";
       };
     };
   };
