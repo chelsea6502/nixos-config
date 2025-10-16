@@ -21,46 +21,14 @@
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@240" ];
-  # boot.initrd.systemd.enable = true;  # Disabled: incompatible with Yubikey LUKS
-
-  # LUKS Encryption with Yubikey Pre-Boot Authentication
-  # Note: These settings will be active after reinstallation with encrypted root
-  boot.initrd.kernelModules = [
-    "vfat"           # For reading boot partition
-    "nls_cp437"      # Character set support
-    "nls_iso8859-1"  # Character set support
-    "usbhid"         # USB HID support for Yubikey
-  ];
-
-  boot.initrd.luks.yubikeySupport = true;
-  
-  boot.initrd.luks.devices."cryptroot" = {
-    device = "/dev/nvme0n1p2";  # Encrypted root partition
-    allowDiscards = true;        # Enable TRIM for SSD
-    preLVM = true;
-    
-    yubikey = {
-      slot = 2;                  # Yubikey slot (programmed)
-      twoFactor = false;         # 1FA: Yubikey only (no passphrase)
-      gracePeriod = 30;          # Seconds to wait for Yubikey insertion
-      keyLength = 64;            # Key length in bytes (512 bits / 8)
-      saltLength = 16;           # Salt length in bytes
-      
-      storage = {
-        device = "/dev/nvme0n1p1";  # Boot partition
-        fsType = "vfat";
-        path = "/crypt-storage/default";
-      };
-    };
-  };
+  boot.initrd.systemd.enable = true;
 
   # ============================================================================
   # DISK
   # ============================================================================
 
-  # Disko handles partitioning only; install.sh handles LUKS+Yubikey
   disko.devices.disk.my-disk = {
-    device = "/dev/nvme0n1";
+    device = "/dev/sda";
     type = "disk";
     content.type = "gpt";
     content.partitions.ESP = {
@@ -222,6 +190,7 @@
     pinentry-curses
     wl-clipboard
     tree
+    file
   ];
 
   programs.bash.promptInit = ''
