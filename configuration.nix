@@ -130,6 +130,25 @@
     secrets.anthropic_api_key.mode = "0400";
   };
 
+  # Auto-generate SOPS age key from YubiKey on boot
+  systemd.services.sops-key-setup = {
+    description = "Generate SOPS age key from YubiKey";
+    wantedBy = [ "multi-user.target" ];
+    before = [ "sops-nix.service" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.writeShellScript "sops-key-setup" ''
+        mkdir -p /var/lib/sops-nix
+        if [ ! -f /var/lib/sops-nix/key.txt ]; then
+          ${pkgs.age-plugin-yubikey}/bin/age-plugin-yubikey --identity > /var/lib/sops-nix/key.txt
+          chmod 600 /var/lib/sops-nix/key.txt
+          chown root:root /var/lib/sops-nix/key.txt
+        fi
+      ''}";
+    };
+  };
+
   # ============================================================================
   # NIX
   # ============================================================================
