@@ -23,6 +23,13 @@ cd /etc/nixos
 # Update the disk device in configuration.nix
 sed -i "s|device = \"/dev/sda\"|device = \"$DISK\"|" configuration.nix
 
+# Clear the disk before partitioning
+echo "Clearing disk $DISK..."
+sudo wipefs --all --force "$DISK" || true
+sudo sgdisk --zap-all "$DISK" || true
+echo "Disk cleared successfully."
+echo ""
+
 # Install disko and partition the disk
 nix profile install nixpkgs#disko
 sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko --flake ".#$CONFIG"
