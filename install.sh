@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-DISK=${1:-/dev/sda}
+DISK=${1:-/dev/nvme1n1}
 CONFIG=${2:-nixos}
 
 echo "Installing NixOS with:"
