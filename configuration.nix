@@ -23,12 +23,43 @@
   boot.kernelParams = [ "video=3840x2160@240" ];
   boot.initrd.systemd.enable = true;
 
+  # LUKS Encryption with Yubikey Pre-Boot Authentication
+  # Note: These settings will be active after reinstallation with encrypted root
+  boot.initrd.kernelModules = [
+    "vfat"           # For reading boot partition
+    "nls_cp437"      # Character set support
+    "nls_iso8859-1"  # Character set support
+    "usbhid"         # USB HID support for Yubikey
+  ];
+
+  boot.initrd.luks.yubikeySupport = true;
+  
+  boot.initrd.luks.devices."cryptroot" = {
+    device = "/dev/nvme0n1p2";  # Encrypted root partition
+    allowDiscards = true;        # Enable TRIM for SSD
+    preLVM = true;
+    
+    yubikey = {
+      slot = 2;                  # Yubikey slot (programmed)
+      twoFactor = false;         # 1FA: Yubikey only (no passphrase)
+      gracePeriod = 30;          # Seconds to wait for Yubikey insertion
+      keyLength = 64;            # Key length in bytes (512 bits / 8)
+      saltLength = 16;           # Salt length in bytes
+      
+      storage = {
+        device = "/dev/nvme0n1p1";  # Boot partition
+        fsType = "vfat";
+        path = "/crypt-storage/default";
+      };
+    };
+  };
+
   # ============================================================================
   # DISK
   # ============================================================================
 
   disko.devices.disk.my-disk = {
-    device = "/dev/sda";
+    device = "/dev/nvme0n1";
     type = "disk";
     content.type = "gpt";
     content.partitions.ESP = {
@@ -44,9 +75,18 @@
     content.partitions.root = {
       size = "100%";
       content = {
-        type = "filesystem";
-        format = "ext4";
-        mountpoint = "/";
+        type = "luks";
+        name = "cryptroot";
+        settings = {
+          allowDiscards = true;
+          # Note: The actual LUKS setup with Yubikey will be done via the setup script
+          # This disko config is for reference during reinstallation
+        };
+        content = {
+          type = "filesystem";
+          format = "ext4";
+          mountpoint = "/";
+        };
       };
     };
   };
