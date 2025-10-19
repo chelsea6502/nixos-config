@@ -94,25 +94,6 @@
     ''}";
   };
 
-  systemd.services.gpg-restore-trustdb = {
-    description = "Restore GPG trust database and import keys";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "chelsea";
-      ExecStart = "${pkgs.writeShellScript "gpg-setup" ''
-        # Ensure the GPG directory exists
-        mkdir -p /home/chelsea/.gnupg
-        chmod 700 /home/chelsea/.gnupg
-        
-        # Copy the trust database
-        ${pkgs.coreutils}/bin/cp -f /etc/nixos/keys/trustdb.gpg /home/chelsea/.gnupg/trustdb.gpg
-        
-        # Import keys from YubiKey
-        ${pkgs.gnupg}/bin/gpg --card-status
-      ''}";
-    };
-  };
 
   # ============================================================================
   # SECURITY
@@ -163,6 +144,27 @@
           chmod 600 /var/lib/sops-nix/key.txt
           chown root:root /var/lib/sops-nix/key.txt
         fi
+      ''}";
+    };
+  };
+
+  # Import GPG keys from YubiKey and restore trust database
+  systemd.services.gpg-restore-trustdb = {
+    description = "Restore GPG trust database and import keys";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      User = "chelsea";
+      ExecStart = "${pkgs.writeShellScript "gpg-setup" ''
+        # Ensure the GPG directory exists
+        mkdir -p /home/chelsea/.gnupg
+        chmod 700 /home/chelsea/.gnupg
+        
+        # Copy the trust database
+        ${pkgs.coreutils}/bin/cp -f /etc/nixos/keys/trustdb.gpg /home/chelsea/.gnupg/trustdb.gpg
+        
+        # Import keys from YubiKey
+        ${pkgs.gnupg}/bin/gpg --card-status
       ''}";
     };
   };
