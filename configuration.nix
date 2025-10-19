@@ -22,13 +22,21 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@240" ];
   boot.initrd.systemd.enable = true;
+  
+  # Windows boot entry
+  boot.loader.systemd-boot.extraEntries = {
+    "windows.conf" = ''
+      title Windows
+      efi /EFI/BOOT/BOOTX64.EFI
+    '';
+  };
 
   # ============================================================================
   # DISK
   # ============================================================================
 
   disko.devices.disk.my-disk = {
-    device = "/dev/sda";
+    device = "/dev/nvme1n1";
     type = "disk";
     content.type = "gpt";
     content.partitions.ESP = {
@@ -677,6 +685,11 @@
   # ============================================================================
   # FONTS & STYLING
   # ============================================================================
+
+  # Set permissions for /etc/nixos directory
+  system.activationScripts.setNixosPermissions = ''
+    chown -R chelsea /etc/nixos
+  '';
 
   fonts.packages = with pkgs; [
     open-sans
