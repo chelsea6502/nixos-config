@@ -148,30 +148,16 @@
     };
   };
 
-  # Import GPG keys from YubiKey and restore trust database
   systemd.services.gpg-restore-trustdb = {
-    description = "Restore GPG trust database and import keys";
+    description = "Restore GPG trust database";
     wantedBy = [ "multi-user.target" ];
-    # Start after pcscd service to ensure YubiKey is available
-    after = [ "pcscd.service" ];
     serviceConfig = {
       Type = "oneshot";
       User = "chelsea";
-      # Allow the service to succeed even if the command fails
-      SuccessExitStatus = [ 0 2 ];
-      ExecStart = "${pkgs.writeShellScript "gpg-setup" ''
-        # Ensure the GPG directory exists
+      ExecStart = "${pkgs.writeShellScript "gpg-restore" ''
         mkdir -p /home/chelsea/.gnupg
         chmod 700 /home/chelsea/.gnupg
-        
-        # Copy the trust database
         ${pkgs.coreutils}/bin/cp -f /etc/nixos/keys/trustdb.gpg /home/chelsea/.gnupg/trustdb.gpg
-        
-        # Import keys from YubiKey (don't fail if this doesn't work)
-        ${pkgs.gnupg}/bin/gpg --card-status || true
-        
-        # Always exit with success
-        exit 0
       ''}";
     };
   };
