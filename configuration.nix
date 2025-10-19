@@ -152,6 +152,10 @@
   systemd.services.gpg-restore-trustdb = {
     description = "Restore GPG trust database and import keys";
     wantedBy = [ "multi-user.target" ];
+    # Start after pcscd service to ensure YubiKey is available
+    after = [ "pcscd.service" ];
+    # Make this service dependent on pcscd
+    requires = [ "pcscd.service" ];
     serviceConfig = {
       Type = "oneshot";
       User = "chelsea";
