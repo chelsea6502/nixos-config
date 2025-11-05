@@ -63,36 +63,7 @@
   # NETWORKING & CONNECTIVITY
   # ============================================================================
 
-  networking.networkmanager = {
-    enable = true;
-    ensureProfiles = {
-      environmentFiles = [ config.sops.secrets.wifi_env.path ];
-      profiles.WilcoX.connection.id = "WilcoX";
-      profiles.WilcoX.connection.type = "wifi";
-      profiles.WilcoX.wifi.ssid = "$WIFI_SSID";
-      profiles.WilcoX.wifi-security.key-mgmt = "wpa-psk";
-      profiles.WilcoX.wifi-security.psk = "$WIFI_PSK";
-    };
-  };
-
-  hardware.bluetooth.enable = true;
-  hardware.bluetooth.powerOnBoot = true;
-  hardware.bluetooth.settings.General.Experimental = true;
-
-  systemd.services.bluetooth-mouse-connect = {
-    after = [ "bluetooth.service" ];
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig.ExecStart = "${pkgs.writeShellScript "bt-mouse-connect" ''
-      sleep 2
-      MAC=$(cat ${config.sops.secrets.bluetooth_mouse_mac.path})
-      if ! ${pkgs.bluez}/bin/bluetoothctl info $MAC | grep -q "Paired: yes"; then
-        ${pkgs.bluez}/bin/bluetoothctl --timeout 5 scan on
-        ${pkgs.bluez}/bin/bluetoothctl pair $MAC
-        ${pkgs.bluez}/bin/bluetoothctl trust $MAC
-      fi
-      ${pkgs.bluez}/bin/bluetoothctl connect $MAC
-    ''}";
-  };
+  networking.networkmanager.enable = true;
 
 
   # ============================================================================
@@ -123,8 +94,6 @@
     gnupg.sshKeyPaths = [ ];
     environment.SOPS_AGE_KEY_FILE = "/var/lib/sops-nix/key.txt";
     environment.PATH = "${pkgs.age-plugin-yubikey}/bin:$PATH";
-    secrets.wifi_env.mode = "0400";
-    secrets.bluetooth_mouse_mac.mode = "0400";
     secrets.github_token.mode = "0400";
     secrets.anthropic_api_key.mode = "0400";
   };
