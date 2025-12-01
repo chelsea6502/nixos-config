@@ -22,7 +22,7 @@
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.kernelParams = [ "video=3840x2160@240" ];
   boot.initrd.systemd.enable = true;
-  
+
   # Windows boot entry
   boot.loader.systemd-boot.extraEntries = {
     "windows.conf" = ''
@@ -64,7 +64,6 @@
   # ============================================================================
 
   networking.networkmanager.enable = true;
-
 
   # ============================================================================
   # SECURITY
@@ -231,7 +230,7 @@
     type = "fcitx5";
     fcitx5.addons = with pkgs; [
       fcitx5-gtk
-      fcitx5-chinese-addons
+      qt6Packages.fcitx5-chinese-addons
       fcitx5-nord
     ];
   };
@@ -299,8 +298,8 @@
         qutebrowser
         libreoffice
         nodejs
-        awscli2
-        aws-sam-cli
+        #awscli2
+        #aws-sam-cli
       ];
     };
   };
@@ -520,14 +519,10 @@
 
         programs.git = {
           enable = true;
-          userName = "Chelsea Wilkinson";
-          userEmail = "mail@chelseawilkinson.me";
-          signing = {
-            key = "0x4416C8B9A73A97EC";
-            signByDefault = true;
-          };
-          extraConfig.pull.rebase = true;
-          extraConfig.credential.helper = "store";
+          settings.user.name = "Chelsea Wilkinson";
+          settings.user.email = "mail@chelseawilkinson.me";
+          settings.pull.rebase = true;
+          settings.credential.helper = "store";
         };
 
         programs.gpg.enable = true;
@@ -541,7 +536,7 @@
 
         programs.ssh = {
           enable = true;
-          addKeysToAgent = "yes";
+          matchBlocks."*".addKeysToAgent = "yes";
           matchBlocks."*".extraOptions = {
             PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
           };
@@ -624,7 +619,7 @@
 
         programs.rofi = {
           enable = true;
-          package = pkgs.rofi-wayland;
+          package = pkgs.rofi;
           extraConfig.modi = "run";
           extraConfig.hide-scrollbar = true;
           theme = lib.mkForce "gruvbox-dark-soft";
@@ -668,7 +663,7 @@
   fonts.packages = with pkgs; [
     open-sans
     nerd-fonts.fira-code
-    noto-fonts-emoji
+    noto-fonts-color-emoji
     noto-fonts-cjk-sans
   ];
 
@@ -683,7 +678,7 @@
       sansSerif.name = "Open Sans";
       monospace.package = pkgs.nerd-fonts.fira-code;
       monospace.name = "Fira Code Nerdfont";
-      emoji.package = pkgs.noto-fonts-emoji;
+      emoji.package = pkgs.noto-fonts-color-emoji;
       emoji.name = "Noto Color Emoji";
     };
   };
