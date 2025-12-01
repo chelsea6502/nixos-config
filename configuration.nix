@@ -532,6 +532,11 @@
         services.gpg-agent.pinentry.package = pkgs.pinentry-curses;
 
         programs.ssh.enable = true;
+        programs.ssh.enableDefaultConfig = false;
+        programs.ssh.matchBlocks."*" = {
+          serverAliveInterval = 60;
+          serverAliveCountMax = 3;
+        };
 
         programs.bash = {
           enable = true;
