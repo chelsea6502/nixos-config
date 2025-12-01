@@ -255,9 +255,6 @@
   };
 
   programs.ssh.startAgent = true;
-  programs.ssh.extraConfig = ''
-    PKCS11Provider ${pkgs.yubico-piv-tool}/lib/libykcs11.so
-  '';
 
   virtualisation.docker = {
     enable = true;
@@ -534,13 +531,7 @@
         services.gpg-agent.enable = true;
         services.gpg-agent.pinentry.package = pkgs.pinentry-curses;
 
-        programs.ssh = {
-          enable = true;
-          matchBlocks."*".addKeysToAgent = "yes";
-          matchBlocks."*".extraOptions = {
-            PKCS11Provider = "${pkgs.yubico-piv-tool}/lib/libykcs11.so";
-          };
-        };
+        programs.ssh.enable = true;
 
         programs.bash = {
           enable = true;
