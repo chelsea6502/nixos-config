@@ -1,7 +1,6 @@
 {
   pkgs,
   lib,
-  config,
   ...
 }:
 {
@@ -20,7 +19,8 @@
   boot.loader.systemd-boot.editor = false;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.kernelParams = [ "video=3840x2160@240" ];
+  boot.kernelParams = [ ];
+  boot.initrd.kernelModules = [ "i915" ];
   boot.initrd.systemd.enable = true;
 
   # Windows boot entry
@@ -30,6 +30,8 @@
       efi /EFI/BOOT/BOOTX64.EFI
     '';
   };
+
+  hardware.graphics.enable = true;
 
   # ============================================================================
   # DISK
@@ -309,6 +311,7 @@
       enable = true;
       globals.mapleader = " ";
       dependencies.ripgrep.enable = true;
+      colorschemes.gruvbox-material.enable = true;
 
       opts = {
         tabstop = 2;
@@ -432,19 +435,25 @@
 
       extraPlugins = with pkgs.vimPlugins; [
         gruvbox-material
-        no-neck-pain-nvim
       ];
 
+      plugins.no-neck-pain = {
+        enable = true;
+        autoLoad = true;
+        settings = {
+          width = 100;
+          minSideBufferWidth = 100;
+          buffers = {
+            right.enabled = false;
+            wo.fillchars = "vert: ,eob: ";
+          };
+          autocmds.enableOnVimEnter = true;
+        };
+      };
+
       extraConfigLua = ''
-        vim.deprecate = function() end
-        vim.cmd("colorscheme gruvbox-material")
-        local nnp_ok, nnp = pcall(require, "no-neck-pain")
-        if nnp_ok then
-          nnp.setup({ width = 100, minSideBufferWidth = 100, buffers = { right = { enabled = false }, wo = { fillchars = "vert: ,eob: " } } })
-          vim.defer_fn(function() vim.cmd("NoNeckPain") end, 100)
-        else
-          vim.notify("no-neck-pain plugin not found", vim.log.levels.ERROR)
-        end
+        -- Auto-enable NoNeckPain on startup
+        vim.defer_fn(function() vim.cmd("NoNeckPain") end, 100)
       '';
     };
 
@@ -496,8 +505,8 @@
           terminal = "alacritty";
           menu = "rofi -show run";
           bars = [ ];
-          output."DP-3" = {
-            mode = "3840x2160@240Hz";
+          output."DP-1" = {
+            mode = "3840x2160@180Hz";
             scale = "2";
           };
           window.titlebar = false;
