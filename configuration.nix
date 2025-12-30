@@ -23,13 +23,6 @@
   boot.initrd.kernelModules = [ "i915" ];
   boot.initrd.systemd.enable = true;
 
-  boot.loader.systemd-boot.extraEntries = {
-    "windows.conf" = ''
-      title Windows
-      efi /EFI/BOOT/BOOTX64.EFI
-    '';
-  };
-
   hardware.graphics.enable = true;
 
   disko.devices.disk.my-disk = {
