@@ -307,7 +307,7 @@
           defaultSopsFile = ./keys/secrets.yaml;
           defaultSymlinkPath = "/run/user/1000/secrets";
           defaultSecretsMountPoint = "/run/user/1000/secrets.d";
-          environment.PATH = "${pkgs.age-plugin-yubikey}/bin:$PATH";
+          environment.PATH = lib.mkForce "${pkgs.age-plugin-yubikey}/bin:$PATH";
           secrets.git_user_email.path = "${config.sops.defaultSymlinkPath}/git_user_email";
           secrets.github_token.path = "${config.sops.defaultSymlinkPath}/github_token";
           secrets.anthropic_api_key.path = "${config.sops.defaultSymlinkPath}/anthropic_api_key";
