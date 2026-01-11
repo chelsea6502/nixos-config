@@ -9,10 +9,6 @@
     ./nixvim.nix
   ];
 
-  # ==========================================================================
-  # System & Hardware
-  # ==========================================================================
-
   system.stateVersion = "25.05";
   networking.hostName = "nixos";
   networking.networkmanager.enable = true;
@@ -52,10 +48,6 @@
     };
   };
 
-  # ==========================================================================
-  # Security & Secrets
-  # ==========================================================================
-
   security.pam = {
     services = {
       login.u2fAuth = true;
@@ -72,37 +64,14 @@
     };
   };
 
-  # ==========================================================================
-  # Nix Settings
-  # ==========================================================================
-
-  nix = {
-    settings = {
-      experimental-features = [
-        "nix-command"
-        "flakes"
-      ];
-      trusted-users = [ "root" ];
-      substituters = [
-        "https://nix-community.cachix.org"
-        "https://nixpkgs-wayland.cachix.org"
-      ];
-      trusted-public-keys = [
-        "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-      ];
-    };
-    optimise.automatic = true;
-    gc = {
-      automatic = true;
-      dates = "weekly";
-      options = "--delete-older-than 7d";
-    };
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    substituters = [ "https://nix-community.cachix.org" ];
+    trusted-public-keys = [ "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs=" ];
   };
-
-  # ==========================================================================
-  # User
-  # ==========================================================================
 
   services.pcscd.enable = true;
 
@@ -150,10 +119,6 @@
       hashedPassword = "!";
     };
   };
-
-  # ==========================================================================
-  # Home Manager
-  # ==========================================================================
 
   home-manager = {
     useGlobalPkgs = true;
@@ -332,22 +297,14 @@
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
-
         home.packages = with pkgs; [
-          bemoji
           age
           sops
-          wlr-randr
           swaybg
           shotman
           wl-clipboard
-          tree
-          file
           chromium
           lazygit
-          zellij
-          qutebrowser
-          libreoffice
           nodejs
         ];
 
@@ -377,10 +334,6 @@
         };
       };
   };
-
-  # ==========================================================================
-  # Appearance
-  # ==========================================================================
 
   stylix = {
     enable = true;
