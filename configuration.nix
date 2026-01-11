@@ -109,33 +109,10 @@
     NIXOS_OZONE_WL = "1";
   };
 
-  environment.systemPackages = with pkgs; [
-    git
-    yubikey-personalization
-    yubico-pam
-    yubikey-manager
-    yubico-piv-tool
-    clang
-    age-plugin-yubikey
-    gnupg
-    pinentry-curses
-  ];
-
-  i18n.inputMethod = {
-    enable = true;
-    type = "fcitx5";
-    fcitx5.addons = with pkgs; [
-      fcitx5-gtk
-      qt6Packages.fcitx5-chinese-addons
-      fcitx5-nord
-    ];
-  };
-
   # ==========================================================================
   # User
   # ==========================================================================
 
-  services.udev.packages = [ pkgs.yubikey-personalization ];
   services.pcscd.enable = true;
 
   services.pipewire = {
@@ -245,17 +222,6 @@
           settings.pull.rebase = true;
           settings.credential.helper = "store";
         };
-
-        programs.gpg.enable = true;
-        programs.gpg.scdaemonSettings = {
-          disable-ccid = true;
-          pcsc-shared = true;
-        };
-
-        home.file.".gnupg/trustdb.gpg".source = ./keys/trustdb.gpg;
-
-        services.gpg-agent.enable = true;
-        services.gpg-agent.pinentry.package = pkgs.pinentry-curses;
 
         programs.ssh.enable = true;
         programs.ssh.enableDefaultConfig = false;
@@ -424,7 +390,6 @@
     open-sans
     nerd-fonts.fira-code
     noto-fonts-color-emoji
-    noto-fonts-cjk-sans
   ];
 
   stylix = {
