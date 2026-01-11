@@ -68,49 +68,6 @@
     };
   };
 
-  sops = {
-    defaultSopsFile = ./keys/secrets.yaml;
-    defaultSopsFormat = "yaml";
-    age.keyFile = "/var/lib/sops-nix/key.txt";
-    age.generateKey = false;
-    environment.SOPS_AGE_KEY_FILE = "/var/lib/sops-nix/key.txt";
-    environment.PATH = "${pkgs.age-plugin-yubikey}/bin:$PATH";
-    secrets.github_token.mode = "0400";
-    secrets.anthropic_api_key.mode = "0400";
-  };
-
-  systemd.services.sops-key-setup = {
-    description = "Generate SOPS age key from YubiKey";
-    wantedBy = [ "multi-user.target" ];
-    before = [ "sops-nix.service" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-      ExecStart = "${pkgs.writeShellScript "sops-key-setup" ''
-        mkdir -p /var/lib/sops-nix
-        if [ ! -f /var/lib/sops-nix/key.txt ]; then
-          ${pkgs.age-plugin-yubikey}/bin/age-plugin-yubikey --identity > /var/lib/sops-nix/key.txt
-          chmod 600 /var/lib/sops-nix/key.txt
-          chown root:root /var/lib/sops-nix/key.txt
-        fi
-      ''}";
-    };
-  };
-
-  systemd.services.gpg-restore-trustdb = {
-    description = "Restore GPG trust database";
-    wantedBy = [ "multi-user.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      User = "chelsea";
-      ExecStart = "${pkgs.writeShellScript "gpg-restore" ''
-        mkdir -p /home/chelsea/.gnupg
-        chmod 700 /home/chelsea/.gnupg
-        ${pkgs.coreutils}/bin/cp -f /etc/nixos/keys/trustdb.gpg /home/chelsea/.gnupg/trustdb.gpg
-      ''}";
-    };
-  };
-
   system.activationScripts.setNixosPermissions = ''
     chown -R chelsea /etc/nixos
   '';
@@ -302,15 +259,13 @@
         home.stateVersion = "25.05";
 
         sops = {
-          age.keyFile = "/var/lib/sops-nix/key.txt";
+          age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
           age.generateKey = false;
+          age.plugins = [ pkgs.age-plugin-yubikey ];
           defaultSopsFile = ./keys/secrets.yaml;
-          defaultSymlinkPath = "/run/user/1000/secrets";
-          defaultSecretsMountPoint = "/run/user/1000/secrets.d";
-          environment.PATH = lib.mkForce "${pkgs.age-plugin-yubikey}/bin:$PATH";
-          secrets.git_user_email.path = "${config.sops.defaultSymlinkPath}/git_user_email";
-          secrets.github_token.path = "${config.sops.defaultSymlinkPath}/github_token";
-          secrets.anthropic_api_key.path = "${config.sops.defaultSymlinkPath}/anthropic_api_key";
+          secrets.git_user_email = { };
+          secrets.github_token = { };
+          secrets.anthropic_api_key = { };
         };
 
         home.pointerCursor = {
@@ -360,6 +315,8 @@
           pcsc-shared = true;
         };
 
+        home.file.".gnupg/trustdb.gpg".source = ./keys/trustdb.gpg;
+
         services.gpg-agent.enable = true;
         services.gpg-agent.pinentry.package = pkgs.pinentry-curses;
 
@@ -373,10 +330,10 @@
         programs.bash = {
           enable = true;
           initExtra = ''
-            export SOPS_AGE_KEY_FILE=/var/lib/sops-nix/key.txt
-            export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
-            export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
-            export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
+            export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
+            [ -r "${config.sops.secrets.git_user_email.path}" ] && export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
+            [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
+            [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
           '';
         };
 
