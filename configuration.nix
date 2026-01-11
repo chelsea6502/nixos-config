@@ -101,15 +101,6 @@
   };
 
   # ==========================================================================
-  # Environment & Shell
-  # ==========================================================================
-
-  environment.sessionVariables = {
-    EDITOR = "nvim";
-    NIXOS_OZONE_WL = "1";
-  };
-
-  # ==========================================================================
   # User
   # ==========================================================================
 
@@ -172,6 +163,11 @@
       { config, ... }:
       {
         home.stateVersion = "25.05";
+
+        home.sessionVariables = {
+          EDITOR = "nvim";
+          NIXOS_OZONE_WL = "1";
+        };
 
         sops = {
           age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
@@ -385,12 +381,6 @@
   # ==========================================================================
   # Appearance
   # ==========================================================================
-
-  fonts.packages = with pkgs; [
-    open-sans
-    nerd-fonts.fira-code
-    noto-fonts-color-emoji
-  ];
 
   stylix = {
     enable = true;
