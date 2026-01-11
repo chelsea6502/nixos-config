@@ -56,18 +56,19 @@
   # Security & Secrets
   # ==========================================================================
 
-  security.pam.services = {
-    login.u2fAuth = true;
-    sudo.u2fAuth = true;
-    swaylock.u2fAuth = true;
-  };
-
-  security.pam.u2f = {
-    enable = true;
-    control = "sufficient";
-    settings = {
-      authfile = "/etc/nixos/keys/fido2_keys";
-      cue = true;
+  security.pam = {
+    services = {
+      login.u2fAuth = true;
+      sudo.u2fAuth = true;
+      swaylock.u2fAuth = true;
+    };
+    u2f = {
+      enable = true;
+      control = "sufficient";
+      settings = {
+        authfile = "/etc/nixos/keys/fido2_keys";
+        cue = true;
+      };
     };
   };
 
@@ -117,11 +118,6 @@
     clang
     age-plugin-yubikey
     gnupg
-    pass
-    passExtensions.pass-otp
-    passExtensions.pass-tomb
-    tomb
-    cryptsetup
     pinentry-curses
   ];
 
@@ -205,7 +201,6 @@
           age.generateKey = false;
           age.plugins = [ pkgs.age-plugin-yubikey ];
           defaultSopsFile = ./keys/secrets.yaml;
-          secrets.git_user_email = { };
           secrets.github_token = { };
           secrets.anthropic_api_key = { };
         };
@@ -274,7 +269,6 @@
           initExtra = ''
             PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
             export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
-            [ -r "${config.sops.secrets.git_user_email.path}" ] && export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
             [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
             [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
           '';
@@ -287,8 +281,6 @@
             nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
             nix-verify = "sudo nix-store --verify --check-contents";
             nix-full = "nix-update && switch && nix-clean && nix-verify";
-            pass-open = "sudo -E tomb open /etc/nixos/keys/password-store.tomb -k /etc/nixos/keys/password-store.tomb.key";
-            pass-close = "sudo tomb close password-store";
             pydev = "${
               pkgs.buildFHSEnv {
                 name = "python-fhs";
@@ -378,10 +370,6 @@
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
-        home.sessionVariables = {
-          PASSWORD_STORE_DIR = "/run/media/chelsea/password-store";
-          PASSWORD_STORE_ENABLE_EXTENSIONS = "true";
-        };
 
         home.packages = with pkgs; [
           bemoji
@@ -406,7 +394,6 @@
           "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
           "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
           "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
-          "oblajhnjmknenodebpekmkliopipoolo" # ChromePass (pass integration)
         ];
 
         programs.vscode = {
