@@ -68,10 +68,6 @@
     };
   };
 
-  system.activationScripts.setNixosPermissions = ''
-    chown -R chelsea /etc/nixos
-  '';
-
   # ==========================================================================
   # Nix Settings
   # ==========================================================================
@@ -107,21 +103,15 @@
   environment.sessionVariables = {
     EDITOR = "nvim";
     NIXOS_OZONE_WL = "1";
-    PASSWORD_STORE_DIR = "/run/media/chelsea/password-store";
-    PASSWORD_STORE_ENABLE_EXTENSIONS = "true";
   };
 
   environment.systemPackages = with pkgs; [
     git
-    wlr-randr
-    swaybg
-    shotman
     yubikey-personalization
     yubico-pam
     yubikey-manager
     yubico-piv-tool
     clang
-    sops
     age-plugin-yubikey
     gnupg
     pass
@@ -130,42 +120,7 @@
     tomb
     cryptsetup
     pinentry-curses
-    wl-clipboard
-    tree
-    file
   ];
-
-  programs.bash.promptInit = ''
-    PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
-  '';
-
-  programs.bash.shellAliases = {
-    edit = "sudo -E -s nvim";
-    Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
-    Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
-    switch = "sudo nixos-rebuild switch";
-    nix-update = "cd /etc/nixos && sudo nix flake update";
-    nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
-    nix-verify = "sudo nix-store --verify --check-contents";
-    nix-full = "nix-update && switch && nix-clean && nix-verify";
-
-    pass-open = "sudo -E tomb open /etc/nixos/keys/password-store.tomb -k /etc/nixos/keys/password-store.tomb.key";
-    pass-close = "sudo tomb close password-store";
-
-    pydev = "${
-      pkgs.buildFHSEnv {
-        name = "python-fhs";
-        targetPkgs =
-          pkgs: with pkgs; [
-            python3
-            python3Packages.pip
-            python3Packages.virtualenv
-          ];
-        runScript = "bash";
-        profile = ''[ ! -f "requirements.txt" ] && return; virtualenv .venv; source .venv/bin/activate; pip install -q -r requirements.txt'';
-      }
-    }/bin/python-fhs";
-  };
 
   i18n.inputMethod = {
     enable = true;
@@ -226,24 +181,8 @@
         "input"
       ];
       hashedPassword = "!";
-      packages = with pkgs; [
-        chromium
-        lazygit
-        zellij
-        qutebrowser
-        libreoffice
-        nodejs
-      ];
     };
   };
-
-  programs.chromium.extensions = [
-    "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
-    "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
-    "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
-    "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
-    "oblajhnjmknenodebpekmkliopipoolo" # ChromePass (pass integration)
-  ];
 
   # ==========================================================================
   # Home Manager
@@ -330,11 +269,37 @@
         programs.bash = {
           enable = true;
           initExtra = ''
+            PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
             export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
             [ -r "${config.sops.secrets.git_user_email.path}" ] && export GIT_USER_EMAIL=$(cat ${config.sops.secrets.git_user_email.path})
             [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
             [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
           '';
+          shellAliases = {
+            edit = "sudo -E -s nvim";
+            Ec = "sudo -E -s nvim /etc/nixos/configuration.nix";
+            Ef = "sudo -E -s nvim /etc/nixos/flake.nix";
+            switch = "sudo nixos-rebuild switch";
+            nix-update = "cd /etc/nixos && sudo nix flake update";
+            nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
+            nix-verify = "sudo nix-store --verify --check-contents";
+            nix-full = "nix-update && switch && nix-clean && nix-verify";
+            pass-open = "sudo -E tomb open /etc/nixos/keys/password-store.tomb -k /etc/nixos/keys/password-store.tomb.key";
+            pass-close = "sudo tomb close password-store";
+            pydev = "${
+              pkgs.buildFHSEnv {
+                name = "python-fhs";
+                targetPkgs =
+                  pkgs: with pkgs; [
+                    python3
+                    python3Packages.pip
+                    python3Packages.virtualenv
+                  ];
+                runScript = "bash";
+                profile = ''[ ! -f "requirements.txt" ] && return; virtualenv .venv; source .venv/bin/activate; pip install -q -r requirements.txt'';
+              }
+            }/bin/python-fhs";
+          };
         };
 
         programs.alacritty.enable = true;
@@ -410,10 +375,35 @@
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
+        home.sessionVariables = {
+          PASSWORD_STORE_DIR = "/run/media/chelsea/password-store";
+          PASSWORD_STORE_ENABLE_EXTENSIONS = "true";
+        };
+
         home.packages = with pkgs; [
           bemoji
           age
           sops
+          wlr-randr
+          swaybg
+          shotman
+          wl-clipboard
+          tree
+          file
+          chromium
+          lazygit
+          zellij
+          qutebrowser
+          libreoffice
+          nodejs
+        ];
+
+        programs.chromium.extensions = [
+          "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
+          "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
+          "gighmmpiobklfepjocnamgkkbiglidom" # AdBlock
+          "mlomiejdfkolichcflejclcbmpeaniij" # Ghostery
+          "oblajhnjmknenodebpekmkliopipoolo" # ChromePass (pass integration)
         ];
 
         programs.vscode = {
