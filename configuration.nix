@@ -17,12 +17,18 @@ in
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.systemd-boot.editor = false;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.initrd.kernelModules = [ "i915" ];
-  boot.initrd.systemd.enable = true;
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    loader = {
+      systemd-boot.enable = true;
+      systemd-boot.editor = false;
+      efi.canTouchEfiVariables = true;
+    };
+    initrd = {
+      kernelModules = [ "i915" ];
+      systemd.enable = true;
+    };
+  };
 
   hardware.graphics.enable = true;
 
@@ -81,8 +87,10 @@ in
   };
   services.greetd = {
     enable = true;
-    settings.default_session.command = "${pkgs.sway}/bin/sway";
-    settings.default_session.user = "chelsea";
+    settings.default_session = {
+      command = "${pkgs.sway}/bin/sway";
+      user = "chelsea";
+    };
   };
 
   programs.ssh.startAgent = true;
@@ -148,9 +156,11 @@ in
         };
 
         sops = {
-          age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
-          age.generateKey = false;
-          age.plugins = [ pkgs.age-plugin-yubikey ];
+          age = {
+            keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+            generateKey = false;
+            plugins = [ pkgs.age-plugin-yubikey ];
+          };
           defaultSopsFile = ./keys/secrets.yaml;
           secrets.github_token = { };
           secrets.anthropic_api_key = { };
@@ -158,43 +168,49 @@ in
 
         programs.home-manager.enable = true;
 
-        wayland.windowManager.sway.enable = true;
-        wayland.windowManager.sway.config = {
-          modifier = "Mod4";
-          terminal = "alacritty";
-          menu = "rofi -show run";
-          bars = [ ];
-          output."DP-1" = {
-            mode = "3840x2160@180Hz";
-            scale = "2";
-          };
-          window.titlebar = false;
-          gaps = {
-            smartGaps = true;
-            smartBorders = "no_gaps";
-            inner = 10;
-            outer = 10;
-          };
-          keybindings = lib.mkOptionDefault {
-            "Mod4+p" = "exec shotman --capture window";
-            "Mod4+Shift+p" = "exec shotman --capture region";
-            "Mod4+Ctrl+p" = "exec shotman --capture output";
+        wayland.windowManager.sway = {
+          enable = true;
+          config = {
+            modifier = "Mod4";
+            terminal = "alacritty";
+            menu = "rofi -show run";
+            bars = [ ];
+            output."DP-1" = {
+              mode = "3840x2160@180Hz";
+              scale = "2";
+            };
+            window.titlebar = false;
+            gaps = {
+              smartGaps = true;
+              smartBorders = "no_gaps";
+              inner = 10;
+              outer = 10;
+            };
+            keybindings = lib.mkOptionDefault {
+              "Mod4+p" = "exec shotman --capture window";
+              "Mod4+Shift+p" = "exec shotman --capture region";
+              "Mod4+Ctrl+p" = "exec shotman --capture output";
+            };
           };
         };
 
         programs.git = {
           enable = true;
-          settings.user.name = "Chelsea Wilkinson";
-          settings.user.email = "mail@chelseawilkinson.me";
-          settings.pull.rebase = true;
-          settings.credential.helper = "store";
+          settings = {
+            user.name = "Chelsea Wilkinson";
+            user.email = "mail@chelseawilkinson.me";
+            pull.rebase = true;
+            credential.helper = "store";
+          };
         };
 
-        programs.ssh.enable = true;
-        programs.ssh.enableDefaultConfig = false;
-        programs.ssh.matchBlocks."*" = {
-          serverAliveInterval = 60;
-          serverAliveCountMax = 3;
+        programs.ssh = {
+          enable = true;
+          enableDefaultConfig = false;
+          matchBlocks."*" = {
+            serverAliveInterval = 60;
+            serverAliveCountMax = 3;
+          };
         };
 
         programs.bash = {
@@ -230,39 +246,47 @@ in
           };
         };
 
-        programs.alacritty.enable = true;
-        programs.alacritty.settings = {
-          cursor.style.shape = "Beam";
-          cursor.style.blinking = "On";
-          window = {
-            decorations = "buttonless";
-            padding.x = 14;
-            padding.y = 14;
+        programs.alacritty = {
+          enable = true;
+          settings = {
+            cursor.style = {
+              shape = "Beam";
+              blinking = "On";
+            };
+            window = {
+              decorations = "buttonless";
+              padding = {
+                x = 14;
+                y = 14;
+              };
+            };
+            font.size = lib.mkForce 10;
           };
-          font.size = lib.mkForce 10;
         };
 
         services.mako.enable = true;
 
         programs.swaylock.enable = true;
 
-        services.swayidle.enable = true;
-        services.swayidle.timeouts = [
-          {
-            timeout = 290;
-            command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
-          }
-          {
-            timeout = 300;
-            command = "${pkgs.systemd}/bin/systemctl suspend";
-          }
-        ];
-        services.swayidle.events = [
-          {
-            event = "before-sleep";
-            command = "${pkgs.swaylock-effects}/bin/swaylock";
-          }
-        ];
+        services.swayidle = {
+          enable = true;
+          timeouts = [
+            {
+              timeout = 290;
+              command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
+            }
+            {
+              timeout = 300;
+              command = "${pkgs.systemd}/bin/systemctl suspend";
+            }
+          ];
+          events = [
+            {
+              event = "before-sleep";
+              command = "${pkgs.swaylock-effects}/bin/swaylock";
+            }
+          ];
+        };
 
         programs.waybar = {
           enable = true;
@@ -298,8 +322,10 @@ in
         programs.rofi = {
           enable = true;
           package = pkgs.rofi;
-          extraConfig.modi = "run";
-          extraConfig.hide-scrollbar = true;
+          extraConfig = {
+            modi = "run";
+            hide-scrollbar = true;
+          };
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
