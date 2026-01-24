@@ -1,8 +1,10 @@
-{
-  pkgs,
-  lib,
-  ...
-}:
+{ pkgs, lib, ... }:
+let
+  mkFont = pkg: name: {
+    package = pkg;
+    inherit name;
+  };
+in
 {
   imports = [
     ./hardware-configuration.nix
@@ -49,11 +51,9 @@
   };
 
   security.pam = {
-    services = {
-      login.u2fAuth = true;
-      sudo.u2fAuth = true;
-      swaylock.u2fAuth = true;
-    };
+    services = lib.genAttrs [ "login" "sudo" "swaylock" ] (_: {
+      u2fAuth = true;
+    });
     u2f = {
       enable = true;
       control = "sufficient";
@@ -74,13 +74,11 @@
   };
 
   services.pcscd.enable = true;
-
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     pulse.enable = true;
   };
-
   services.greetd = {
     enable = true;
     settings.default_session.command = "${pkgs.sway}/bin/sway";
@@ -91,8 +89,6 @@
 
   virtualisation.docker = {
     enable = true;
-    rootless.enable = true;
-    rootless.setSocketVariable = true;
     autoPrune.enable = true;
     daemon.settings = {
       experimental = true;
@@ -110,13 +106,13 @@
     allowNoPasswordLogin = true;
     users.chelsea = {
       isNormalUser = true;
+      hashedPassword = "!";
       extraGroups = [
         "networkmanager"
         "wheel"
         "docker"
         "input"
       ];
-      hashedPassword = "!";
     };
   };
 
@@ -127,11 +123,28 @@
     users.chelsea =
       { config, ... }:
       {
-        home.stateVersion = "25.05";
-
-        home.sessionVariables = {
-          EDITOR = "nvim";
-          NIXOS_OZONE_WL = "1";
+        home = {
+          stateVersion = "25.05";
+          sessionVariables = {
+            EDITOR = "nvim";
+            NIXOS_OZONE_WL = "1";
+          };
+          pointerCursor = {
+            gtk.enable = true;
+            package = pkgs.adwaita-icon-theme;
+            name = "Adwaita";
+            size = 16;
+          };
+          packages = with pkgs; [
+            age
+            sops
+            swaybg
+            shotman
+            wl-clipboard
+            chromium
+            lazygit
+            nodejs
+          ];
         };
 
         sops = {
@@ -141,13 +154,6 @@
           defaultSopsFile = ./keys/secrets.yaml;
           secrets.github_token = { };
           secrets.anthropic_api_key = { };
-        };
-
-        home.pointerCursor = {
-          gtk.enable = true;
-          package = pkgs.adwaita-icon-theme;
-          name = "Adwaita";
-          size = 16;
         };
 
         programs.home-manager.enable = true;
@@ -297,17 +303,6 @@
           theme = lib.mkForce "gruvbox-dark-soft";
         };
 
-        home.packages = with pkgs; [
-          age
-          sops
-          swaybg
-          shotman
-          wl-clipboard
-          chromium
-          lazygit
-          nodejs
-        ];
-
         programs.chromium.extensions = [
           "mnjggcdmjocbbbhaepdhchncahnbgone" # SponsorBlock
           "dbepggeogbaibhgnhhndojpepiihcmeb" # Vimium
@@ -340,15 +335,10 @@
     image = ./wallpaper.png;
     base16Scheme = "${pkgs.base16-schemes}/share/themes/gruvbox-material-dark-medium.yaml";
     fonts = {
-      serif.package = pkgs.open-sans;
-      serif.name = "Open Sans";
-      sansSerif.package = pkgs.open-sans;
-      sansSerif.name = "Open Sans";
-      monospace.package = pkgs.nerd-fonts.fira-code;
-      monospace.name = "Fira Code Nerdfont";
-      emoji.package = pkgs.noto-fonts-color-emoji;
-      emoji.name = "Noto Color Emoji";
+      serif = mkFont pkgs.open-sans "Open Sans";
+      sansSerif = mkFont pkgs.open-sans "Open Sans";
+      monospace = mkFont pkgs.nerd-fonts.fira-code "Fira Code Nerdfont";
+      emoji = mkFont pkgs.noto-fonts-color-emoji "Noto Color Emoji";
     };
   };
-
 }
