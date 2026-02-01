@@ -12,7 +12,6 @@ in
   ];
 
   system.stateVersion = "25.05";
-  networking.hostName = "nixos";
   networking.networkmanager.enable = true;
   time.timeZone = "Australia/Melbourne";
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -62,7 +61,6 @@ in
     });
     u2f = {
       enable = true;
-      control = "sufficient";
       settings = {
         authfile = "/etc/nixos/keys/fido2_keys";
         cue = true;
