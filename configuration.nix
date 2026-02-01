@@ -75,6 +75,7 @@ in
 
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "backup";
   home-manager.users.chelsea =
     { config, ... }:
     {
@@ -89,12 +90,9 @@ in
       };
       home.packages = with pkgs; [
         age
-        chromium
-        lazygit
         nodejs
         shotman
         sops
-        swaybg
         wl-clipboard
       ];
 
@@ -222,6 +220,7 @@ in
       };
 
       # Development
+      programs.lazygit.enable = true;
       programs.git.enable = true;
       programs.git.settings = {
         user.name = "Chelsea Wilkinson";
@@ -241,6 +240,7 @@ in
       };
 
       # Browsers
+      programs.chromium.enable = true;
       programs.chromium.extensions = [
         "mnjggcdmjocbbbhaepdhchncahnbgone"
         "dbepggeogbaibhgnhhndojpepiihcmeb"
