@@ -424,10 +424,8 @@
                     settings = {
                       width = 100;
                       minSideBufferWidth = 100;
-                      buffers = {
-                        right.enabled = false;
-                        wo.fillchars = "vert: ,eob: ";
-                      };
+                      buffers.right.enabled = false;
+                      buffers.wo.fillchars = "vert: ,eob: ";
                       autocmds.enableOnVimEnter = true;
                     };
                   };
