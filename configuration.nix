@@ -125,7 +125,7 @@ in
       sops.secrets.github_token = { };
       sops.secrets.anthropic_api_key = { };
 
-      # Window Manager
+      # Desktop
       wayland.windowManager.sway = {
         enable = true;
         config = {
@@ -147,8 +147,58 @@ in
           };
         };
       };
+      programs.waybar = {
+        enable = true;
+        systemd.enable = true;
+        style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
+        settings.mainBar = {
+          height = 18;
+          modules-left = [ "sway/workspaces" ];
+          modules-center = [ "sway/window" ];
+          modules-right = [
+            "cpu"
+            "temperature"
+            "memory"
+            "disk"
+            "clock"
+          ];
+          cpu.format = "| {usage}%";
+          cpu.interval = 1;
+          temperature.format = "({temperatureC}C)";
+          temperature.thermal-zone = 1;
+          temperature.interval = 1;
+          memory.format = "| {used}GiB ({percentage}%)";
+          memory.interval = 1;
+          disk.format = "| {used} ({percentage_used}%)";
+          disk.interval = 1;
+          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
+          clock.interval = 1;
+        };
+      };
+      programs.rofi.enable = true;
+      programs.rofi.extraConfig.hide-scrollbar = true;
+      programs.rofi.extraConfig.theme = lib.mkForce "gruvbox-dark-soft";
+      programs.swaylock.enable = true;
+      services.mako.enable = true;
+      services.swayidle.enable = true;
+      services.swayidle.timeouts = [
+        {
+          timeout = 290;
+          command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
+        }
+        {
+          timeout = 300;
+          command = "${pkgs.systemd}/bin/systemctl suspend";
+        }
+      ];
+      services.swayidle.events = [
+        {
+          event = "before-sleep";
+          command = "${pkgs.swaylock-effects}/bin/swaylock";
+        }
+      ];
 
-      # Programs
+      # Terminal & Shell
       programs.alacritty.enable = true;
       programs.alacritty.settings = {
         cursor.style.shape = "Beam";
@@ -158,7 +208,6 @@ in
         window.padding.y = 14;
         font.size = lib.mkForce 10;
       };
-
       programs.bash = {
         enable = true;
         initExtra = ''
@@ -192,13 +241,7 @@ in
         };
       };
 
-      programs.chromium.extensions = [
-        "mnjggcdmjocbbbhaepdhchncahnbgone"
-        "dbepggeogbaibhgnhhndojpepiihcmeb"
-        "gighmmpiobklfepjocnamgkkbiglidom"
-        "mlomiejdfkolichcflejclcbmpeaniij"
-      ];
-
+      # Development
       programs.git.enable = true;
       programs.git.settings = {
         user.name = "Chelsea Wilkinson";
@@ -206,25 +249,10 @@ in
         pull.rebase = true;
         credential.helper = "store";
       };
-
-      programs.qutebrowser = {
-        enable = true;
-        settings.tabs.show = "multiple";
-        settings.statusbar.show = "in-mode";
-        settings.content.javascript.clipboard = "access-paste";
-      };
-
-      programs.rofi.enable = true;
-      programs.rofi.extraConfig.hide-scrollbar = true;
-      programs.rofi.extraConfig.theme = lib.mkForce "gruvbox-dark-soft";
-
       programs.ssh.enable = true;
       programs.ssh.enableDefaultConfig = false;
       programs.ssh.matchBlocks."*".serverAliveInterval = 60;
       programs.ssh.matchBlocks."*".serverAliveCountMax = 3;
-
-      programs.swaylock.enable = true;
-
       programs.vscode = {
         enable = true;
         package = pkgs.vscodium;
@@ -232,54 +260,19 @@ in
         profiles.default.userSettings."roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
       };
 
-      programs.waybar = {
+      # Browsers
+      programs.chromium.extensions = [
+        "mnjggcdmjocbbbhaepdhchncahnbgone"
+        "dbepggeogbaibhgnhhndojpepiihcmeb"
+        "gighmmpiobklfepjocnamgkkbiglidom"
+        "mlomiejdfkolichcflejclcbmpeaniij"
+      ];
+      programs.qutebrowser = {
         enable = true;
-        systemd.enable = true;
-        style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
-        settings.mainBar = {
-          height = 18;
-          modules-left = [ "sway/workspaces" ];
-          modules-center = [ "sway/window" ];
-          modules-right = [
-            "cpu"
-            "temperature"
-            "memory"
-            "disk"
-            "clock"
-          ];
-          cpu.format = "| {usage}%";
-          cpu.interval = 1;
-          temperature.format = "({temperatureC}C)";
-          temperature.thermal-zone = 1;
-          temperature.interval = 1;
-          memory.format = "| {used}GiB ({percentage}%)";
-          memory.interval = 1;
-          disk.format = "| {used} ({percentage_used}%)";
-          disk.interval = 1;
-          clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-          clock.interval = 1;
-        };
+        settings.tabs.show = "multiple";
+        settings.statusbar.show = "in-mode";
+        settings.content.javascript.clipboard = "access-paste";
       };
-
-      # Services
-      services.mako.enable = true;
-      services.swayidle.enable = true;
-      services.swayidle.timeouts = [
-        {
-          timeout = 290;
-          command = "${pkgs.libnotify}/bin/notify-send 'Locking in 10 seconds' -t 10000";
-        }
-        {
-          timeout = 300;
-          command = "${pkgs.systemd}/bin/systemctl suspend";
-        }
-      ];
-      services.swayidle.events = [
-        {
-          event = "before-sleep";
-          command = "${pkgs.swaylock-effects}/bin/swaylock";
-        }
-      ];
     };
 
   # ═══════════════════════════════════════════════════════════════════════════
@@ -293,4 +286,3 @@ in
   stylix.fonts.monospace = mkFont pkgs.nerd-fonts.fira-code "Fira Code Nerdfont";
   stylix.fonts.emoji = mkFont pkgs.noto-fonts-color-emoji "Noto Color Emoji";
 }
-
