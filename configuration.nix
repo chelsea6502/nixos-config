@@ -45,11 +45,12 @@ in
   security.pam.u2f.enable = true;
   security.pam.u2f.settings.authfile = "/etc/nixos/keys/fido2_keys";
   security.pam.u2f.settings.cue = true;
-
   services.pcscd.enable = true;
+  
   services.pipewire.enable = true;
   services.pipewire.alsa.enable = true;
   services.pipewire.pulse.enable = true;
+
   services.greetd.enable = true;
   services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
   services.greetd.settings.default_session.user = "chelsea";
@@ -89,10 +90,8 @@ in
         size = 16;
       };
       home.packages = with pkgs; [
-        age
         nodejs
         shotman
-        sops
         wl-clipboard
       ];
 
@@ -232,6 +231,7 @@ in
       programs.ssh.enableDefaultConfig = false;
       programs.ssh.matchBlocks."*".serverAliveInterval = 60;
       programs.ssh.matchBlocks."*".serverAliveCountMax = 3;
+
       programs.vscode = {
         enable = true;
         package = pkgs.vscodium;
