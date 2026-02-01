@@ -31,26 +31,6 @@ in
   boot.loader.efi.canTouchEfiVariables = true;
   boot.initrd.kernelModules = [ "i915" ];
 
-  disko.devices.disk.my-disk = {
-    device = "/dev/nvme1n1";
-    type = "disk";
-    content.type = "gpt";
-    content.partitions.ESP = {
-      type = "EF00";
-      size = "500M";
-      content.type = "filesystem";
-      content.format = "vfat";
-      content.mountpoint = "/boot";
-      content.mountOptions = [ "umask=0077" ];
-    };
-    content.partitions.root.size = "100%";
-    content.partitions.root.content = {
-      type = "filesystem";
-      format = "ext4";
-      mountpoint = "/";
-    };
-  };
-
   # ═══════════════════════════════════════════════════════════════════════════
   # SYSTEM
   # ═══════════════════════════════════════════════════════════════════════════
@@ -72,7 +52,7 @@ in
   services.pipewire.pulse.enable = true;
   services.greetd.enable = true;
   services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
-  services.greetd.settings.default_seesion.user = "chelsea";
+  services.greetd.settings.default_session.user = "chelsea";
 
   programs.ssh.startAgent = true;
 
@@ -177,7 +157,7 @@ in
       };
       programs.rofi.enable = true;
       programs.rofi.extraConfig.hide-scrollbar = true;
-      programs.rofi.extraConfig.theme = lib.mkForce "gruvbox-dark-soft";
+      programs.rofi.theme = lib.mkForce "gruvbox-dark-soft";
       programs.swaylock.enable = true;
       services.mako.enable = true;
       services.swayidle.enable = true;

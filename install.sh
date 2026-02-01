@@ -20,22 +20,40 @@ sudo rm -rf /etc/nixos
 sudo git clone https://github.com/chelsea6502/nixos-config.git /etc/nixos
 cd /etc/nixos
 
-# Update the disk device in configuration.nix
-sed -i "s|device = \"/dev/sda\"|device = \"$DISK\"|" configuration.nix
-
-# Clear the disk before partitioning
+# Clear and partition the disk
 echo "Clearing disk $DISK..."
 sudo wipefs --all --force "$DISK" || true
 sudo sgdisk --zap-all "$DISK" || true
-echo "Disk cleared successfully."
+echo "Disk cleared."
+
+echo "Partitioning $DISK..."
+sudo parted -s "$DISK" mklabel gpt
+sudo parted -s "$DISK" mkpart ESP fat32 1MiB 501MiB
+sudo parted -s "$DISK" set 1 esp on
+sudo parted -s "$DISK" mkpart root ext4 501MiB 100%
+
+# Determine partition naming (nvme uses p1/p2, others use 1/2)
+if [[ "$DISK" == *"nvme"* ]]; then
+  PART1="${DISK}p1"
+  PART2="${DISK}p2"
+else
+  PART1="${DISK}1"
+  PART2="${DISK}2"
+fi
+
+echo "Formatting partitions..."
+sudo mkfs.vfat -F32 "$PART1"
+sudo mkfs.ext4 -F "$PART2"
+
+echo "Mounting filesystems..."
+sudo mount "$PART2" /mnt
+sudo mkdir -p /mnt/boot
+sudo mount "$PART1" /mnt/boot
+echo "Disk setup complete."
 echo ""
 
-# Install disko and partition the disk
-nix profile install nixpkgs#disko
-sudo nix --experimental-features "nix-command flakes" run github:nix-community/disko -- --mode disko --flake ".#$CONFIG"
-
-# Generate hardware configuration
-nixos-generate-config --no-filesystems --root /mnt --dir /mnt/etc/nixos
+# Generate hardware configuration (includes filesystem entries)
+nixos-generate-config --root /mnt --dir /mnt/etc/nixos
 
 # Copy configuration files from /etc/nixos to /mnt/etc/nixos
 sudo cp -r /etc/nixos/* /mnt/etc/nixos/
