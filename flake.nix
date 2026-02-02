@@ -118,6 +118,7 @@
                     nodejs
                     shotman
                     wl-clipboard
+                    uv
                   ];
 
                   # Secrets
@@ -217,6 +218,17 @@
                       export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
                       [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
                       [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
+
+                      # Auto-activate Python venvs
+                      auto_venv() {
+                        if [[ -f ".venv/bin/activate" ]]; then
+                          [[ "$VIRTUAL_ENV" != "$PWD/.venv" ]] && source .venv/bin/activate
+                        elif [[ -n "$VIRTUAL_ENV" ]]; then
+                          deactivate
+                        fi
+                      }
+                      PROMPT_COMMAND="auto_venv"
+                      auto_venv  # run on shell start
                     '';
                     shellAliases = {
                       edit = "sudo -E -s nvim";
@@ -226,19 +238,7 @@
                       nix-clean = "nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager && nix-collect-garbage -d && sudo nix-collect-garbage -d && sudo nix-store --optimise";
                       nix-verify = "sudo nix-store --verify --check-contents";
                       nix-full = "nix-update && switch && nix-clean && nix-verify";
-                      pydev = "${
-                        pkgs.buildFHSEnv {
-                          name = "python-fhs";
-                          targetPkgs =
-                            pkgs: with pkgs; [
-                              python3
-                              python3Packages.pip
-                              python3Packages.virtualenv
-                            ];
-                          runScript = "bash";
-                          profile = ''[ ! -f "requirements.txt" ] && return; virtualenv .venv; source .venv/bin/activate; pip install -q -r requirements.txt'';
-                        }
-                      }/bin/python-fhs";
+                      pydev = "${pkgs.uv}/bin/uv venv && source .venv/bin/activate && ${pkgs.uv}/bin/uv pip install -r requirements.txt";
                     };
                   };
 
