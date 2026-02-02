@@ -135,6 +135,7 @@
                       menu = "rofi -show run";
                       bars = [ ];
 
+                      # TODO: Extract to variables or use wildcard
                       output."DP-1".mode = "3840x2160@180Hz";
                       output."DP-1".scale = "2";
 
@@ -152,6 +153,7 @@
                       };
                     };
                   };
+                  # TODO: Consider vanilla sway bar
                   programs.waybar = {
                     enable = true;
                     systemd.enable = true;
@@ -222,6 +224,7 @@
 
                   programs.bash = {
                     enable = true;
+                    # TODO: Avoid cat and use best sops-nix practices
                     initExtra = ''
                       PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
                       export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
@@ -244,6 +247,7 @@
                   programs.lazygit.enable = true;
                   programs.git.enable = true;
                   programs.git.settings = {
+                    # TODO: Put into SOPS
                     user.name = "Chelsea Wilkinson";
                     user.email = "mail@chelseawilkinson.me";
                     pull.rebase = true;
@@ -426,6 +430,7 @@
                   no-neck-pain.settings.autocmds.enableOnVimEnter = true;
                 };
 
+                # TODO: Fix theming
                 extraPlugins = with pkgs.vimPlugins; [
                   gruvbox-material
                 ];
