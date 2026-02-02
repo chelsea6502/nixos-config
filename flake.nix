@@ -95,7 +95,6 @@
                 "networkmanager"
                 "wheel"
                 "docker"
-                "input"
               ];
 
               home-manager.useGlobalPkgs = true;
