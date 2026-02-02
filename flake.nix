@@ -217,7 +217,7 @@
                     window.decorations = "buttonless";
                     window.padding.x = 14;
                     window.padding.y = 14;
-                    font.size = lib.mkForce 10;
+                    font.size = lib.mkForce 10; # TODO: stylix-based font size
                   };
 
                   programs.bash = {
@@ -227,17 +227,6 @@
                       export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
                       [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
                       [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
-
-                      # Auto-activate Python venvs
-                      auto_venv() {
-                        if [[ -f ".venv/bin/activate" ]]; then
-                          [[ "$VIRTUAL_ENV" != "$PWD/.venv" ]] && source .venv/bin/activate
-                        elif [[ -n "$VIRTUAL_ENV" ]]; then
-                          deactivate
-                        fi
-                      }
-                      PROMPT_COMMAND="auto_venv"
-                      auto_venv  # run on shell start
                     '';
                     shellAliases = {
                       edit = "sudo -E -s nvim";
