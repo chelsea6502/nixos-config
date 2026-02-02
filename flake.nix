@@ -172,6 +172,7 @@
                         "disk"
                         "clock"
                       ];
+                      # TODO: volume
                       cpu = mkBarModule "| {usage}%";
                       temperature = (mkBarModule "({temperatureC}C)") // { thermal-zone = 1; };
                       memory = mkBarModule "| {used}GiB ({percentage}%)";
