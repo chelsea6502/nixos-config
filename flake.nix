@@ -21,6 +21,7 @@
         inherit name;
       };
       mkKeymap = key: action: { inherit key action; };
+      mkBarModule = format: interval ? 1: { inherit format interval; };
     in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
@@ -171,17 +172,11 @@
                         "disk"
                         "clock"
                       ];
-                      cpu.format = "| {usage}%";
-                      cpu.interval = 1;
-                      temperature.format = "({temperatureC}C)";
-                      temperature.thermal-zone = 1;
-                      temperature.interval = 1;
-                      memory.format = "| {used}GiB ({percentage}%)";
-                      memory.interval = 1;
-                      disk.format = "| {used} ({percentage_used}%)";
-                      disk.interval = 1;
-                      clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-                      clock.interval = 1;
+                      cpu = mkBarModule "| {usage}%";
+                      temperature = (mkBarModule "({temperatureC}C)") // { thermal-zone = 1; };
+                      memory = mkBarModule "| {used}GiB ({percentage}%)";
+                      disk = mkBarModule "| {used} ({percentage_used}%)";
+                      clock = mkBarModule "| {:%a %d %b %I:%M:%S%p} |";
                     };
                   };
 
