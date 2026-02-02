@@ -152,36 +152,6 @@
                       };
                     };
                   };
-                  programs.waybar = {
-                    enable = true;
-                    systemd.enable = true;
-
-                    style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
-
-                    settings.mainBar = {
-                      height = 18;
-                      modules-left = [ "sway/workspaces" ];
-                      modules-center = [ "sway/window" ];
-                      modules-right = [
-                        "cpu"
-                        "temperature"
-                        "memory"
-                        "disk"
-                        "clock"
-                      ];
-                      cpu.format = "| {usage}%";
-                      cpu.interval = 1;
-                      temperature.format = "({temperatureC}C)";
-                      temperature.thermal-zone = 1;
-                      temperature.interval = 1;
-                      memory.format = "| {used}GiB ({percentage}%)";
-                      memory.interval = 1;
-                      disk.format = "| {used} ({percentage_used}%)";
-                      disk.interval = 1;
-                      clock.format = "| {:%a %d %b %I:%M:%S%p} |";
-                      clock.interval = 1;
-                    };
-                  };
 
                   programs.rofi.enable = true;
                   programs.rofi.extraConfig.hide-scrollbar = true;
@@ -417,17 +387,13 @@
 
                   lazygit.enable = true;
 
-                  no-neck-pain = {
-                    enable = true;
-                    autoLoad = true;
-                    settings = {
-                      width = 100;
-                      minSideBufferWidth = 100;
-                      buffers.right.enabled = false;
-                      buffers.wo.fillchars = "vert: ,eob: ";
-                      autocmds.enableOnVimEnter = true;
-                    };
-                  };
+                  no-neck-pain.enable = true;
+                  no-neck-pain.autoLoad = true;
+                  no-neck-pain.settings.width = 100;
+                  no-neck-pain.settings.minSideBufferWidth = 100;
+                  no-neck-pain.settings.buffers.right.enabled = false;
+                  no-neck-pain.settings.buffers.wo.fillchars = "vert: ,eob: ";
+                  no-neck-pain.settings.autocmds.enableOnVimEnter = true;
                 };
 
                 extraPlugins = with pkgs.vimPlugins; [
