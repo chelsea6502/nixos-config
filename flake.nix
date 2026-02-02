@@ -52,7 +52,6 @@
 
               boot.kernelPackages = pkgs.linuxPackages_latest;
               boot.loader.systemd-boot.enable = true;
-              boot.loader.systemd-boot.editor = false;
               boot.loader.efi.canTouchEfiVariables = true;
               boot.initrd.kernelModules = [ "i915" ];
 
@@ -96,7 +95,6 @@
                 "networkmanager"
                 "wheel"
                 "docker"
-                "input"
               ];
 
               home-manager.useGlobalPkgs = true;
@@ -136,13 +134,17 @@
                       terminal = "alacritty";
                       menu = "rofi -show run";
                       bars = [ ];
+
                       output."DP-1".mode = "3840x2160@180Hz";
                       output."DP-1".scale = "2";
+
                       window.titlebar = false;
+
                       gaps.smartGaps = true;
                       gaps.smartBorders = "no_gaps";
                       gaps.inner = 10;
                       gaps.outer = 10;
+
                       keybindings = lib.mkOptionDefault {
                         "Mod4+p" = "exec shotman --capture window";
                         "Mod4+Shift+p" = "exec shotman --capture region";
@@ -153,7 +155,9 @@
                   programs.waybar = {
                     enable = true;
                     systemd.enable = true;
+
                     style = "* { font-size: 12px; min-height: 0; border-radius: 0; }";
+
                     settings.mainBar = {
                       height = 18;
                       modules-left = [ "sway/workspaces" ];
@@ -178,11 +182,15 @@
                       clock.interval = 1;
                     };
                   };
+
                   programs.rofi.enable = true;
                   programs.rofi.extraConfig.hide-scrollbar = true;
                   programs.rofi.theme = lib.mkForce "gruvbox-dark-soft";
+
                   programs.swaylock.enable = true;
+
                   services.mako.enable = true;
+
                   services.swayidle.enable = true;
                   services.swayidle.timeouts = [
                     {
@@ -211,6 +219,7 @@
                     window.padding.y = 14;
                     font.size = lib.mkForce 10;
                   };
+
                   programs.bash = {
                     enable = true;
                     initExtra = ''
@@ -251,6 +260,7 @@
                     pull.rebase = true;
                     credential.helper = "store";
                   };
+
                   programs.ssh.enable = true;
                   programs.ssh.enableDefaultConfig = false;
                   programs.ssh.matchBlocks."*".serverAliveInterval = 60;
