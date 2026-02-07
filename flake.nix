@@ -157,6 +157,16 @@
                   sops.defaultSopsFile = ./keys/secrets.yaml;
                   sops.secrets.github_token = { };
                   sops.secrets.anthropic_api_key = { };
+                  sops.secrets.git_user_name = { };
+                  sops.secrets.git_user_email = { };
+                  sops.templates."secrets.env".content = ''
+                    export GITHUB_TOKEN="${config.sops.placeholder.github_token}"
+                    export ANTHROPIC_API_KEY="${config.sops.placeholder.anthropic_api_key}"
+                    export GIT_AUTHOR_NAME="${config.sops.placeholder.git_user_name}"
+                    export GIT_AUTHOR_EMAIL="${config.sops.placeholder.git_user_email}"
+                    export GIT_COMMITTER_NAME="${config.sops.placeholder.git_user_name}"
+                    export GIT_COMMITTER_EMAIL="${config.sops.placeholder.git_user_email}"
+                  '';
 
                   # Desktop
                   wayland.windowManager.sway = {
@@ -262,12 +272,10 @@
 
                   programs.bash = {
                     enable = true;
-                    # TODO: Avoid cat and use best sops-nix practices
                     initExtra = ''
                       PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
                       export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
-                      [ -r "${config.sops.secrets.github_token.path}" ] && export GITHUB_TOKEN=$(cat ${config.sops.secrets.github_token.path})
-                      [ -r "${config.sops.secrets.anthropic_api_key.path}" ] && export ANTHROPIC_API_KEY=$(cat ${config.sops.secrets.anthropic_api_key.path})
+                      [ -r "${config.sops.templates."secrets.env".path}" ] && source "${config.sops.templates."secrets.env".path}"
                     '';
                     shellAliases = {
                       edit = "sudo -E -s nvim";
@@ -285,9 +293,6 @@
                   programs.lazygit.enable = true;
                   programs.git.enable = true;
                   programs.git.settings = {
-                    # TODO: Put into SOPS
-                    user.name = "Chelsea Wilkinson";
-                    user.email = "mail@chelseawilkinson.me";
                     pull.rebase = true;
                     credential.helper = "store";
                   };
