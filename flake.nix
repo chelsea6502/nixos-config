@@ -21,7 +21,7 @@
         inherit name;
       };
       mkKeymap = key: action: { inherit key action; };
-      mkBarModule = format: interval ? 1: { inherit format interval; };
+      mkBarModule = format: { inherit format; interval = 1; };
     in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
