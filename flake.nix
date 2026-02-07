@@ -148,12 +148,18 @@
                   home.file.".aider.conf.yml".text = ''
                     model: anthropic/claude-sonnet-4-20250514
                     dark-mode: true
-                    auto-commits: true
+                    auto-commits: false
                     gitignore: true
                     attribute-author: false
                     attribute-committer: false
                     auto-accept-read: true
                     auto-accept-add: true
+                    show-diffs: true
+                    show-repo-map: true
+                    show-model-warnings: true
+                    stream: true
+                    pretty: true
+                    show-prompts: true
                   '';
 
                   # Secrets
