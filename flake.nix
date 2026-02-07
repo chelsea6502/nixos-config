@@ -153,6 +153,7 @@
                     attribute-author: false
                     attribute-committer: false
                     auto-accept-read: true
+                    auto-accept-add: true
                   '';
 
                   # Secrets
