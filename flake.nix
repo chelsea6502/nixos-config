@@ -126,7 +126,7 @@
               home-manager.users.chelsea =
                 { config, ... }:
                 {
-                  home.stateVersion = "25.05";
+                  home.stateVersion = "25.11";
                   home.sessionVariables.EDITOR = "nvim";
                   home.sessionVariables.NIXOS_OZONE_WL = "1";
                   home.pointerCursor = {
