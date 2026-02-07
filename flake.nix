@@ -288,6 +288,7 @@
               stylix.fonts.sansSerif = mkFont pkgs.open-sans "Open Sans";
               stylix.fonts.monospace = mkFont pkgs.nerd-fonts.fira-code "Fira Code Nerdfont";
               stylix.fonts.emoji = mkFont pkgs.noto-fonts-color-emoji "Noto Color Emoji";
+              stylix.targets.nixvim.enable = false;
 
               # ═══════════════════════════════════════════════════════════════════════════
               # NIXVIM
@@ -331,8 +332,6 @@
                   (mkKeymap "ff" "<cmd>Telescope find_files<CR>")
                   (mkKeymap "FF" "<cmd>Telescope project<CR>")
                   (mkKeymap "/" "<cmd>Telescope current_buffer_fuzzy_find theme=dropdown<CR>")
-                  (mkKeymap "<leader>ac" "<cmd>AvanteChat<CR>")
-                  (mkKeymap "<leader>aC" "<cmd>AvanteChatNew<CR>")
                   (mkKeymap "<leader>gr" "<cmd>Gitsigns reset_hunk<CR>")
                   (mkKeymap "<leader>gR" "<cmd>Gitsigns reset_buffer<CR>")
                   (mkKeymap "<leader>gg" "<cmd>LazyGit<CR>")
@@ -387,10 +386,6 @@
 
                   blink-copilot.enable = true;
 
-                  avante.enable = true;
-                  avante.settings.hints.enabled = false;
-                  avante.settings.providers.claude.model = "claude-sonnet-4-20250514";
-
                   typescript-tools.enable = true;
 
                   treesitter.enable = true;
@@ -417,24 +412,19 @@
 
                   lazygit.enable = true;
 
-                  no-neck-pain.enable = true;
-                  no-neck-pain.autoLoad = true;
-                  no-neck-pain.settings.width = 100;
-                  no-neck-pain.settings.minSideBufferWidth = 100;
-                  no-neck-pain.settings.buffers.right.enabled = false;
-                  no-neck-pain.settings.buffers.wo.fillchars = "vert: ,eob: ";
-                  no-neck-pain.settings.autocmds.enableOnVimEnter = true;
+                  no-neck-pain = {
+                    enable = true;
+                    autoLoad = true;
+                    settings = {
+                      width = 100;
+                      minSideBufferWidth = 1;
+                      buffers.right.enabled = false;
+                      buffers.right.wo.fillchars = "vert: ,eob: ";
+                      autocmds.enableOnVimEnter = true;
+                    };
+                  };
                 };
 
-                # TODO: Fix theming
-                extraPlugins = with pkgs.vimPlugins; [
-                  gruvbox-material
-                ];
-
-                extraConfigLua = ''
-                  -- Auto-enable NoNeckPain on startup
-                  vim.defer_fn(function() vim.cmd("NoNeckPain") end, 100)
-                '';
               };
             }
           )
