@@ -21,7 +21,12 @@
         inherit name;
       };
       mkKeymap = key: action: { inherit key action; };
-      mkBarModule = format: { inherit format; interval = 1; };
+      mkBarModule = format: {
+        inherit format;
+        interval = 1;
+      };
+      mkBinding = key: mods: action: { inherit key mods action; };
+      mkBindingChars = key: mods: chars: { inherit key mods chars; };
     in
     {
       nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
@@ -87,20 +92,14 @@
               services.keyd.keyboards.default = {
                 ids = [ "*" ];
                 settings = {
-                  main = {
-                    # Swap left alt and left meta (super) for Mac-like physical layout
-                    leftalt = "leftmeta";
-                    leftmeta = "leftalt";
-                  };
-                  # When meta (super) is held, remap common shortcuts to their Ctrl equivalents
                   "meta" = {
-                    c = "C-c";  # Copy
-                    v = "C-v";  # Paste
-                    x = "C-x";  # Cut
-                    a = "C-a";  # Select all
-                    z = "C-z";  # Undo
-                    "shift-z" = "C-y";  # Redo (Cmd+Shift+Z on Mac)
-                    s = "C-s";  # Save
+                    c = "C-c"; # Copy
+                    v = "C-v"; # Paste
+                    x = "C-x"; # Cut
+                    a = "C-a"; # Select all
+                    z = "C-z"; # Undo
+                    "shift-z" = "C-y"; # Redo (Cmd+Shift+Z on Mac)
+                    s = "C-s"; # Save
                   };
                 };
               };
@@ -144,22 +143,12 @@
                     aider-chat
                   ];
 
-                  # Aider configuration (styled via terminal colors from stylix)
+                  # Aider configuration with gruvbox theme
                   home.file.".aider.conf.yml".text = ''
                     model: anthropic/claude-sonnet-4-20250514
                     dark-mode: true
-                    auto-commits: false
+                    code-theme: gruvbox-dark
                     gitignore: true
-                    attribute-author: false
-                    attribute-committer: false
-                    auto-accept-read: true
-                    auto-accept-add: true
-                    show-diffs: true
-                    show-repo-map: true
-                    show-model-warnings: true
-                    stream: true
-                    pretty: true
-                    show-prompts: true
                   '';
 
                   # Secrets
@@ -216,7 +205,9 @@
                       ];
                       # TODO: volume
                       cpu = mkBarModule "| {usage}%";
-                      temperature = (mkBarModule "({temperatureC}C)") // { thermal-zone = 1; };
+                      temperature = (mkBarModule "({temperatureC}C)") // {
+                        thermal-zone = 1;
+                      };
                       memory = mkBarModule "| {used}GiB ({percentage}%)";
                       disk = mkBarModule "| {used} ({percentage_used}%)";
                       clock = mkBarModule "| {:%a %d %b %I:%M:%S%p} |";
@@ -258,10 +249,14 @@
                     window.padding.x = 14;
                     window.padding.y = 14;
                     font.size = lib.mkForce 10; # TODO: stylix-based font size
-                    # Mac-like copy/paste (works with keyd remapping Super→Ctrl)
+                    # Mac-like copy/paste (Super for direct use, Control for keyd remapping)
+                    # Ctrl+Shift+C sends interrupt signal (SIGINT) to kill processes
                     keyboard.bindings = [
-                      { key = "c"; mods = "Control"; action = "Copy"; }
-                      { key = "v"; mods = "Control"; action = "Paste"; }
+                      (mkBinding "C" "Super" "Copy")
+                      (mkBinding "V" "Super" "Paste")
+                      (mkBinding "C" "Control" "Copy")
+                      (mkBinding "V" "Control" "Paste")
+                      (mkBindingChars "C" "Control|Shift" "\\u0003")
                     ];
                   };
 
