@@ -82,6 +82,29 @@
 
               programs.ssh.startAgent = true;
 
+              # Mac-like keyboard shortcuts (Super/Cmd for copy/paste/cut/etc)
+              services.keyd.enable = true;
+              services.keyd.keyboards.default = {
+                ids = [ "*" ];
+                settings = {
+                  main = {
+                    # Swap left alt and left meta (super) for Mac-like physical layout
+                    leftalt = "leftmeta";
+                    leftmeta = "leftalt";
+                  };
+                  # When meta (super) is held, remap common shortcuts to their Ctrl equivalents
+                  "meta" = {
+                    c = "C-c";  # Copy
+                    v = "C-v";  # Paste
+                    x = "C-x";  # Cut
+                    a = "C-a";  # Select all
+                    z = "C-z";  # Undo
+                    "shift-z" = "C-y";  # Redo (Cmd+Shift+Z on Mac)
+                    s = "C-s";  # Save
+                  };
+                };
+              };
+
               virtualisation.docker.enable = true;
               virtualisation.docker.autoPrune.enable = true;
 
@@ -118,7 +141,19 @@
                     shotman
                     wl-clipboard
                     uv
+                    aider-chat
                   ];
+
+                  # Aider configuration (styled via terminal colors from stylix)
+                  home.file.".aider.conf.yml".text = ''
+                    model: anthropic/claude-sonnet-4-20250514
+                    dark-mode: true
+                    auto-commits: true
+                    gitignore: true
+                    attribute-author: false
+                    attribute-committer: false
+                    auto-accept-read: true
+                  '';
 
                   # Secrets
                   sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
@@ -216,6 +251,11 @@
                     window.padding.x = 14;
                     window.padding.y = 14;
                     font.size = lib.mkForce 10; # TODO: stylix-based font size
+                    # Mac-like copy/paste (works with keyd remapping Super→Ctrl)
+                    keyboard.bindings = [
+                      { key = "c"; mods = "Control"; action = "Copy"; }
+                      { key = "v"; mods = "Control"; action = "Paste"; }
+                    ];
                   };
 
                   programs.bash = {
