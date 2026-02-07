@@ -162,10 +162,11 @@
                   sops.templates."secrets.env".content = ''
                     export GITHUB_TOKEN="${config.sops.placeholder.github_token}"
                     export ANTHROPIC_API_KEY="${config.sops.placeholder.anthropic_api_key}"
-                    export GIT_AUTHOR_NAME="${config.sops.placeholder.git_user_name}"
-                    export GIT_AUTHOR_EMAIL="${config.sops.placeholder.git_user_email}"
-                    export GIT_COMMITTER_NAME="${config.sops.placeholder.git_user_name}"
-                    export GIT_COMMITTER_EMAIL="${config.sops.placeholder.git_user_email}"
+                  '';
+                  sops.templates."git-secrets".content = ''
+                    [user]
+                      name = ${config.sops.placeholder.git_user_name}
+                      email = ${config.sops.placeholder.git_user_email}
                   '';
 
                   # Desktop
@@ -293,6 +294,7 @@
                   programs.lazygit.enable = true;
                   programs.git.enable = true;
                   programs.git.settings = {
+                    include.path = config.sops.templates."git-secrets".path;
                     pull.rebase = true;
                     credential.helper = "store";
                   };
