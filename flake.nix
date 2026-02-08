@@ -178,9 +178,7 @@
                       menu = "rofi -show run";
                       bars = [ ];
 
-                      # TODO: Extract to variables or use wildcard
-                      output."DP-1".mode = "3840x2160@180Hz";
-                      output."DP-1".scale = "2";
+                      output."*".scale = "2";
 
                       window.titlebar = false;
 
