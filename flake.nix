@@ -465,17 +465,12 @@
 
                   lazygit.enable = true;
 
-                  no-neck-pain = {
-                    enable = true;
-                    autoLoad = true;
-                    settings = {
-                      width = 100;
-                      minSideBufferWidth = 1;
-                      buffers.left.wo.fillchars = "vert: ,eob: ";
-                      buffers.right.enabled = false;
-                      autocmds.enableOnVimEnter = true;
-                    };
-                  };
+                  no-neck-pain.enable = true;
+                  no-neck-pain.settings.width = 100;
+                  no-neck-pain.settings.minSideBufferWidth = 1;
+                  no-neck-pain.settings.buffers.left.wo.fillchars = "vert: ,eob: ";
+                  no-neck-pain.settings.buffers.right.enabled = false;
+                  no-neck-pain.settings.autocmds.enableOnVimEnter = true;
                 };
 
               };
