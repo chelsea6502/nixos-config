@@ -80,6 +80,7 @@
               services.pipewire.enable = true;
               services.pipewire.alsa.enable = true;
               services.pipewire.pulse.enable = true;
+              security.rtkit.enable = true;
 
               services.greetd.enable = true;
               services.greetd.settings.default_session.command = "${pkgs.sway}/bin/sway";
