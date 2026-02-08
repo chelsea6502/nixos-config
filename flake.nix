@@ -279,7 +279,9 @@
                     initExtra = ''
                       PS1="\n\[\033[1;32m\][\[\e]0;\u@\h:\w\a\]\w]$\[\033[0m\] "
                       export SOPS_AGE_KEY_FILE="$HOME/.config/sops/age/keys.txt"
-                      [ -r "${config.sops.templates."secrets.env".path}" ] && source "${config.sops.templates."secrets.env".path}"
+                      [ -r "${config.sops.templates."secrets.env".path}" ] && source "${
+                        config.sops.templates."secrets.env".path
+                      }"
                     '';
                     shellAliases = {
                       edit = "sudo -E -s nvim";
@@ -402,7 +404,7 @@
                   mini.modules.indentscope.symbol = "▏";
                   mini.modules.indentscope.options.try_as_border = true;
                   mini.modules.indentscope.draw.delay = 0;
-                  mini.modules.pairs = {};
+                  mini.modules.pairs = { };
 
                   gitsigns.enable = true;
 
