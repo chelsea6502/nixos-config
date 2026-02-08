@@ -187,6 +187,10 @@
                       gaps.inner = 10;
                       gaps.outer = 10;
 
+                      startup = [
+                        { command = "swaymsg workspace 1"; }
+                      ];
+
                       keybindings = lib.mkOptionDefault {
                         "Mod4+p" = "exec shotman --capture window";
                         "Mod4+Shift+p" = "exec shotman --capture region";
