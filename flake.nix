@@ -194,7 +194,6 @@
                       };
                     };
                   };
-                  # TODO: Consider vanilla sway bar
                   programs.waybar = {
                     enable = true;
                     systemd.enable = true;
