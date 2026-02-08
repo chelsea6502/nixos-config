@@ -206,13 +206,14 @@
                       modules-left = [ "sway/workspaces" ];
                       modules-center = [ "sway/window" ];
                       modules-right = [
+                        "pulseaudio"
                         "cpu"
                         "temperature"
                         "memory"
                         "disk"
                         "clock"
                       ];
-                      # TODO: volume
+                      pulseaudio = mkBarModule "| {volume}%";
                       cpu = mkBarModule "| {usage}%";
                       temperature = (mkBarModule "({temperatureC}C)") // {
                         thermal-zone = 1;
