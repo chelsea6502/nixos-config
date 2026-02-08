@@ -153,7 +153,7 @@
                   '';
 
                   # Secrets
-                  sops.age.keyFile = "/home/chelsea/.config/sops/age/keys.txt";
+                  sops.age.keyFile = "${config.home.homeDirectory}/.config/sops/age/keys.txt";
                   sops.age.plugins = [ pkgs.age-plugin-yubikey ];
                   sops.defaultSopsFile = ./keys/secrets.yaml;
                   sops.secrets.github_token = { };
@@ -250,7 +250,7 @@
                   services.swayidle.events = [
                     {
                       event = "before-sleep";
-                      command = "${pkgs.swaylock-effects}/bin/swaylock";
+                      command = "${pkgs.swaylock}/bin/swaylock";
                     }
                   ];
 
@@ -259,7 +259,7 @@
                   programs.alacritty.settings = {
                     cursor.style.shape = "Beam";
                     cursor.style.blinking = "On";
-                    window.decorations = "buttonless";
+                    window.decorations = "none";
                     window.padding.x = 14;
                     window.padding.y = 14;
                     font.size = lib.mkForce 10; # TODO: stylix-based font size
@@ -402,7 +402,7 @@
                   mini.modules.indentscope.symbol = "▏";
                   mini.modules.indentscope.options.try_as_border = true;
                   mini.modules.indentscope.draw.delay = 0;
-                  mini.modules.pairs.enable = true;
+                  mini.modules.pairs = {};
 
                   gitsigns.enable = true;
 
@@ -454,6 +454,7 @@
 
                   telescope.enable = true;
                   telescope.extensions.file-browser.enable = true;
+                  telescope.extensions.project.enable = true;
 
                   noice.enable = true;
 
@@ -470,8 +471,8 @@
                     settings = {
                       width = 100;
                       minSideBufferWidth = 1;
+                      buffers.left.wo.fillchars = "vert: ,eob: ";
                       buffers.right.enabled = false;
-                      buffers.right.wo.fillchars = "vert: ,eob: ";
                       autocmds.enableOnVimEnter = true;
                     };
                   };
