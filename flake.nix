@@ -2,12 +2,12 @@
   description = "Nixos config flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-25.11";
-    home-manager.url = "github:nix-community/home-manager/release-25.11";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-26.05";
+    home-manager.url = "github:nix-community/home-manager/release-26.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    stylix.url = "github:danth/stylix/release-25.11";
+    stylix.url = "github:danth/stylix/release-26.05";
     stylix.inputs.nixpkgs.follows = "nixpkgs";
-    nixvim.url = "github:nix-community/nixvim/nixos-25.11";
+    nixvim.url = "github:nix-community/nixvim/nixos-26.05";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     sops-nix.url = "github:Mic92/sops-nix";
     sops-nix.inputs.nixpkgs.follows = "nixpkgs";
@@ -105,8 +105,8 @@
                 };
               };
 
-              virtualisation.docker.enable = true;
-              virtualisation.docker.autoPrune.enable = true;
+              # virtualisation.docker.enable = true;
+              # virtualisation.docker.autoPrune.enable = true;
 
               # ═══════════════════════════════════════════════════════════════════════════
               # USER
@@ -247,12 +247,7 @@
                       command = "${pkgs.systemd}/bin/systemctl suspend";
                     }
                   ];
-                  services.swayidle.events = [
-                    {
-                      event = "before-sleep";
-                      command = "${pkgs.swaylock}/bin/swaylock";
-                    }
-                  ];
+                  services.swayidle.events.before-sleep = "${pkgs.swaylock}/bin/swaylock";
 
                   # Terminal & Shell
                   programs.alacritty.enable = true;
@@ -306,14 +301,13 @@
 
                   programs.ssh.enable = true;
                   programs.ssh.enableDefaultConfig = false;
-                  programs.ssh.matchBlocks."*".serverAliveInterval = 60;
-                  programs.ssh.matchBlocks."*".serverAliveCountMax = 3;
+                  programs.ssh.settings."*".serverAliveInterval = 60;
+                  programs.ssh.settings."*".serverAliveCountMax = 3;
 
-                  programs.vscode = {
-                    enable = true;
-                    package = pkgs.vscodium;
-                    profiles.default.extensions = with pkgs.vscode-extensions; [ rooveterinaryinc.roo-cline ];
-                    profiles.default.userSettings."roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
+                  programs.vscodium.enable = true;
+                  programs.vscodium.profiles.default = {
+                    extensions = with pkgs.vscode-extensions; [ rooveterinaryinc.roo-cline ];
+                    userSettings."roo-cline.anthropicApiKey" = "\${ANTHROPIC_API_KEY}";
                   };
 
                   # Browsers
@@ -448,7 +442,7 @@
 
                   lsp.enable = true;
                   lsp.servers.nil_ls.enable = true;
-                  lsp.servers.nil_ls.settings.formatting.command = [ "${pkgs.nixfmt-rfc-style}/bin/nixfmt" ];
+                  lsp.servers.nil_ls.settings.formatting.command = [ "${pkgs.nixfmt}/bin/nixfmt" ];
                   lsp.servers.nil_ls.settings.nix.flake.autoArchive = true;
                   lsp.servers.nil_ls.settings.nix.flake.autoEvalInputs = true;
 
